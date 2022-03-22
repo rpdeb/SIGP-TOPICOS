@@ -1,12 +1,12 @@
 <template>
   <v-card>
     <v-card-title>
-      Nutrition
+      Gerenciamento de Salas
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
-        label="Search"
+        label="Buscar"
         single-line
         hide-details
       ></v-text-field>
@@ -26,16 +26,13 @@
         search: '',
         headers: [
           {
-            text: 'Dessert (100g serving)',
+            text: 'Câmpus',
             align: 'start',
             sortable: false,
             value: 'name',
           },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' },
+          { text: 'Sala', value: 'calories' },
+          { text: 'Ações', value: 'fat' },
         ],
         desserts: [
           {

@@ -1,85 +1,66 @@
 <template>
   <v-card>
     <v-card-title>
-      Nutrition
+      Gerenciamento de Horários
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
-        label="Search"
+        label="Buscar"
         single-line
         hide-details
       ></v-text-field>
     </v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="desserts"
-      :search="search"
-    ></v-data-table>
+
+    <v-row>
+    <v-col>
+      <v-sheet height="500">
+        <v-calendar
+          :now="today"
+          :value="today"
+          color="primary"
+        >
+          <template v-slot:day="{ past, date }">
+            <v-row
+              class="fill-height"
+            >
+              <template v-if="past && tracked[date]">
+                <v-sheet
+                  v-for="(percent, i) in tracked[date]"
+                  :key="i"
+                  :title="category[i]"
+                  :color="colors[i]"
+                  :width="`${percent}%`"
+                  height="100%"
+                  tile
+                ></v-sheet>
+              </template>
+            </v-row>
+          </template>
+        </v-calendar>
+      </v-sheet>
+    </v-col>
+  </v-row>
   </v-card>
 </template>
 
 <script>
   export default {
-    data () {
-      return {
-        search: '',
-        headers: [
-          {
-            text: 'Dessert (100g serving)',
-            align: 'start',
-            sortable: false,
-            value: 'name',
-          },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' },
-        ],
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            iron: '1%',
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%',
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%',
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%',
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%',
-          },
-        ],
-      }
-    },
+    data: () => ({
+      today: '2019-01-10',
+      tracked: {
+        '2019-01-09': [23, 45, 10],
+        '2019-01-08': [10],
+        '2019-01-07': [0, 78, 5],
+        '2019-01-06': [0, 0, 50],
+        '2019-01-05': [0, 10, 23],
+        '2019-01-04': [2, 90],
+        '2019-01-03': [10, 32],
+        '2019-01-02': [80, 10, 10],
+        '2019-01-01': [20, 25, 10],
+      },
+      colors: ['#1867c0', '#fb8c00', '#000000'],
+      category: ['Development', 'Meetings', 'Slacking'],
+    }),
   }
 </script>
