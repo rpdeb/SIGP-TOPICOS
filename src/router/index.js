@@ -11,9 +11,24 @@ const routes = [
     component: HomeView
   },
   {
+    path: 'Sala',
+    name: 'Sala',
+    component: () => import('../views/Sala.vue')
+  },
+  {
+    path: 'Horario',
+    name: 'Horario',
+    component: () => import('../views/Horario.vue')
+  },
+  {
+    path: 'Semestre',
+    name: 'Sesmestre',
+    component: () => import('../views/Semestre.vue')
+  },
+  {
     path: '/about',
     name: 'about',
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: () => import('../views/AboutView.vue')
   }
 ]
 
