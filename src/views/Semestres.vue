@@ -1,6 +1,8 @@
 <template>
+
   <v-card>
-    <v-card-title>
+  <h1> Semestre </h1> 
+    <v-card-title >
       Gerenciamento de Semestres
       <v-spacer></v-spacer>
       <v-text-field

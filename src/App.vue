@@ -69,14 +69,7 @@
           { title: 'Horários', to:'/horarios'  },
         ],
 
-      links: [
-        'Home',
-        'About Us',
-        'Team',
-        'Services',
-        'Blog',
-        'Contact Us',
-      ],
+     
     }),
   }
 </script>
