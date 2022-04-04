@@ -18,6 +18,7 @@
           :to="item.to"
           link
         >
+        TESTE
         </v-btn>
 
         <v-spacer></v-spacer>
@@ -37,18 +38,9 @@
       justify="center"
       no-gutters
     >
-      <v-btn
-        v-for="link in links"
-        :key="link"
-        color="white"
-        text
-        rounded
-        class="my-2"
-      >
-        {{ link }}
-      </v-btn>
+     
       <v-col
-        class="primary lighten-2 py-4 text-center white--text"
+        class="py-4 text-center white--text"
         cols="12"
       >
         {{ new Date().getFullYear() }} — <strong>SIGHA - Sistema de gerenciamento de horários acadêmicos</strong>
