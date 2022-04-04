@@ -66,6 +66,7 @@
           { title: 'Semestres', to:'/semestres' },
           { title: 'Salas', to:'/salas'  },
           { title: 'Usuários', to:'/usuarios'  },
+          { title: 'Bloco', to:'/bloco'  },
           { title: 'Horários', to:'/horarios'  },
         ],
 
