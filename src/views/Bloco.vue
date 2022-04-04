@@ -31,7 +31,12 @@
             sortable: false,
             value: 'name',
           },
-          { text: 'Salas', value: 'calories' },
+          {
+            text: 'Bloco',
+            align: 'start',
+            sortable: false,
+            value: 'name',
+          },
           { text: 'Ações', value: 'fat' },
         ],
         desserts: [
