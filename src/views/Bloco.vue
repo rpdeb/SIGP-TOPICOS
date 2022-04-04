@@ -31,7 +31,7 @@
             sortable: false,
             value: 'name',
           },
-          { text: 'Sala', value: 'calories' },
+          { text: 'Salas', value: 'calories' },
           { text: 'Ações', value: 'fat' },
         ],
         desserts: [
