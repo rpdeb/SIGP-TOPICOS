@@ -60,6 +60,7 @@
           { title: 'Usuários', to:'/usuarios'  },
           { title: 'Bloco', to:'/bloco'  },
           { title: 'Horários', to:'/horarios'  },
+          { title: 'Oferta', to:'/oferta'  }
         ],
 
      
