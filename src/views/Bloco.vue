@@ -44,16 +44,22 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
+                      <v-select
                         v-model="itemAtual.campus"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
                         label="Campus"
-                      ></v-text-field>
+                        required
+                      ></v-select>
                     </v-col>
                      <v-col cols="8" sm="6" md="4">
-                      <v-text-field
+                      <v-select
                         v-model="itemAtual.sala"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
                         label="Sala"
-                      ></v-text-field>
+                        required
+                      ></v-select>
                     </v-col>
                   </v-row>
                 </v-container>
