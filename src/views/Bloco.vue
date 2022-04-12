@@ -52,6 +52,15 @@
                         required
                       ></v-select>
                     </v-col>
+                    <v-col cols="8" sm="6" md="4">
+                      <v-select
+                        v-model="itemAtual.bloco"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Bloco"
+                        required
+                      ></v-select>
+                    </v-col>
                      <v-col cols="8" sm="6" md="4">
                       <v-select
                         v-model="itemAtual.sala"
@@ -90,11 +99,15 @@ export default {
   data: () => ({
     search: "",
     dialog: false,
-    dialogDesativar: false,
     titulos: [
       {
         text: "Câmpus",
         value: "campus",
+        sortable: false,
+      },
+      {
+        text: "Bloco",
+        value: "bloco",
         sortable: false,
       },
       {
@@ -116,12 +129,14 @@ export default {
     itemAtual: {
       id: null,
       campus: "",
+      bloco: "",
       sala: "",
     },
 
     itemPadrao: {
       id: null,
       campus: "",
+      bloco: "",
       sala: "",
     },
   }),
@@ -139,13 +154,13 @@ export default {
   },
 
   editItem(item) {
-    this.editIndice = this.periodos.indexOf(item);
+    this.editIndice = this.blocos.indexOf(item);
     this.itemAtual = Object.assign({}, item);
     this.dialog = true;
   },
 
   checkForm() {
-    if (this.itemAtual.campus && this.itemAtual.sala) {
+    if (this.itemAtual.campus && this.itemAtual.bloco && this.itemAtual.sala ) {
       this.salvar();
       return true;
     }
@@ -154,6 +169,10 @@ export default {
 
     if (!this.itemAtual.campus) {
       this.errors.push("O câmpus é obrigatório.");
+    }
+
+    if (!this.itemAtual.bloco) {
+      this.errors.push("O bloco é obrigatório.");
     }
 
     if (!this.itemAtual.sala) {
