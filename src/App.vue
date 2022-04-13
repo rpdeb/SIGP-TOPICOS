@@ -57,10 +57,13 @@
       items: [
           { title: 'Semestres', to:'/semestres' },
           { title: 'Salas', to:'/salas'  },
+          { title: 'SignUp', to:'/signup'  },
+          { title: 'Login', to:'/login'  },
           { title: 'Usuários', to:'/usuarios'  },
           { title: 'Bloco', to:'/bloco'  },
           { title: 'Horários', to:'/horarios'  },
           { title: 'Oferta', to:'/oferta'  }
+          
         ],
 
      
