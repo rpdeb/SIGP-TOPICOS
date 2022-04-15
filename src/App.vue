@@ -64,8 +64,6 @@
           { title: 'Oferta', to:'/oferta'  }
           
         ],
-
-     
     }),
   }
 </script>
