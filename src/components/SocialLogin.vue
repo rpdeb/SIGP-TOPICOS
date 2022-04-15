@@ -8,6 +8,7 @@
         
     </div>
 </template>
+return next (/semestres)
 
 <script>
 
