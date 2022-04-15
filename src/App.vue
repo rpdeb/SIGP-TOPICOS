@@ -57,7 +57,6 @@
       items: [
           { title: 'Semestres', to:'/semestres' },
           { title: 'Salas', to:'/salas'  },
-          { title: 'SignUp', to:'/newsignup'  },
           { title: 'Login', to:'/newlogin'  },
           { title: 'Usuários', to:'/usuarios'  },
           { title: 'Bloco', to:'/bloco'  },

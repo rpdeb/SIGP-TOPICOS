@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/HomeView'
 import Login from '@/views/NewLogin'
-import SignUp from '@/views/NewSignUp'
 import PageNotFound from '@/components/PageNotFound'
 
 Vue.use(Router)
@@ -10,7 +9,7 @@ Vue.use(Router)
 let baseRoutes = [
   {
     path: '/',
-    redirect: '/newlogin'
+    redirect: '/semestres'
   },
   {
     path: '/home',
@@ -21,11 +20,6 @@ let baseRoutes = [
     path: '/newlogin',
     name: 'Login',
     component: Login
-  },
-  {
-    path: '/newsignup',
-    name: 'SignUp',
-    component: SignUp
   },
   {
     path: '*',
