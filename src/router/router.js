@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/HomeView'
-import Login from '@/views/Login'
-import SignUp from '@/views/SignUp'
+import Login from '@/views/NewLogin'
+import SignUp from '@/views/NewSignUp'
 import PageNotFound from '@/components/PageNotFound'
 
 Vue.use(Router)
@@ -10,7 +10,7 @@ Vue.use(Router)
 let baseRoutes = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/newlogin'
   },
   {
     path: '/home',
@@ -18,12 +18,12 @@ let baseRoutes = [
     component: Home
   },
   {
-    path: '/login',
+    path: '/newlogin',
     name: 'Login',
     component: Login
   },
   {
-    path: '/signup',
+    path: '/newsignup',
     name: 'SignUp',
     component: SignUp
   },
@@ -43,11 +43,11 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   // redirect to login page if not logged in and trying to access a restricted page
-  const publicPages = ['/login', '/signup']
+  const publicPages = ['/newlogin', '/newsignup']
   const authRequired = !publicPages.includes(to.path)
   const loggedIn = localStorage.getItem('user')
   if (authRequired && !loggedIn) {
-    return next('/login')
+    return next('/newlogin')
   }
   next()
 })
