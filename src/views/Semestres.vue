@@ -45,7 +45,7 @@
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field
-                        v-model="itemAtual.semestre"
+                        v-model="atributo.semestre"
                         :items="items"
                         label="Semestre"
                         required
@@ -53,7 +53,7 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="itemAtual.oferta"
+                        v-model="atributo.oferta"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Oferta"
@@ -66,13 +66,13 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fechar">
+              <v-btn small color="warning" dark @click="dialog=false">
                 Cancelar
               </v-btn>
               <v-btn 
               small color="primary" 
               class="mr-4"
-              @click="checkForm">Salvar</v-btn>
+              @click="validaForm">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -93,32 +93,25 @@
       {
         text: "Semestre",
         value: "semestre",
-        sortable: false,
       },
       {
         text: "Oferta",
         value: "oferta",
-        sortable: false,
       },
       {
         text: "Ações",
         value: "acoes",
-        sortable: false,
       },
     ],
-
     errors: [],
     semestres: [],
     editIndice: -1,
-
-    itemAtual: {
+    atributo: {
       id: null,
       oferta: "",
       semestre: "",
-      
     },
-
-    itemPadrao: {
+    atributoPadrao: {
       id: null,
       oferta: "",
       semestre: "",
@@ -132,31 +125,25 @@
     },
   },
 
-  watch: {
-    dialog(val) {
-      val || this.fechar();
-    },
-  },
-
-  editItem(item) {
+editItem(item) {
     this.editIndice = this.semestres.indexOf(item);
-    this.itemAtual = Object.assign({}, item);
+    this.atributo = Object.assign({}, item);
     this.dialog = true;
   },
 
-  checkForm() {
-    if (this.itemAtual.semestre && this.itemAtual.oferta) {
+  validaForm() {
+    if (this.atributo.semestre && this.atributo.oferta) {
       this.salvar();
       return true;
     }
 
     this.errors = [];
 
-    if (!this.itemAtual.semestre) {
+    if (!this.atributo.semestre) {
       this.errors.push("O câmpus é obrigatório.");
     }
 
-    if (!this.itemAtual.oferta) {
+    if (!this.atributo.oferta) {
       this.errors.push("O bloco é obrigatório.");
     }
   },
@@ -164,7 +151,7 @@
   fechar() {
     this.dialog = false;
     this.$nextTick(() => {
-      this.itemAtual = Object.assign({}, this.itemPadrao);
+      this.atributo = Object.assign({}, this.atributoPadrao);
       this.editIndice = -1;
     });
   },

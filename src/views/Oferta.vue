@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="titulos"
-    :items="Semestres"
+    :items="ofertas"
     :search="search"
     class="elevation-2 data-table"
   >
@@ -45,7 +45,7 @@
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="itemAtual.oferta"
+                        v-model="atributo.oferta"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Matriz Curricular"
@@ -54,7 +54,7 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="itemAtual.oferta"
+                        v-model="atributo.oferta"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Periodo"
@@ -63,7 +63,7 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="itemAtual.oferta"
+                        v-model="atributo.oferta"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Disciplina"
@@ -72,7 +72,7 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="itemAtual.oferta"
+                        v-model="atributo.oferta"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Dia da semana"
@@ -81,7 +81,7 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="itemAtual.oferta"
+                        v-model="atributo.oferta"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Professor"
@@ -90,7 +90,7 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="itemAtual.oferta"
+                        v-model="atributo.oferta"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Turno"
@@ -99,7 +99,7 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="itemAtual.oferta"
+                        v-model="atributo.oferta"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Campus-Bloco/Piso"
@@ -108,7 +108,7 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="itemAtual.oferta"
+                        v-model="atributo.oferta"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Sala"
@@ -209,17 +209,17 @@
     ],
 
     errors: [],
-    semestres: [],
+    ofertas: [],
     editIndice: -1,
 
-    itemAtual: {
+    atributo: {
       id: null,
       oferta: "",
       semestre: "",
       
     },
 
-    itemPadrao: {
+    atributoPadrao: {
       id: null,
       oferta: "",
       semestre: "",
@@ -229,7 +229,7 @@
 
   computed: {
     tituloForm() {
-      return this.editIndice === -1 ? "Cadastrar Semestre" : "Editar Semestre";
+      return this.editIndice === -1 ? "Ofertar Disciplina" : "Editar Oferta";
     },
   },
 
@@ -240,24 +240,24 @@
   },
 
   editItem(item) {
-    this.editIndice = this.semestres.indexOf(item);
-    this.itemAtual = Object.assign({}, item);
+    this.editIndice = this.ofertas.indexOf(item);
+    this.atributo = Object.assign({}, item);
     this.dialog = true;
   },
 
   checkForm() {
-    if (this.itemAtual.semestre && this.itemAtual.oferta) {
+    if (this.atributo.semestre && this.atributo.oferta) {
       this.salvar();
       return true;
     }
 
     this.errors = [];
 
-    if (!this.itemAtual.semestre) {
+    if (!this.atributo.semestre) {
       this.errors.push("O câmpus é obrigatório.");
     }
 
-    if (!this.itemAtual.oferta) {
+    if (!this.atributo.oferta) {
       this.errors.push("O bloco é obrigatório.");
     }
   },
@@ -265,7 +265,7 @@
   fechar() {
     this.dialog = false;
     this.$nextTick(() => {
-      this.itemAtual = Object.assign({}, this.itemPadrao);
+      this.atributo = Object.assign({}, this.atributoPadrao);
       this.editIndice = -1;
     });
   },

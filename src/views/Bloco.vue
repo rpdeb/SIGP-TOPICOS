@@ -9,6 +9,7 @@
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Bloco</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
+
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -43,30 +44,21 @@
               <v-form>
                 <v-container>
                   <v-row>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="itemAtual.campus"
-                        :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
-                        label="Campus"
-                        required
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="itemAtual.bloco"
+                     <v-col cols="8" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.bloco"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Bloco"
                         required
-                      ></v-select>
+                      ></v-text-field>
                     </v-col>
-                     <v-col cols="8" sm="6" md="4">
+                    <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="itemAtual.sala"
+                        v-model="atributo.campus"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
-                        label="Sala"
+                        label="Campus"
                         required
                       ></v-select>
                     </v-col>
@@ -82,18 +74,47 @@
               <v-btn 
               small color="primary" 
               class="mr-4"
-              @click="checkForm">Salvar</v-btn>
+              @click="validaForm">Salvar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+         <v-dialog v-model="dialogDelete" max-width="400px">
+          <v-card>
+            <v-card-title class="text-h5"
+              >Deseja deletar este Bloco ?</v-card-title
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn small color="warning" dark @click="dialog=false">
+                Não</v-btn
+              >
+              <v-btn small color="primary" dark @click="deleteItemConfirm"
+                >Sim</v-btn
+              >
+              <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
         </v-dialog>
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)" color="blue"> mdi-pencil </v-icon>
+      <v-icon small class="mr-2" @click="deleteItem(item)" color="blue"> mdi-delete </v-icon>
     </template>
   </v-data-table>
 </template>
-
+<style>
+.add {
+  width: 40px;
+  height: 40px;
+}
+.template-add {
+  padding-top: 1%;
+}
+.data-table {
+  padding: 3%;
+}
+</style>
 <script>
 export default {
   data: () => ({
@@ -101,7 +122,7 @@ export default {
     dialog: false,
     titulos: [
       {
-        text: "Câmpus",
+        text: "Campus",
         value: "campus",
         sortable: false,
       },
@@ -111,33 +132,32 @@ export default {
         sortable: false,
       },
       {
-        text: "Sala",
-        value: "sala",
-        sortable: false,
-      },
-      {
         text: "Ações",
         value: "acoes",
         sortable: false,
       },
     ],
-
     errors: [],
-    blocos: [],
+    blocos: [
+      {
+        campus: "Palmas",
+        bloco: "Bloco A",
+      },
+       {
+        campus: "Palmas",
+        bloco: "Bloco B",
+      },
+    ],
     editIndice: -1,
-
-    itemAtual: {
+    atributo: {
       id: null,
       campus: "",
       bloco: "",
-      sala: "",
     },
-
-    itemPadrao: {
+    atributoPadrao: {
       id: null,
       campus: "",
       bloco: "",
-      sala: "",
     },
   }),
 
@@ -153,37 +173,33 @@ export default {
     },
   },
 
-  editItem(item) {
+  deleteItem(item) {
     this.editIndice = this.blocos.indexOf(item);
-    this.itemAtual = Object.assign({}, item);
-    this.dialog = true;
+    this.atributo = Object.assign({}, item);
+    this.dialogDelete = true;
   },
 
-  checkForm() {
-    if (this.itemAtual.campus && this.itemAtual.bloco && this.itemAtual.sala ) {
+deleteItemConfirm(){
+
+},
+  validaForm() {
+    if (this.atributo.campus && this.atributo.bloco) {
       this.salvar();
       return true;
     }
-
     this.errors = [];
-
-    if (!this.itemAtual.campus) {
+    if (!this.atributo.campus) {
       this.errors.push("O câmpus é obrigatório.");
     }
-
-    if (!this.itemAtual.bloco) {
+    if (!this.atributo.bloco) {
       this.errors.push("O bloco é obrigatório.");
-    }
-
-    if (!this.itemAtual.sala) {
-      this.errors.push("A sala é obrigatória.");
     }
   },
 
   fechar() {
     this.dialog = false;
     this.$nextTick(() => {
-      this.itemAtual = Object.assign({}, this.itemPadrao);
+      this.atributo = Object.assign({}, this.atributoPadrao);
       this.editIndice = -1;
     });
   },
