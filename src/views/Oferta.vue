@@ -192,13 +192,18 @@
     // selected: ['1Aula'],
     titulos: [
       {
-        text: "Semestre",
-        value: "semestre",
+        text: "Periodo",
+        value: "periodo",
         sortable: false,
       },
       {
-        text: "Oferta",
-        value: "oferta",
+        text: "Disciplina",
+        value: "disciplina",
+        sortable: false,
+      },
+      {
+        text: "Turno",
+        value: "turno",
         sortable: false,
       },
       {

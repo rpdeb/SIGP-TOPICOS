@@ -72,6 +72,7 @@
           { title: 'Usuários', to:'/usuarios',icon: "mdi-badge-account" },
           { title: 'Bloco', to:'/bloco',icon: "mdi-badge-account" },
           { title: 'Horários', to:'/horarios',icon: "mdi-badge-account" },
+          { title: 'Oferta', to:'/oferta',icon: "mdi-badge-account" },
         ],
     }),
   }
