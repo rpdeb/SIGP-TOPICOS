@@ -50,7 +50,7 @@
                     <v-col cols="8" sm="6" md="4">
                       <v-select
                         v-model="atributo.campus"
-                        label="Campus-Bloco"
+                        label="Campus-Bloco/Piso"
                         :items="campusbloco"
                       ></v-select>
                     </v-col>

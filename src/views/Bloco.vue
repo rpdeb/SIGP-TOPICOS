@@ -127,7 +127,7 @@ export default {
         sortable: false,
       },
       {
-        text: "Bloco",
+        text: "Bloco/Piso",
         value: "bloco",
         sortable: false,
       },
