@@ -43,7 +43,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     background: #fff;
-    word-break: break-all;
+    word-break: break-all;    
 }
 .main-container {
     margin-top: 10%;
@@ -56,6 +56,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     background: #fff;
+    
 }
 .heading {
     text-align: center;
@@ -72,6 +73,7 @@ body {
     margin: 5px 0;
     line-height: 28px;
     border-radius: 5px;
+    
 }
 .form-fields input {
     width: 100%;
@@ -130,7 +132,7 @@ body {
     border-top: 1px solid #e5e8ed;
 }
 .signup-buttons {
-    margin-top: 15px;
+    margin-top: 10px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -150,6 +152,8 @@ body {
     top: 50%;
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
+    color: #FFF;
+    
 }
 .footer, .footer a {
     text-align: center;
