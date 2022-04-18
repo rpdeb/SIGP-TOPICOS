@@ -142,11 +142,11 @@ export default {
     blocos: [
       {
         campus: "Palmas",
-        bloco: "Bloco A",
+        bloco: "Bloco A / Piso 2",
       },
        {
         campus: "Palmas",
-        bloco: "Bloco B",
+        bloco: "Bloco B / Piso 1",
       },
     ],
     editIndice: -1,
@@ -166,7 +166,7 @@ export default {
 
   computed: {
     tituloForm() {
-      return this.editIndice === -1 ? "Cadastrar Bloco" : "Editar Dados";
+      return this.editIndice === -1 ? "Cadastrar Bloco/Piso" : "Editar Dados";
     },
      mudarStatus() {
       return this.atributo.ativo == "Ativo" ? "desativar " : "remover ";
@@ -233,7 +233,7 @@ export default {
       this.errors.push("O câmpus é obrigatório.");
     }
     if (!this.atributo.bloco) {
-      this.errors.push("O bloco é obrigatório.");
+      this.errors.push("O bloco/piso é obrigatório.");
     }
   },
 

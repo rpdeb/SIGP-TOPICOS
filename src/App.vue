@@ -66,13 +66,13 @@
     data: () => ({ 
       drawer: null,
       items: [
-          { title: 'Login',icon: "mdi-badge-account",to:'/newlogin'},
-          { title: 'Semestres',icon: "mdi-badge-account", to:'/semestres',},
-          { title: 'Salas',icon: "mdi-badge-account",to:'/salas' },
-          { title: 'Usuários', to:'/usuarios',icon: "mdi-badge-account" },
-          { title: 'Bloco', to:'/bloco',icon: "mdi-badge-account" },
-          { title: 'Horários', to:'/horarios',icon: "mdi-badge-account" },
-          { title: 'Oferta', to:'/oferta',icon: "mdi-badge-account" },
+          { title: 'Login',icon: "mdi-login",to:'/newlogin'},
+          { title: 'Semestres',icon: "mdi-sort-calendar-ascending", to:'/semestres'},
+          { title: 'Salas',icon: "mdi-google-classroom",to:'/salas'},
+          { title: 'Usuários', icon: "mdi-account-group", to:'/usuarios'},
+          { title: 'Bloco', icon: "mdi-lan", to:'/bloco'},
+          { title: 'Horários', icon: "mdi-book-clock", to:'/horarios'},
+          { title: 'Oferta', icon: "mdi-offer", to:'/oferta'},
         ],
     }),
   }
