@@ -103,6 +103,7 @@
     </template>
   </v-data-table>
 </template>
+
 <style>
 .add {
   width: 40px;
@@ -115,6 +116,7 @@
   padding: 3%;
 }
 </style>
+
 <script>
 export default {
   data: () => ({
