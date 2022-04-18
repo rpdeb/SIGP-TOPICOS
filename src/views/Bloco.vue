@@ -4,6 +4,9 @@
     :items="blocos"
     :search="search"
     class="elevation-2 data-table"
+    :footer-props="{
+           'items-per-page-text':'products per page'
+      }"
   >
     <template v-slot:top>
       <v-toolbar flat>
@@ -49,7 +52,7 @@
                         v-model="atributo.bloco"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
-                        label="Bloco"
+                        label="Bloco/Piso"
                         required
                       ></v-text-field>
                     </v-col>
@@ -82,7 +85,7 @@
          <v-dialog v-model="dialogDelete" max-width="400px">
           <v-card>
             <v-card-title class="text-h5"
-              >Deseja deletar este Bloco ?</v-card-title
+              >Deseja {{mudarStatus}} este Bloco ?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -122,6 +125,7 @@ export default {
   data: () => ({
     search: "",
     dialog: false,
+    dialogDelete: false,
     titulos: [
       {
         text: "Campus",
@@ -143,7 +147,7 @@ export default {
     blocos: [
       {
         campus: "Palmas",
-        bloco: "Bloco A",
+        bloco: "Bloco A / ",
       },
        {
         campus: "Palmas",
@@ -155,11 +159,13 @@ export default {
       id: null,
       campus: "",
       bloco: "",
+      ativo: true,
     },
     atributoPadrao: {
       id: null,
       campus: "",
       bloco: "",
+      ativo: true,
     },
   }),
 
@@ -167,7 +173,17 @@ export default {
     tituloForm() {
       return this.editIndice === -1 ? "Cadastrar Bloco" : "Editar Dados";
     },
+     mudarStatus() {
+      return this.atributo.ativo == "Ativo" ? "desativar " : "remover ";
+    },
   },
+  mounted() {
+    //this.inicializar();
+  },
+  methods: {
+    inicializar() {
+     //requisição get
+    },
 
   watch: {
     dialog(val) {
@@ -181,8 +197,36 @@ export default {
     this.dialogDelete = true;
   },
 
-deleteItemConfirm(){
-
+  deleteItemConfirm(){
+    if (this.atributo.ativo == "Ativo") {
+        axios
+          .patch(url + "/desativar/" + this.atributo.id, {
+            ativo: false,
+          })
+          .then((res) => {
+            this.bloco = res.data;
+            console.log(res.data);
+            alert("Este bloco foi desativado com sucesso !");
+            
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .patch(url + "/ativar/" + this.atributo.id, {
+            ativo: true,
+          })
+          .then((res) => {
+            console.log(res.data);
+            alert("Este bloco foi ativado com sucesso !");
+         
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      this.fecharDesativar();
 },
   validaForm() {
     if (this.atributo.campus && this.atributo.bloco) {
@@ -199,11 +243,49 @@ deleteItemConfirm(){
   },
 
   fechar() {
-    this.dialog = false;
-    this.$nextTick(() => {
-      this.atributo = Object.assign({}, this.atributoPadrao);
-      this.editIndice = -1;
-    });
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.editIndice = -1;
+      });
+    },
+    fecharDesativar() {
+      this.dialogDesativar = false;
+      this.$nextTick(() => {
+        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.editIndice = -1;
+      });
+    },
+    salvar() {
+      if (this.editIndice > -1) {
+        axios
+          .put(url, {
+           
+          })
+          .then((res) => {
+            alert("Os dados foram atualizados com sucesso !");
+            console.log(res.data);
+            this.reloadPage();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        Object.assign(this.bloco[this.editIndice], this.atributo);
+      } else {
+        axios
+          .post(url, {
+          
+          })
+          .then((res) => {
+            this.bloco = res.data;
+            alert("Os dados foram adicionados com sucesso !");
+            console.log(res.data);
+            this.reloadPage();
+          });
+        this.bloco.push(this.atributo);
+      }
+      this.fechar();
+    },
   },
 };
 </script>

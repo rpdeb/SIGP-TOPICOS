@@ -4,6 +4,9 @@
     :items="ofertas"
     :search="search"
     class="elevation-2 data-table"
+    :footer-props="{
+           'items-per-page-text':'products per page'
+      }"
   >
     <template v-slot:top>
       <v-toolbar flat>
