@@ -1,9 +1,13 @@
 <template>
   <v-data-table
     :headers="titulos"
-    :items="Semestres"
+    :items="semestres"
     :search="search"
-    class="elevation-2 data-table"
+    class="elevation-2 data-table" 
+      :footer-props="{
+           'items-per-page-text':'products per page'
+      }"
+    
   >
     <template v-slot:top>
       <v-toolbar flat>
@@ -83,7 +87,18 @@
     </template>
   </v-data-table>
 </template>
-
+<style>
+.add {
+  width: 40px;
+  height: 40px;
+}
+.template-add {
+  padding-top: 1%;
+}
+.data-table {
+  padding: 3%;
+}
+</style>
 <script>
   export default {
   data: () => ({
@@ -93,14 +108,17 @@
       {
         text: "Semestre",
         value: "semestre",
+        sortable: false,
       },
       {
         text: "Oferta",
         value: "oferta",
+        sortable: false,
       },
       {
         text: "Ações",
         value: "acoes",
+        sortable: false,
       },
     ],
     errors: [],
@@ -110,12 +128,13 @@
       id: null,
       oferta: "",
       semestre: "",
+      ativo: true,
     },
     atributoPadrao: {
       id: null,
       oferta: "",
       semestre: "",
-      
+      ativo: true,      
     },
   }),
 

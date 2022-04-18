@@ -15,6 +15,9 @@
       :headers="headers"
       :items="desserts"
       :search="search"
+      :footer-props="{
+           'items-per-page-text':'products per page'
+      }"
     ></v-data-table>
   </v-card>
 </template>

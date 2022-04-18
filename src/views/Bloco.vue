@@ -4,6 +4,9 @@
     :items="blocos"
     :search="search"
     class="elevation-2 data-table"
+    :footer-props="{
+           'items-per-page-text':'products per page'
+      }"
   >
     <template v-slot:top>
       <v-toolbar flat>
@@ -142,11 +145,11 @@ export default {
     blocos: [
       {
         campus: "Palmas",
-        bloco: "Bloco A / Piso 2",
+        bloco: "Bloco A / ",
       },
        {
         campus: "Palmas",
-        bloco: "Bloco B / Piso 1",
+        bloco: "Bloco B",
       },
     ],
     editIndice: -1,
@@ -166,7 +169,7 @@ export default {
 
   computed: {
     tituloForm() {
-      return this.editIndice === -1 ? "Cadastrar Bloco/Piso" : "Editar Dados";
+      return this.editIndice === -1 ? "Cadastrar Bloco" : "Editar Dados";
     },
      mudarStatus() {
       return this.atributo.ativo == "Ativo" ? "desativar " : "remover ";
@@ -233,7 +236,7 @@ export default {
       this.errors.push("O câmpus é obrigatório.");
     }
     if (!this.atributo.bloco) {
-      this.errors.push("O bloco/piso é obrigatório.");
+      this.errors.push("O bloco é obrigatório.");
     }
   },
 
