@@ -10,7 +10,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Gerenciamento de Sala</v-toolbar-title>
+        <v-toolbar-title>Gerenciamento de Oferta</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
         <v-text-field
