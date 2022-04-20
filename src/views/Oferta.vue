@@ -1,17 +1,18 @@
 <template>
   <v-data-table
     :headers="titulos"
-    :items="ofertas"
+    :items="salas"
     :search="search"
     class="elevation-2 data-table"
     :footer-props="{
            'items-per-page-text':'products per page'
-      }"
+      }"    
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Gerenciamento de Oferta</v-toolbar-title>
+        <v-toolbar-title>Gerenciamento de Sala</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
+
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -21,7 +22,7 @@
         ></v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn
               small
               class="mx-2 add"
@@ -37,11 +38,7 @@
             <v-card-title>
               <span class="text-h5">{{ tituloForm }}</span>
             </v-card-title>
-            <p v-if="errors.length">
-              <ul>
-                <li v-for="error in errors" :key="error">{{ error }}</li>
-             </ul>
-            </p>
+            <!-- inserir mensagem para a interface -->
             <v-card-text>
               <v-form>
                 <v-container>
@@ -169,75 +166,116 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fechar">
-                Cancelar
-              </v-btn>
-              <v-btn 
-              small color="primary" 
-              class="mr-4"
-              @click="checkForm">Salvar</v-btn>
+              <v-btn small color="warning" dark @click="dialog = false"
+                >Cancelar</v-btn
+              >
+              <v-btn small color="primary" class="mr-4" @click="checkForm"
+                >Salvar</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="dialogDesativar" max-width="400px">
+          <v-card>
+            <v-card-title class="text-h5"
+              >Deseja {{ mudarStatus }} esta Oferta ?</v-card-title
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn small color="warning" dark @click="dialog = false">
+                Não</v-btn
+              >
+              <v-btn small color="primary" dark @click="desativeItemConfirm"
+                >Sim</v-btn
+              >
+              <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
         </v-dialog>
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)" color="blue"> mdi-pencil </v-icon>
+      <v-icon small class="mr-2" @click="editItem(item)" color="blue">
+        mdi-pencil
+      </v-icon>
+      <v-icon small @click="desativeItem(item)" color="red">
+        mdi-power-standby
+      </v-icon>
     </template>
   </v-data-table>
 </template>
 
+<style>
+.add {
+  width: 40px;
+  height: 40px;
+}
+.template-add {
+  padding-top: 1%;
+}
+.data-table {
+  padding: 3%;
+}
+</style>
+
 <script>
-  export default {
+export default {
   data: () => ({
     search: "",
     dialog: false,
-    // selected: ['1Aula'],
+    dialogDesativar: false,
+    dialogDetalhar: false,
     titulos: [
+      {text: "Periodo", value: "periodo"},
+      {text: "Disciplina", value: "disciplina"},
+      {text: "Turno", value: "turno"},      
+      { text: "Ações", value: "acoes" },
+    ],
+    salas: [
       {
-        text: "Periodo",
-        value: "periodo",
-        sortable: false,
+        periodo: "1 preiodo",
+        disciplina: "Algoritmo",
+        turno: "Matutino",
       },
       {
-        text: "Disciplina",
-        value: "disciplina",
-        sortable: false,
+        periodo: "4 preiodo",
+        disciplina: "Sistemas operacionais",
+        turno: "Matutino",
       },
       {
-        text: "Turno",
-        value: "turno",
-        sortable: false,
-      },
-      {
-        text: "Ações",
-        value: "acoes",
-        sortable: false,
+        periodo: "7 preiodo",
+        disciplina: "PCC",
+        turno: "Matutino",
       },
     ],
-
     errors: [],
     ofertas: [],
     editIndice: -1,
-
     atributo: {
       id: null,
-      oferta: "",
+      periodo: "",
+      disciplina:"",
+      turno:"",
       semestre: "",
-      
+      ativo: true,
     },
-
     atributoPadrao: {
       id: null,
-      oferta: "",
+      periodo: "",
+      disciplina:"",
+      turno:"",
       semestre: "",
-      
+      ativo: true,
     },
   }),
 
   computed: {
     tituloForm() {
-      return this.editIndice === -1 ? "Ofertar Disciplina" : "Editar Oferta";
+      return this.editIndice === -1 ? "Cadastrar Oferta" : "Editar Oferta";
+    },
+    mudarStatus() {
+      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
     },
   },
 
@@ -247,35 +285,89 @@
     },
   },
 
-  editItem(item) {
-    this.editIndice = this.ofertas.indexOf(item);
-    this.atributo = Object.assign({}, item);
-    this.dialog = true;
-  },
+  methods: {
+    editItem(item) {
+      this.editIndice = this.ofertas.indexOf(item);
+      this.atributo = Object.assign({}, item);
+      this.dialog = true;
+    },
 
-  checkForm() {
-    if (this.atributo.semestre && this.atributo.oferta) {
-      this.salvar();
-      return true;
-    }
+    desativeItem(item) {
+      this.editIndice = this.ofertas.indexOf(item);
+      this.atributo = Object.assign({}, item);
+      this.dialogDesativar = true;
+    },
 
-    this.errors = [];
+    desativeItemConfirm() {
+      if (this.atributo.ativo == "Ativo") {
+        axios
+          .patch(url + "/desativar/" + this.atributo.id, {
+            ativo: false,
+          })
+          .then((res) => {
+            this.ofertas = res.data;
+            console.log(res.data);
+            alert("Esta oferta foi desativada com sucesso !");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .patch(url + "/ativar/" + this.atributo.id, {
+            ativo: true,
+          })
+          .then((res) => {
+            console.log(res.data);
+            alert("Esta oferta foi ativada com sucesso !");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      this.fecharDesativar();
+    },
 
-    if (!this.atributo.semestre) {
-      this.errors.push("O câmpus é obrigatório.");
-    }
+    fechar() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.editIndice = -1;
+      });
+    },
 
-    if (!this.atributo.oferta) {
-      this.errors.push("O bloco é obrigatório.");
-    }
-  },
+    fecharDesativar() {
+      this.dialogDesativar = false;
+      this.$nextTick(() => {
+        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.editIndice = -1;
+      });
+    },
 
-  fechar() {
-    this.dialog = false;
-    this.$nextTick(() => {
-      this.atributo = Object.assign({}, this.atributoPadrao);
-      this.editIndice = -1;
-    });
+    salvar() {
+      if (this.editIndice > -1) {
+        axios
+          .put(url, {})
+          .then((res) => {
+            alert("Os dados foram atualizados com sucesso !");
+            console.log(res.data);
+            this.reloadPage();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        Object.assign(this.ofertas[this.editIndice], this.atributo);
+      } else {
+        axios.post(url, {}).then((res) => {
+          this.ofertas = res.data;
+          alert("Os dados foram adicionados com sucesso !");
+          console.log(res.data);
+          this.reloadPage();
+        });
+        this.ofertas.push(this.atributo);
+      }
+      this.fechar();
+    },
   },
 };
 </script>
