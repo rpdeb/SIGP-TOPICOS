@@ -5,8 +5,8 @@
     :search="search"
     class="elevation-2 data-table"
     :footer-props="{
-           'items-per-page-text':'products per page'
-      }"    
+      'items-per-page-text': 'products per page',
+    }"
   >
     <template v-slot:top>
       <v-toolbar flat>
@@ -47,7 +47,7 @@
                       <v-select
                         v-model="atributo.oferta"
                         :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Matriz Curricular"
                         required
                       ></v-select>
@@ -56,7 +56,7 @@
                       <v-select
                         v-model="atributo.oferta"
                         :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Periodo"
                         required
                       ></v-select>
@@ -65,7 +65,7 @@
                       <v-select
                         v-model="atributo.oferta"
                         :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Disciplina"
                         required
                       ></v-select>
@@ -74,7 +74,7 @@
                       <v-select
                         v-model="atributo.oferta"
                         :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Dia da semana"
                         required
                       ></v-select>
@@ -83,7 +83,7 @@
                       <v-select
                         v-model="atributo.oferta"
                         :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Professor"
                         required
                       ></v-select>
@@ -92,7 +92,7 @@
                       <v-select
                         v-model="atributo.oferta"
                         :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Turno"
                         required
                       ></v-select>
@@ -101,7 +101,7 @@
                       <v-select
                         v-model="atributo.oferta"
                         :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Campus-Bloco/Piso"
                         required
                       ></v-select>
@@ -110,56 +110,23 @@
                       <v-select
                         v-model="atributo.oferta"
                         :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Sala"
                         required
                       ></v-select>
                     </v-col>
-
-                    <v-col cols="8" sm="4" md="3">
-                    <v-container fluid>
-                    <p>{{ selected }}</p>
-                    <v-checkbox
-                      v-model="selected"
-                      label="1º Aula"
-                      value="1Aula"
-                    ></v-checkbox>
-                    </v-container>
+                    <v-col cols="12" sm="6">
+                      <v-select
+                        v-model="value"
+                        :items="aulas"
+                        attach
+                        chips
+                        label="Aulas"
+                        multiple
+                      ></v-select>
                     </v-col>
 
-                    <v-col cols="8" sm="3" md="4">
-                    <v-container fluid>
-                    <p>{{ selected }}</p>
-                    <v-checkbox
-                      v-model="selected"
-                      label="2º Aula"
-                      value="2Aula"
-                    ></v-checkbox>
-                    </v-container>
-                    </v-col>
-
-                    <v-col cols="8" sm="3" md="4">
-                    <v-container fluid>
-                    <p>{{ selected }}</p>
-                    <v-checkbox
-                      v-model="selected"
-                      label="3º Aula"
-                      value="3Aula"
-                    ></v-checkbox>
-                    </v-container>
-                    </v-col>
-
-                    <v-col cols="8" sm="3" md="4">
-                    <v-container fluid>
-                    <p>{{ selected }}</p>
-                    <v-checkbox
-                      v-model="selected"
-                      label="4º Aula"
-                      value="4Aula"
-                    ></v-checkbox>
-                    </v-container>
-                    </v-col>
-  
+                   
                   </v-row>
                 </v-container>
               </v-form>
@@ -226,11 +193,18 @@ export default {
     dialog: false,
     dialogDesativar: false,
     dialogDetalhar: false,
+
     titulos: [
-      {text: "Periodo", value: "periodo"},
-      {text: "Disciplina", value: "disciplina"},
-      {text: "Turno", value: "turno"},      
+      { text: "Periodo", value: "periodo" },
+      { text: "Disciplina", value: "disciplina" },
+      { text: "Turno", value: "turno" },
       { text: "Ações", value: "acoes" },
+    ],
+    aulas: [
+      { text: "1º Aula", value: "1Aula" },
+      { text: "2º Aula", value: "2Aula" },
+      { text: "3º Aula", value: "3Aula" },
+      { text: "4º Aula", value: "4Aula" },
     ],
     salas: [
       {
@@ -255,16 +229,16 @@ export default {
     atributo: {
       id: null,
       periodo: "",
-      disciplina:"",
-      turno:"",
+      disciplina: "",
+      turno: "",
       semestre: "",
       ativo: true,
     },
     atributoPadrao: {
       id: null,
       periodo: "",
-      disciplina:"",
-      turno:"",
+      disciplina: "",
+      turno: "",
       semestre: "",
       ativo: true,
     },
