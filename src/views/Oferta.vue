@@ -10,7 +10,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Gerenciamento de Sala</v-toolbar-title>
+        <v-toolbar-title>Gerenciamento de Oferta</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
         <v-text-field
@@ -44,41 +44,122 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.sala"
-                        label="Sala"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="atributo.campus"
-                        label="Campus-Bloco/Piso"
-                        :items="campusbloco"
+                        v-model="atributo.oferta"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Matriz Curricular"
+                        required
                       ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.estruturafisica"
-                        label="Estrutura Física"
-                      ></v-text-field>
+                      <v-select
+                        v-model="atributo.oferta"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Periodo"
+                        required
+                      ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="atributo.tipodesala"
-                        label="Tipo de Sala"
-                        :items="tiposdesala"
-                      >
-                        ></v-select
-                      >
+                        v-model="atributo.oferta"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Disciplina"
+                        required
+                      ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.capacidade"
-                        label="Capacidade"
-                        type="number"
-                      ></v-text-field>
+                      <v-select
+                        v-model="atributo.oferta"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Dia da semana"
+                        required
+                      ></v-select>
                     </v-col>
+                    <v-col cols="8" sm="6" md="4">
+                      <v-select
+                        v-model="atributo.oferta"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Professor"
+                        required
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="8" sm="6" md="4">
+                      <v-select
+                        v-model="atributo.oferta"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Turno"
+                        required
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="8" sm="6" md="4">
+                      <v-select
+                        v-model="atributo.oferta"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Campus-Bloco/Piso"
+                        required
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="8" sm="6" md="4">
+                      <v-select
+                        v-model="atributo.oferta"
+                        :items="items"
+                        :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Sala"
+                        required
+                      ></v-select>
+                    </v-col>
+
+                    <v-col cols="8" sm="4" md="3">
+                    <v-container fluid>
+                    <p>{{ selected }}</p>
+                    <v-checkbox
+                      v-model="selected"
+                      label="1º Aula"
+                      value="1Aula"
+                    ></v-checkbox>
+                    </v-container>
+                    </v-col>
+
+                    <v-col cols="8" sm="3" md="4">
+                    <v-container fluid>
+                    <p>{{ selected }}</p>
+                    <v-checkbox
+                      v-model="selected"
+                      label="2º Aula"
+                      value="2Aula"
+                    ></v-checkbox>
+                    </v-container>
+                    </v-col>
+
+                    <v-col cols="8" sm="3" md="4">
+                    <v-container fluid>
+                    <p>{{ selected }}</p>
+                    <v-checkbox
+                      v-model="selected"
+                      label="3º Aula"
+                      value="3Aula"
+                    ></v-checkbox>
+                    </v-container>
+                    </v-col>
+
+                    <v-col cols="8" sm="3" md="4">
+                    <v-container fluid>
+                    <p>{{ selected }}</p>
+                    <v-checkbox
+                      v-model="selected"
+                      label="4º Aula"
+                      value="4Aula"
+                    ></v-checkbox>
+                    </v-container>
+                    </v-col>
+  
                   </v-row>
                 </v-container>
               </v-form>
@@ -98,7 +179,7 @@
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
             <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} esta Sala ?</v-card-title
+              >Deseja {{ mudarStatus }} esta Oferta ?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -146,47 +227,52 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-      { text: "Sala", value: "sala" },
-      { text: "Campus-Bloco/Piso", value: "campus" },
-      { text: "Status", value: "ativo" },
+      {text: "Periodo", value: "periodo"},
+      {text: "Disciplina", value: "disciplina"},
+      {text: "Turno", value: "turno"},      
       { text: "Ações", value: "acoes" },
     ],
     salas: [
       {
-        sala: "Sala 14",
-        campus: "Palmas - Bloco B",
+        periodo: "1 preiodo",
+        disciplina: "Algoritmo",
+        turno: "Matutino",
       },
       {
-        sala: "Sala 11",
-        campus: "Dianopolis - Bloco A",
+        periodo: "4 preiodo",
+        disciplina: "Sistemas operacionais",
+        turno: "Matutino",
+      },
+      {
+        periodo: "7 preiodo",
+        disciplina: "PCC",
+        turno: "Matutino",
       },
     ],
-    campus: [],
-    campusbloco: [],
-    tiposdesala: [],
+    errors: [],
+    ofertas: [],
     editIndice: -1,
     atributo: {
       id: null,
-      sala: " ",
-      campus: "",
-      capacidade: null,
-      estruturafisica: "",
-      tipodesala: " ",
+      periodo: "",
+      disciplina:"",
+      turno:"",
+      semestre: "",
       ativo: true,
     },
     atributoPadrao: {
       id: null,
-      sala: "",
-      campus: "",
-      capacidade: null,
-      estruturafisica: "",
+      periodo: "",
+      disciplina:"",
+      turno:"",
+      semestre: "",
       ativo: true,
     },
   }),
 
   computed: {
     tituloForm() {
-      return this.editIndice === -1 ? "Cadastrar Sala" : "Editar Sala";
+      return this.editIndice === -1 ? "Cadastrar Oferta" : "Editar Oferta";
     },
     mudarStatus() {
       return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
@@ -201,13 +287,13 @@ export default {
 
   methods: {
     editItem(item) {
-      this.editIndice = this.salas.indexOf(item);
+      this.editIndice = this.ofertas.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialog = true;
     },
 
     desativeItem(item) {
-      this.editIndice = this.salas.indexOf(item);
+      this.editIndice = this.ofertas.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialogDesativar = true;
     },
@@ -219,9 +305,9 @@ export default {
             ativo: false,
           })
           .then((res) => {
-            this.salas = res.data;
+            this.ofertas = res.data;
             console.log(res.data);
-            alert("Esta sala foi desativada com sucesso !");
+            alert("Esta oferta foi desativada com sucesso !");
           })
           .catch((error) => {
             console.log(error);
@@ -233,7 +319,7 @@ export default {
           })
           .then((res) => {
             console.log(res.data);
-            alert("Esta sala foi ativada com sucesso !");
+            alert("Esta oferta foi ativada com sucesso !");
           })
           .catch((error) => {
             console.log(error);
@@ -270,15 +356,15 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-        Object.assign(this.salas[this.editIndice], this.atributo);
+        Object.assign(this.ofertas[this.editIndice], this.atributo);
       } else {
         axios.post(url, {}).then((res) => {
-          this.salas = res.data;
+          this.ofertas = res.data;
           alert("Os dados foram adicionados com sucesso !");
           console.log(res.data);
           this.reloadPage();
         });
-        this.salas.push(this.atributo);
+        this.ofertas.push(this.atributo);
       }
       this.fechar();
     },

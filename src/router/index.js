@@ -10,6 +10,11 @@ const routes = [
     component: () => import('../views/Semestres.vue')
   },
   {
+    path: '/newlogin',
+    name: 'Login',
+    component: () => import('../views/NewLogin.vue')
+  },
+  {
     path: '/salas',
     name: 'Salas',
     component: () => import('../views/Salas.vue')
@@ -28,6 +33,11 @@ const routes = [
     path: '/horarios',
     name: 'Horarios',
     component: () => import('../views/Horarios.vue')
+  },
+  {
+    path: '/oferta',
+    name: 'Oferta',
+    component: () => import('../views/Oferta.vue')
   },
 
 ]
