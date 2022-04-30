@@ -1,8 +1,8 @@
 <template>
   <v-data-table
     :headers="titulos"
-    :items="salas"
-    :search="search"
+    :items="arraycampus"
+    :search="Pesquisar"
     class="elevation-2 data-table"
     :footer-props="{
            'items-por-page-text':'produtos por pagina'
@@ -14,7 +14,7 @@
         <v-divider class="mx-4" inset vertical></v-divider>
 
         <v-text-field
-          v-model="search"
+          v-model="pesquisar"
           append-icon="mdi-magnify"
           label="Pesquisar"
           single-line
@@ -45,38 +45,8 @@
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field
-                        v-model="atributo.sala"
-                        label="Sala"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.campus"
-                        label="Campus-Bloco/Piso"
-                        :items="campusbloco"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.estruturafisica"
-                        label="Estrutura Física"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.tipodesala"
-                        label="Tipo de Sala"
-                        :items="tiposdesala"
-                      >
-                        ></v-select
-                      >
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.capacidade"
-                        label="Capacidade"
-                        type="number"
+                        v-model="atributo.label"
+                        label="Campus"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -98,7 +68,7 @@
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
             <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} esta Sala ?</v-card-title
+              >Deseja {{ mudarStatus }} este Campus ?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -139,6 +109,11 @@
 </style>
 
 <script>
+import Vue from "vue";
+import axios from "axios";
+import VueAxios from "vue-axios";
+Vue.use(VueAxios, axios);
+import { baseApiUrl } from "@/global";
 export default {
   data: () => ({
     search: "",
@@ -146,47 +121,27 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-      { text: "Sala", value: "sala" },
-      { text: "Campus-Bloco/Piso", value: "campus" },
+      { text: "Campus", value: "label" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    salas: [
-      {
-        sala: "Sala 14",
-        campus: "Palmas - Bloco B",
-      },
-      {
-        sala: "Sala 11",
-        campus: "Dianopolis - Bloco A",
-      },
-    ],
-    campus: [],
-    campusbloco: [],
-    tiposdesala: [],
+    arraycampus: [],
     editIndice: -1,
     atributo: {
       id: null,
-      sala: " ",
-      campus: "",
-      capacidade: null,
-      estruturafisica: "",
-      tipodesala: " ",
+      label: "",
       ativo: true,
     },
     atributoPadrao: {
       id: null,
-      sala: "",
-      campus: "",
-      capacidade: null,
-      estruturafisica: "",
+      label: "",
       ativo: true,
     },
   }),
 
   computed: {
     tituloForm() {
-      return this.editIndice === -1 ? "Cadastrar Sala" : "Editar Sala";
+      return this.editIndice === -1 ? "Cadastrar Campus" : "Editar Campus";
     },
     mudarStatus() {
       return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
@@ -200,14 +155,21 @@ export default {
   },
 
   methods: {
+    inicializar() {
+      axios.get(baseApiUrl+"/"+`${this.atributo.id}`, this.arraycampus).then((res) => {
+        this.arraycampus = res.data;
+        console.log(res.data);
+      }).catch(console.warn("erro"));
+    },
+
     editItem(item) {
-      this.editIndice = this.salas.indexOf(item);
+      this.editIndice = this.arraycampus.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialog = true;
     },
 
     desativeItem(item) {
-      this.editIndice = this.salas.indexOf(item);
+      this.editIndice = this.arraycampus.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialogDesativar = true;
     },
@@ -215,25 +177,24 @@ export default {
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativo") {
         axios
-          .patch(url + "/desativar/" + this.atributo.id, {
+          .patch(baseApiUrl + this.atributo.id, {
             ativo: false,
           })
           .then((res) => {
-            this.salas = res.data;
             console.log(res.data);
-            alert("Esta sala foi desativada com sucesso !");
+            alert("Este campus foi desativado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
         axios
-          .patch(url + "/ativar/" + this.atributo.id, {
+          .patch(baseApiUrl + this.atributo.id, {
             ativo: true,
           })
           .then((res) => {
             console.log(res.data);
-            alert("Esta sala foi ativada com sucesso !");
+            alert("Esta campus foi ativada com sucesso !");
           })
           .catch((error) => {
             console.log(error);
@@ -261,7 +222,11 @@ export default {
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(url, {})
+          .put(baseApiUrl, {
+            id: this.atributo.id,
+            label: this.atributo.label,
+            ativo: this.atributo.ativo === "Ativo",
+          })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
             console.log(res.data);
@@ -270,15 +235,18 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-        Object.assign(this.salas[this.editIndice], this.atributo);
+        Object.assign(this.arraycampus[this.editIndice], this.atributo);
       } else {
-        axios.post(url, {}).then((res) => {
-          this.salas = res.data;
+        axios.post(baseApiUrl, {
+          label: this.atributo.label,
+          ativo: true,
+        }).then((res) => {
+          this.arraycampus = res.data;
           alert("Os dados foram adicionados com sucesso !");
           console.log(res.data);
           this.reloadPage();
         });
-        this.salas.push(this.atributo);
+        this.arraycampus.push(this.atributo);
       }
       this.fechar();
     },
