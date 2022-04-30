@@ -52,13 +52,11 @@
 </template>
 
 <style scoped>
-
-.logo-unitins{
+.logo-unitins {
   padding-top: 2.2%;
   width: 80%;
   height: 80%;
 }
-
 </style>
 
 <script>
@@ -77,6 +75,8 @@ export default {
       { title: "Bloco", icon: "mdi-lan", to: "/bloco" },
       { title: "Horários", icon: "mdi-book-clock", to: "/horarios" },
       { title: "Oferta", icon: "mdi-offer", to: "/oferta" },
+      { title: "Curso", icon: "mdi-offer", to: "/curso" },
+      { title: "Campus", icon: "mdi-offer", to: "/campus" },
     ],
   }),
 };

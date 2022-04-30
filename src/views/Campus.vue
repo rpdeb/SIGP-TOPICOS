@@ -113,7 +113,8 @@ import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
 Vue.use(VueAxios, axios);
-import { baseApiUrl } from "@/global";
+//import { baseApiUrl } from "@/global";
+baseApiUrl = 'https://sig-ha-api.herokuapp.com/'
 export default {
   data: () => ({
     search: "",
@@ -156,7 +157,7 @@ export default {
 
   methods: {
     inicializar() {
-      axios.get(baseApiUrl+"/api/campus/search", this.arraycampus).then((res) => {
+      axios.get(`${baseApiUrl}/api/campus/search`, this.arraycampus).then((res) => {
         this.arraycampus = res.data;
         console.log(res.data);
       }).catch(console.warn("erro"));
@@ -177,7 +178,7 @@ export default {
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativo") {
         axios
-          .patch(baseApiUrl + "/api/campus", {
+          .patch(`${baseApiUrl}/api/campus`, {
             ativo: false,
           })
           .then((res) => {
@@ -189,7 +190,7 @@ export default {
           });
       } else {
         axios
-          .patch(baseApiUrl+"/api/campus", {
+          .patch(`${baseApiUrl}/api/campus`, {
             ativo: true,
           })
           .then((res) => {
@@ -222,7 +223,7 @@ export default {
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(baseApiUrl+"/api/campus", {
+          .put(`${baseApiUrl}/api/campus`, {
             id: this.atributo.id,
             label: this.atributo.label,
             ativo: this.atributo.ativo === "Ativo",
@@ -237,7 +238,7 @@ export default {
           });
         Object.assign(this.arraycampus[this.editIndice], this.atributo);
       } else {
-        axios.post(baseApiUrl +"/api/campus", {
+        axios.post(`${baseApiUrl}/api/campus`, {
           label: this.atributo.label,
           ativo: true,
         }).then((res) => {
