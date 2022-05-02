@@ -1,11 +1,11 @@
 <template>
   <v-data-table
     :headers="titulos"
-    :items="arraycampus"
-    :search="Pesquisar"
-    class="elevation-2 data-table"
-    :footer-props="{
-           'items-por-page-text':'produtos por pagina'
+    :items="campus"
+    :search="search"
+    class="elevation-2 data-table" 
+      :footer-props="{
+           'items-per-page-text':'produtos por página'
       }"    
   >
     <template v-slot:top>

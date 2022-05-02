@@ -5,7 +5,7 @@
     :search="search"
     class="elevation-2 data-table" 
       :footer-props="{
-           'items-per-page-text':'products per page'
+           'items-per-page-text':'produtos por página'
       }" 
   >
     <template v-slot:top>
