@@ -1,12 +1,12 @@
 <template>
   <v-data-table
-    :headers="titulos"
-    :items="blocos"
+   :headers="titulos"
+    :items="bloco"
     :search="search"
-    class="elevation-2 data-table"
-    :footer-props="{
+    class="elevation-2 data-table" 
+      :footer-props="{
            'items-per-page-text':'products per page'
-      }"
+      }" 
   >
     <template v-slot:top>
       <v-toolbar flat>
