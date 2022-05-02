@@ -113,8 +113,8 @@ import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
 Vue.use(VueAxios, axios);
-//import { baseApiUrl } from "@/global";
-baseApiUrl = 'https://sig-ha-api.herokuapp.com/'
+import { baseApiUrl } from "@/global";
+
 export default {
   data: () => ({
     search: "",
@@ -155,8 +155,12 @@ export default {
     },
   },
 
+  mounted() {
+    this.inicializar();
+  },
+
   methods: {
-    inicializar() {
+  inicializar() {
       axios.get(`${baseApiUrl}/api/campus/search`, this.arraycampus).then((res) => {
         this.arraycampus = res.data;
         console.log(res.data);
