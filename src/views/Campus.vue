@@ -161,7 +161,7 @@ export default {
 
   methods: {
   inicializar() {
-      axios.get(`${baseApiUrl}/api/campus/search`, this.arraycampus).then((res) => {
+      axios.get(`${baseApiUrl}api/campus/search`, this.arraycampus).then((res) => {
         this.arraycampus = res.data;
         console.log(res.data);
       }).catch(console.warn("erro"));
