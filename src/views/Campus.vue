@@ -58,7 +58,7 @@
               <v-btn small color="warning" dark @click="dialog = false"
                 >Cancelar</v-btn
               >
-              <v-btn small color="primary" class="mr-4" @click="checkForm"
+              <v-btn small color="primary" class="mr-4" @click="salvar"
                 >Salvar</v-btn
               >
             </v-card-actions>
