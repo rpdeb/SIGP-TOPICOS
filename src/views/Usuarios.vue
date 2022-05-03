@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="titulos"
-    :items="usuario"
+    :items="usuarios"
     :search="search"
     class="elevation-2 data-table"
     :footer-props="{
@@ -38,21 +38,17 @@
             <v-card-title>
               <span class="text-h5">{{ tituloForm }}</span>
             </v-card-title>
-            <p v-if="errors.length">
-              <ul>
-                <li v-for="error in errors" :key="error">{{ error }}</li>
-             </ul>
-            </p>
+           
             <v-card-text>
               <v-form>
                 <v-container>
                   <v-row>
                      <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="atributo.perfil"
+                        v-model="atributo.tipo"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
-                        label="Perfil"
+                        label="tipo"
                         required
                       ></v-select>
                     </v-col>
@@ -91,7 +87,7 @@
               <v-btn 
               small color="primary" 
               class="mr-4"
-              @click="checkForm">Salvar</v-btn>
+              @click="salvar">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -103,7 +99,7 @@
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-               <v-btn small color="warning" dark @click="dialog=false">Não</v-btn>
+               <v-btn small color="warning" dark @click="dialogDesativar=false">Não</v-btn>
                <v-btn small color="primary" class="mr-4" @click="desativeItemConfirm">Sim</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -132,14 +128,20 @@
 </style>
 
 <script>
+import Vue from "vue";
+import axios from "axios";
+import VueAxios from "vue-axios";
+Vue.use(VueAxios, axios);
+import { baseApiUrl } from "@/global";
+
 export default {
   data: () => ({
     search: "",
     dialog: false,
     titulos: [
       {
-        text: "Perfil",
-        value: "perfil",
+        text: "tipo",
+        value: "tipo",
         sortable: false,
       },
       {
@@ -163,18 +165,15 @@ export default {
         sortable: false,
       },
     ],
-    errors: [],
     usuarios: [],
-
-    perfil: [],
+    tiposPerfil: [],
     login: [],
     campus: [],
     curso: [],
     editIndice: -1,
-
     atributo: {
       id: null,
-      perfil: "",
+      tipo: "",
       login: "",
       campus: "",
       curso: "",
@@ -183,7 +182,7 @@ export default {
 
     atributoPadrao: {
       id: null,
-      perfil: "",
+      tipo: "",
       login: "",
       campus: "",
       curso: "",
@@ -205,6 +204,11 @@ export default {
       val || this.fechar();
     },
   },
+
+   mounted() {
+    this.inicializar();
+  },
+
 
   methods: {
     editItem(item) {
@@ -235,7 +239,7 @@ export default {
           });
       } else {
         axios
-          .patch(url + "/ativar/" + this.atributo.id, {
+          .patch(url + this.atributo.id, {
             ativo: true,
           })
           .then((res) => {
@@ -249,33 +253,50 @@ export default {
       this.fecharDesativar();
     },
 
-    validaForm() {
-      if (
-        this.atributo.perfil &&
-        this.atributo.login &&
-        this.atributo.campus &&
-        this.atributo.curso
-      ) {
-        this.salvar();
-        return true;
-      }
-
-      this.errors = [];
-
-      if (!this.atributo.perfil) {
-        this.errors.push("O perfil é obrigatório.");
-      }
-      if (!this.atributo.login) {
-        this.errors.push("O login é obrigatório.");
-      }
-    },
-
     fechar() {
       this.dialog = false;
       this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });
+    },
+
+    fecharDesativar() {
+      this.dialogDesativar = false;
+      this.$nextTick(() => {
+        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.editIndice = -1;
+      });
+    },
+
+    salvar() {
+      if (this.editIndice > -1) {
+        axios
+          .put(`${baseApiUrl}api/usuario`, {
+            id: this.atributo.id,
+            ativo: this.atributo.ativo === "Ativo",
+          })
+          .then((res) => {
+            alert("Os dados foram atualizados com sucesso !");
+            console.log(res.data);
+            this.reloadPage();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        Object.assign(this.usuarios[this.editIndice], this.atributo);
+      } else {
+        axios.post(`${baseApiUrl}api/usuario`, {
+          label: this.atributo.label,
+        }).then((res) => {
+          this.usuarios = res.data;
+          alert("Os dados foram adicionados com sucesso !");
+          console.log(res.data);
+          this.reloadPage();
+        });
+        this.usuarios.push(this.atributo);
+      }
+      this.fechar();
     },
   },
 };

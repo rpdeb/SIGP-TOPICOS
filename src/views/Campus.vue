@@ -182,7 +182,7 @@ export default {
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativo") {
         axios
-          .patch(`${baseApiUrl}/api/campus`, {
+          .patch(`${baseApiUrl}api/campus`, {
             ativo: false,
           })
           .then((res) => {
@@ -194,7 +194,7 @@ export default {
           });
       } else {
         axios
-          .patch(`${baseApiUrl}/api/campus`, {
+          .patch(`${baseApiUrl}api/campus`, {
             ativo: true,
           })
           .then((res) => {
@@ -227,7 +227,7 @@ export default {
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(`${baseApiUrl}/api/campus`, {
+          .put(`${baseApiUrl}api/campus`, {
             id: this.atributo.id,
             label: this.atributo.label,
             ativo: this.atributo.ativo === "Ativo",
@@ -242,7 +242,7 @@ export default {
           });
         Object.assign(this.campus[this.editIndice], this.atributo);
       } else {
-        axios.post(`${baseApiUrl}/api/campus`, {
+        axios.post(`${baseApiUrl}api/campus`, {
           label: this.atributo.label,
         }).then((res) => {
           this.campus = res.data;
