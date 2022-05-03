@@ -48,13 +48,13 @@
                 <v-container>
                   <v-row>
                      <v-col cols="8" sm="6" md="4">
-                      <v-text-field
+                      <v-select
                         v-model="atributo.perfil"
                         :items="items"
                         :rules="[v => !!v || 'Item obrigatório!']"
                         label="Perfil"
                         required
-                      ></v-text-field>
+                      ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field
@@ -66,18 +66,18 @@
                       ></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
+                      <v-select
                         v-model="atributo.campus"
                         :items="items"
                         label="Campus"
-                      ></v-text-field>
+                      ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
+                      <v-select
                         v-model="atributo.curso"
                         :items="items"
                         label="Curso"
-                      ></v-text-field>
+                      ></v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -163,28 +163,8 @@ export default {
         sortable: false,
       },
     ],
-
     errors: [],
-    usuarios: [
-      {
-        perfil: "Gestão Adm.",
-        login: "exemplo@unitins.br",
-        campus: "Augustinópolis",
-        curso: "Medicina",
-      },
-      {
-        perfil: "Coordenador",
-        login: "fredson@unitins.br",
-        campus: "Palmas (Graciosa)",
-        curso: "Sistemas de Inf.",
-      },
-      {
-        perfil: "Administrador",
-        login: "aldirlyra@unitins.br",
-        campus: "Palmas (Graciosa)",
-        curso: "Sistemas de Inf.",
-      },
-    ],
+    usuarios: [],
 
     perfil: [],
     login: [],
@@ -242,7 +222,7 @@ export default {
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativo") {
         axios
-          .patch(url + "/desativar/" + this.atributo.id, {
+          .patch( + this.atributo.id, {
             ativo: false,
           })
           .then((res) => {
