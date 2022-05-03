@@ -122,7 +122,7 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-      { text: "Campus", value: "label" },
+      { text: "Campus", value: "campus.label" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
@@ -161,7 +161,7 @@ export default {
 
   methods: {
   inicializar() {
-      axios.get(`${baseApiUrl}api/campus/search`, this.arraycampus).then((res) => {
+      axios.get(`${baseApiUrl}api/campus/search`).then((res) => {
         this.arraycampus = res.data;
         console.log(res.data);
       }).catch(console.warn("erro"));
@@ -244,7 +244,6 @@ export default {
       } else {
         axios.post(`${baseApiUrl}/api/campus`, {
           label: this.atributo.label,
-          ativo: true,
         }).then((res) => {
           this.arraycampus = res.data;
           alert("Os dados foram adicionados com sucesso !");
