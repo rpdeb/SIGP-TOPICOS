@@ -3,11 +3,10 @@
     :headers="titulos"
     :items="semestres"
     :search="search"
-    class="elevation-2 data-table" 
-      :footer-props="{
-           'items-per-page-text':'produtos por página'
-      }"
-    
+    class="elevation-2 data-table"
+    :footer-props="{
+      'items-per-page-text': 'produtos por página',
+    }"
   >
     <template v-slot:top>
       <v-toolbar flat>
@@ -38,29 +37,35 @@
             <v-card-title>
               <span class="text-h5">{{ tituloForm }}</span>
             </v-card-title>
-            <p v-if="errors.length">
+            <!-- <p v-if="errors.length">
               <ul>
                 <li v-for="error in errors" :key="error">{{ error }}</li>
              </ul>
-            </p>
+            </p> -->
             <v-card-text>
               <v-form>
                 <v-container>
                   <v-row>
+                  <!--   <v-col cols="8" sm="6" md="4">
+                      <v-select
+                        v-model="atributo.ano"
+                        label="Ano"
+                        required
+                      ></v-select>
+                    </v-col> -->
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field
-                        v-model="atributo.semestre"
-                        :items="items"
+                        v-model="atributo.label"
                         label="Semestre"
                         required
                       ></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="atributo.oferta"
+                        v-model="atributo.curso"
                         :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
-                        label="Oferta"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Curso"
                         required
                       ></v-select>
                     </v-col>
@@ -70,20 +75,40 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog=false">
+              <v-btn small color="warning" dark @click="fechar">
                 Cancelar
               </v-btn>
-              <v-btn 
-              small color="primary" 
-              class="mr-4"
-              @click="validaForm">Salvar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar"
+                >Salvar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
+
+         <v-dialog v-model="dialogDesativar" max-width="400px">
+          <v-card>
+            <v-card-title class="text-h5"
+              >Deseja {{ mudarStatus }} este Campus ?</v-card-title
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn small color="warning" dark @click="dialogDesativar = false">
+                Não</v-btn
+              >
+              <v-btn small color="primary" dark @click="desativeItemConfirm"
+                >Sim</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)" color="blue"> mdi-pencil </v-icon>
+      <v-icon small class="mr-2" @click="editItem(item)" color="blue">
+        mdi-pencil
+      </v-icon>
     </template>
   </v-data-table>
 </template>
@@ -100,19 +125,25 @@
 }
 </style>
 <script>
-  export default {
+import Vue from "vue";
+import axios from "axios";
+import VueAxios from "vue-axios";
+Vue.use(VueAxios, axios);
+import { baseApiUrl } from "@/global";
+
+export default {
   data: () => ({
     search: "",
     dialog: false,
     titulos: [
       {
         text: "Semestre",
-        value: "semestre",
+        value: "label",
         sortable: false,
       },
       {
-        text: "Oferta",
-        value: "oferta",
+        text: "Curso",
+        value: "curso",
         sortable: false,
       },
       {
@@ -121,20 +152,19 @@
         sortable: false,
       },
     ],
-    errors: [],
     semestres: [],
     editIndice: -1,
     atributo: {
       id: null,
-      oferta: "",
-      semestre: "",
+      label: "",
+      curso: "",
       ativo: true,
     },
     atributoPadrao: {
       id: null,
-      oferta: "",
-      semestre: "",
-      ativo: true,      
+      label: "",
+      curso: "",
+      ativo: true,
     },
   }),
 
@@ -142,37 +172,114 @@
     tituloForm() {
       return this.editIndice === -1 ? "Cadastrar Semestre" : "Editar Semestre";
     },
+    mudarStatus() {
+      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
+    },
   },
 
-editItem(item) {
-    this.editIndice = this.semestres.indexOf(item);
-    this.atributo = Object.assign({}, item);
-    this.dialog = true;
+  watch: {
+    dialog(val) {
+      val || this.fechar();
+    },
   },
 
-  validaForm() {
-    if (this.atributo.semestre && this.atributo.oferta) {
-      this.salvar();
-      return true;
-    }
-
-    this.errors = [];
-
-    if (!this.atributo.semestre) {
-      this.errors.push("O câmpus é obrigatório.");
-    }
-
-    if (!this.atributo.oferta) {
-      this.errors.push("O bloco é obrigatório.");
-    }
+  mounted() {
+    this.inicializar();
   },
 
-  fechar() {
-    this.dialog = false;
-    this.$nextTick(() => {
-      this.atributo = Object.assign({}, this.atributoPadrao);
-      this.editIndice = -1;
-    });
+  methods: {
+    inicializar() {
+      axios
+        .get(`${baseApiUrl}api/semestre/search`)
+        .then((res) => {
+          this.semestre = res.data;
+          console.log(this.semestre + "Arrayyyy de Semestree");
+        })
+        .catch(console.warn("erro"));
+    },
+
+    editItem(item) {
+      this.editIndice = this.semestres.indexOf(item);
+      this.atributo = Object.assign({}, item);
+      this.dialog = true;
+    },
+
+    fechar() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.editIndice = -1;
+      });
+    },
+
+    fecharDesativar() {
+      this.dialogDesativar = false;
+      this.$nextTick(() => {
+        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.editIndice = -1;
+      });
+    },
+
+    desativeItemConfirm() {
+      if (this.atributo.ativo == "Ativo") {
+        axios
+          .patch(`${baseApiUrl}/api/semestre`, {
+            ativo: false,
+          })
+          .then((res) => {
+            console.log(res.data);
+            alert("Este semestre foi desativado com sucesso !");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .patch(`${baseApiUrl}/api/semestre`, {
+            ativo: true,
+          })
+          .then((res) => {
+            console.log(res.data);
+            alert("Esta semestre foi ativada com sucesso !");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      this.fecharDesativar();
+    },
+
+    salvar() {
+      if (this.editIndice > -1) {
+        axios
+          .put(`${baseApiUrl}/api/semestre`, {
+            id: this.atributo.id,
+            label: this.atributo.label,
+            ativo: this.atributo.ativo === "Ativo",
+          })
+          .then((res) => {
+            alert("Os dados foram atualizados com sucesso !");
+            console.log(res.data);
+            this.reloadPage();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        Object.assign(this.semestres[this.editIndice], this.atributo);
+      } else {
+        axios.post(`${baseApiUrl}/api/semestre`, {
+          label: this.atributo.label,
+          curso: this.atributo.curso
+        }).then((res) => {
+          this.semestres = res.data;
+          alert("Os dados foram adicionados com sucesso !");
+          console.log(res.data);
+          this.reloadPage();
+        });
+        this.semestres.push(this.atributo);
+      }
+      this.fechar();
+    },
   },
 };
 </script>

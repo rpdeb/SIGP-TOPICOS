@@ -74,9 +74,8 @@ export default {
       { title: "Usuários", icon: "mdi-account-group", to: "/usuarios" },
       { title: "Bloco", icon: "mdi-lan", to: "/bloco" },
       { title: "Horários", icon: "mdi-book-clock", to: "/horarios" },
-      { title: "Oferta", icon: "mdi-offer", to: "/oferta" },
-      { title: "Curso", icon: "mdi-offer", to: "/curso" },
-      { title: "Campus", icon: "mdi-offer", to: "/campus" },
+      { title: "Curso", icon: "mdi-clock", to: "/curso" },
+      { title: "Campus", icon: "mdi-home", to: "/campus" },
     ],
   }),
 };

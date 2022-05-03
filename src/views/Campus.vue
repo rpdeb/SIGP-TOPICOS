@@ -2,7 +2,7 @@
   <v-data-table
     :headers="titulos"
     :items="campus"
-    :search="Pesquisar"
+    :search="search"
     class="elevation-2 data-table" 
       :footer-props="{
            'items-per-page-text':'produtos por página'

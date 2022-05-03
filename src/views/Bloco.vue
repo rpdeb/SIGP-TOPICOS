@@ -2,7 +2,7 @@
   <v-data-table
    :headers="titulos"
     :items="bloco"
-    :search="search"
+    :search="Pesquisar"
     class="elevation-2 data-table" 
       :footer-props="{
            'items-per-page-text':'produtos por página'
@@ -36,13 +36,9 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ tituloForm }}</span>
+              <span class="text-h5">{{tituloForm}}</span>
             </v-card-title>
-            <p v-if="errors.length">
-              <ul>
-                <li v-for="error in errors" :key="error">{{ error }}</li>
-             </ul>
-            </p>
+            <!-- inserir mensagem para a interface -->
             <v-card-text>
               <v-form>
                 <v-container>
@@ -77,7 +73,7 @@
               <v-btn 
               small color="primary" 
               class="mr-4"
-              @click="validaForm">Salvar</v-btn>
+              @click="salvar">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -121,6 +117,7 @@
 </style>
 
 <script>
+//Inserir importações
 export default {
   data: () => ({
     search: "",
@@ -143,17 +140,7 @@ export default {
         sortable: false,
       },
     ],
-    errors: [],
-    blocos: [
-      {
-        campus: "Palmas",
-        bloco: "Bloco A / ",
-      },
-       {
-        campus: "Palmas",
-        bloco: "Bloco B",
-      },
-    ],
+    blocos: [],
     editIndice: -1,
     atributo: {
       id: null,
@@ -200,7 +187,7 @@ export default {
   deleteItemConfirm(){
     if (this.atributo.ativo == "Ativo") {
         axios
-          .patch(url + "/desativar/" + this.atributo.id, {
+          .patch(url + this.atributo.id, {
             ativo: false,
           })
           .then((res) => {
@@ -214,7 +201,7 @@ export default {
           });
       } else {
         axios
-          .patch(url + "/ativar/" + this.atributo.id, {
+          .patch(url + this.atributo.id, {
             ativo: true,
           })
           .then((res) => {
@@ -228,19 +215,6 @@ export default {
       }
       this.fecharDesativar();
 },
-  validaForm() {
-    if (this.atributo.campus && this.atributo.bloco) {
-      this.salvar();
-      return true;
-    }
-    this.errors = [];
-    if (!this.atributo.campus) {
-      this.errors.push("O câmpus é obrigatório.");
-    }
-    if (!this.atributo.bloco) {
-      this.errors.push("O bloco é obrigatório.");
-    }
-  },
 
   fechar() {
       this.dialog = false;
