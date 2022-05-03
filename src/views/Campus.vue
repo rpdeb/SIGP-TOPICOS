@@ -2,7 +2,7 @@
   <v-data-table
     :headers="titulos"
     :items="campus"
-    :search="search"
+    :search="Pesquisar"
     class="elevation-2 data-table" 
       :footer-props="{
            'items-per-page-text':'produtos por página'
@@ -55,7 +55,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog = false"
+              <v-btn small color="warning" dark @click="fechar"
                 >Cancelar</v-btn
               >
               <v-btn small color="primary" class="mr-4" @click="salvar"
@@ -72,7 +72,7 @@
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog = false">
+              <v-btn small color="warning" dark @click="dialogDesativar = false">
                 Não</v-btn
               >
               <v-btn small color="primary" dark @click="desativeItemConfirm"
@@ -122,11 +122,11 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-      { text: "Campus", value: "campus.label" },
+      { text: "Campus", value: "label" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    arraycampus: [],
+    campus: [],
     editIndice: -1,
     atributo: {
       id: null,
@@ -162,19 +162,19 @@ export default {
   methods: {
   inicializar() {
       axios.get(`${baseApiUrl}api/campus/search`).then((res) => {
-        this.arraycampus = res.data;
-        console.log(res.data);
+        this.campus = res.data;
+        console.log(this.campus + "Arrayyyy de Campussss");
       }).catch(console.warn("erro"));
     },
 
     editItem(item) {
-      this.editIndice = this.arraycampus.indexOf(item);
+      this.editIndice = this.campus.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialog = true;
     },
 
     desativeItem(item) {
-      this.editIndice = this.arraycampus.indexOf(item);
+      this.editIndice = this.campus.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialogDesativar = true;
     },
@@ -240,17 +240,17 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-        Object.assign(this.arraycampus[this.editIndice], this.atributo);
+        Object.assign(this.campus[this.editIndice], this.atributo);
       } else {
         axios.post(`${baseApiUrl}/api/campus`, {
           label: this.atributo.label,
         }).then((res) => {
-          this.arraycampus = res.data;
+          this.campus = res.data;
           alert("Os dados foram adicionados com sucesso !");
           console.log(res.data);
           this.reloadPage();
         });
-        this.arraycampus.push(this.atributo);
+        this.campus.push(this.atributo);
       }
       this.fechar();
     },

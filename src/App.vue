@@ -31,7 +31,7 @@
       <v-spacer></v-spacer>
       <!-- <img src="../assets/img/exit-to-aplicativo.png" class="sair" />
       <router-link :to="{ name: 'Login' }"></router-link> -->
-      <v-btn @click="signout" v-if="btnlogout">sair</v-btn>
+     <!-- <v-btn @click="signout" v-if="btnlogout">sair</v-btn> -->
     </v-app-bar>
 
     <v-main>
@@ -43,7 +43,7 @@
         <v-col class="py-4 text-center white--text" cols="12">
           {{ new Date().getFullYear() }} —
           <strong
-            >SIGHA - Sistema de gerenciamento de horários acadêmicos</strong
+            >SIGHA - Sistema de Gerenciamento de Horários Acadêmicos</strong
           >
         </v-col>
       </v-row>

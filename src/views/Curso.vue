@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="titulos"
-    :items="curso"
+    :items="cursos"
     :search="search"
     class="elevation-2 data-table" 
       :footer-props="{
@@ -65,10 +65,10 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog = false"
+              <v-btn small color="warning" dark @click="fechar"
                 >Cancelar</v-btn
               >
-              <v-btn small color="primary" class="mr-4" @click="checkForm"
+              <v-btn small color="primary" class="mr-4" @click="salvar"
                 >Salvar</v-btn
               >
             </v-card-actions>
@@ -82,7 +82,7 @@
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog = false">
+              <v-btn small color="warning" dark @click="dialogDesativar = false">
                 Não</v-btn
               >
               <v-btn small color="primary" dark @click="desativeItemConfirm"
@@ -174,16 +174,12 @@ export default {
   methods: {
     //método para preencher o data table
      async inicializar() {
-      
       this.axios
-        .get(baseApiUrl, this.cursos)
+        .get(`${baseApiUrl}api/curso/search`)
         .then((res) => {
-          console.log(res);
-          this.cursos = res.data
-            .map((d) => ({
-              ...d,
-              campus: d.campus.map((a) => a.label),
-            }))
+          this.cursos = res.data.map((d) => ({...d,campus: d.campus.map((a) => a.label),}))
+             console.dir(res+"sucesuuu");
+             console.dir(this.cursos+"segura papaiiii");
         })
         .catch((error) => {
           console.warn(error);
@@ -192,10 +188,11 @@ export default {
     },
       //método para buscar campus existentes e preencher no array 
       async getCampus() {
-      const { data } = await this.axios.get(url);
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
       this.campusRaw = data;
-      this.arraycampus = data.filter((d) => d.label);
-      console.log(this.campus)
+      this.arraycampus = data;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(`${this.arraycampus}array de campus aquii !!!!!!!!!!!`)
     },
 
     editItem(item) {
@@ -213,7 +210,7 @@ export default {
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativo") {
         axios
-          .patch(url + "/desativar/" + this.atributo.id, {
+          .patch(`${baseApiUrl}api/curso/${this.atributo.id}`, {
             ativo: false,
           })
           .then((res) => {
@@ -226,12 +223,12 @@ export default {
           });
       } else {
         axios
-          .patch(url + this.atributo.id, {
+          .patch(`${baseApiUrl}api/curso/${this.atributo.id}`, {
             ativo: true,
           })
           .then((res) => {
             console.log(res.data);
-            alert("Esta sala foi ativada com sucesso !");
+            alert("Este curso foi ativado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
