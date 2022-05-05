@@ -211,6 +211,29 @@ export default {
 
 
   methods: {
+      //método para preencher o data table
+     async inicializar() {
+      this.axios
+        .get(`${baseApiUrl}api/usuario/search`)
+        .then((res) => {
+          this.cursos = res.data.map((d) => ({...d,campus: d.campus.map((a) => a.label),}))
+             console.dir(res+"sucesuuu");
+             console.dir(this.cursos+"segura papaiiii");
+        })
+        .catch((error) => {
+          console.warn(error);
+        });
+      await Promise.all([this.getCampus()]);
+    },
+      //método para buscar campus existentes e preencher no array 
+      async getCampus() {
+      const { data } = await this.axios.get(`${baseApiUrl}api/usuario/search`);
+      this.campusRaw = data;
+      this.arraycampus = data;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(`${this.arraycampus}array de campus aquii !!!!!!!!!!!`)
+    },
+
     editItem(item) {
       this.editIndice = this.usuarios.indexOf(item);
       this.atributo = Object.assign({}, item);
@@ -226,11 +249,11 @@ export default {
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativo") {
         axios
-          .patch( + this.atributo.id, {
+        patch(`${baseApiUrl}api/usuario/${this.atributo.id}`, {
             ativo: false,
           })
           .then((res) => {
-            this.salas = res.data;
+            this.usuarios = res.data;
             console.log(res.data);
             alert("Usuário desativado com sucesso!");
           })
@@ -239,7 +262,7 @@ export default {
           });
       } else {
         axios
-          .patch(url + this.atributo.id, {
+          .patch(`${baseApiUrl}api/usuarios/${this.atributo.id}`,{
             ativo: true,
           })
           .then((res) => {
