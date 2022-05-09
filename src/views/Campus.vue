@@ -160,12 +160,24 @@ export default {
   },
 
   methods: {
-  inicializar() {
+
+    inicializar() {
       axios.get(`${baseApiUrl}api/campus/search`).then((res) => {
-        this.campus = res.data;
+        this.campus = res.data.content;
         console.log(this.campus + "Arrayyyy de Campussss");
       }).catch(console.warn("erro"));
     },
+
+    // inicializar() {
+    //   axios.get(testeUrl + "api/campus/search", this.campus).then((res) => {
+    //     this.campus = res.data.map((p) => {
+    //       p.ativo = p.ativo ? "Ativado" : "Desativado";
+    //       return p;
+    //     });
+    //     console.log("arrayyyyy");
+    //     console.log(res.data);
+    //   });
+    // },
 
     editItem(item) {
       this.editIndice = this.campus.indexOf(item);
@@ -222,6 +234,10 @@ export default {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });
+    },
+
+    reloadPage(){
+      window.location.reload();
     },
 
     salvar() {
