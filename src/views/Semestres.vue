@@ -62,10 +62,10 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="atributo.curso"
+                        v-model="atributo.oferta"
                         :items="items"
                         :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Curso"
+                        label="Oferta"
                         required
                       ></v-select>
                     </v-col>
@@ -142,8 +142,8 @@ export default {
         sortable: false,
       },
       {
-        text: "Curso",
-        value: "curso",
+        text: "Oferta",
+        value: "oferta",
         sortable: false,
       },
       {
@@ -157,13 +157,13 @@ export default {
     atributo: {
       id: null,
       label: "",
-      curso: "",
+      oferta: "",
       ativo: true,
     },
     atributoPadrao: {
       id: null,
       label: "",
-      curso: "",
+      oferta: "",
       ativo: true,
     },
   }),
@@ -269,7 +269,7 @@ export default {
       } else {
         axios.post(`${baseApiUrl}/api/semestre`, {
           label: this.atributo.label,
-          curso: this.atributo.curso
+          oferta: this.atributo.oferta
         }).then((res) => {
           this.semestres = res.data;
           alert("Os dados foram adicionados com sucesso !");
