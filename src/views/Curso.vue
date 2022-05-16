@@ -45,7 +45,7 @@
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field
-                        v-model="atributo.label"
+                        v-model="atributo.curso"
                         label="Curso"
                         required
                       ></v-text-field>
@@ -54,6 +54,8 @@
                       <v-select
                         v-model="atributo.campus"
                         label="Campus"
+                        item-text="label"
+                         return-object
                         :items="arraycampus"
                       >
                         ></v-select
@@ -132,7 +134,7 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-     { text: "Curso", value: "label" },
+     { text: "Curso", value: "curso" },
      { text: "Campus", value: "campus" },
      { text: "Status", value: "ativo" },
      { text: "Ações", value: "acoes" },
@@ -142,12 +144,14 @@ export default {
     editIndice: -1,
     atributo: {
       id: null,
-      label: "",
+      curso: "",
+      campus: null,
       ativo: true,
     },
     atributoPadrao: {
       id: null,
-      label: "",
+      curso: "",
+      campus: null,
       ativo: true,
     },
   }),
@@ -169,28 +173,22 @@ export default {
 
   mounted() {
     this.inicializar();
+    this.getCampus();
   },
 
   methods: {
     //método para preencher o data table
      async inicializar() {
-      this.axios
-        .get(`${baseApiUrl}api/curso/search`)
-        .then((res) => {
-          this.cursos = res.data.map((d) => ({...d,campus: d.campus.map((a) => a.label),}))
-             console.dir(res+"sucesuuu");
-             console.dir(this.cursos+"segura papaiiii");
-        })
-        .catch((error) => {
-          console.warn(error);
-        });
-      await Promise.all([this.getCampus()]);
+      axios.get(`${baseApiUrl}api/curso/search`).then((res) => {
+        this.cursos = res.data.content;
+        console.log(this.cursos + "Arrayyyy de Campussss");
+      }).catch(console.warn("erro"));
     },
       //método para buscar campus existentes e preencher no array 
       async getCampus() {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
-      this.campusRaw = data;
-      this.arraycampus = data;
+      this.cursosRaw = data;
+      this.arraycampus = data.content;
       //this.arraycampus = data.filter((d) => d.label);
       console.log(`${this.arraycampus}array de campus aquii !!!!!!!!!!!`)
     },
@@ -237,6 +235,10 @@ export default {
       this.fecharDesativar();
     },
 
+     reloadPage(){
+      window.location.reload();
+    },
+
     fechar() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -253,10 +255,23 @@ export default {
       });
     },
 
+    async findCampus(id){
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/${id}`);
+      this.cursosRaw = data;
+      this.arraycampus = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(`${this.arraycampus}array de campus aquii !!!!!!!!!!!`)
+    },
+
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(baseApiUrl, {})
+          .put(`${baseApiUrl}api/curso`, {
+            id: this.atributo.id,
+            curso: this.atributo.curso,
+            campus: this.atributo.campus,
+            ativo: this.atributo.ativo === "Ativo",
+          })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
             console.log(res.data);
@@ -267,7 +282,10 @@ export default {
           });
         Object.assign(this.cursos[this.editIndice], this.atributo);
       } else {
-        axios.post(baseApiUrl, {}).then((res) => {
+        axios.post(`${baseApiUrl}api/curso`, {
+         curso: this.atributo.curso,
+         campus: this.atributo.campus,
+        }).then((res) => {
           this.cursos = res.data;
           alert("Os dados foram adicionados com sucesso !");
           console.log(res.data);
