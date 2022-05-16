@@ -45,7 +45,7 @@
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field
-                        v-model="atributo.curso"
+                        v-model="atributo.label"
                         label="Curso"
                         required
                       ></v-text-field>
@@ -55,7 +55,7 @@
                         v-model="atributo.campus"
                         label="Campus"
                         item-text="label"
-                         return-object
+                         item-value=id
                         :items="arraycampus"
                       >
                         ></v-select
@@ -134,8 +134,8 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-     { text: "Curso", value: "curso" },
-     { text: "Campus", value: "campus" },
+     { text: "Curso", value: "label" },
+     { text: "Campus", value: "campus.label" },
      { text: "Status", value: "ativo" },
      { text: "Ações", value: "acoes" },
     ],
@@ -144,13 +144,13 @@ export default {
     editIndice: -1,
     atributo: {
       id: null,
-      curso: "",
+      label: "",
       campus: null,
       ativo: true,
     },
     atributoPadrao: {
       id: null,
-      curso: "",
+      label: "",
       campus: null,
       ativo: true,
     },
@@ -268,7 +268,7 @@ export default {
         axios
           .put(`${baseApiUrl}api/curso`, {
             id: this.atributo.id,
-            curso: this.atributo.curso,
+            label: this.atributo.label,
             campus: this.atributo.campus,
             ativo: this.atributo.ativo === "Ativo",
           })
@@ -283,15 +283,18 @@ export default {
         Object.assign(this.cursos[this.editIndice], this.atributo);
       } else {
         axios.post(`${baseApiUrl}api/curso`, {
-         curso: this.atributo.curso,
+         label: this.atributo.label,
          campus: this.atributo.campus,
+         
         }).then((res) => {
           this.cursos = res.data;
           alert("Os dados foram adicionados com sucesso !");
           console.log(res.data);
           this.reloadPage();
         });
+        console.log(this.atributo)
         this.cursos.push(this.atributo);
+        
       }
       this.fechar();
     },
