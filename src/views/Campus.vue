@@ -1,38 +1,20 @@
 <template>
-  <v-data-table
-    :headers="titulos"
-    :items="campus"
-    :search="search"
-    class="elevation-2 data-table" 
-      :footer-props="{
-           'items-per-page-text':'produtos por página'
-      }"    
-  >
+  <v-data-table :headers="titulos" :items="campus" :search="search" class="elevation-2 data-table" :footer-props="{
+    'items-per-page-text': 'Itens por página'
+  }">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Gerenciamento de Campus</v-toolbar-title>
+        <v-toolbar-title>Gerenciamento de Câmpus</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field
-          v-model="pesquisar"
-          append-icon="mdi-magnify"
-          label="Pesquisar"
-          single-line
-          hide-details
-        ></v-text-field>
+        <v-text-field v-model="pesquisar" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
-            <v-btn
-              small
-              class="mx-2 add"
-              fab
-              dark
-              color="green"
-              v-bind="attrs"
-              v-on="on"
-              ><v-icon dark> mdi-plus</v-icon></v-btn
-            >
+            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+              <v-icon dark> mdi-plus</v-icon>
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -44,10 +26,7 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.label"
-                        label="Campus"
-                      ></v-text-field>
+                      <v-text-field v-model="atributo.label" label="Campus"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -55,29 +34,19 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fechar"
-                >Cancelar</v-btn
-              >
-              <v-btn small color="primary" class="mr-4" @click="salvar"
-                >Salvar</v-btn
-              >
+              <v-btn small color="warning" dark @click="fechar">Cancelar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} este Campus ?</v-card-title
-            >
+            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este Campus ?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialogDesativar = false">
-                Não</v-btn
-              >
-              <v-btn small color="primary" dark @click="desativeItemConfirm"
-                >Sim</v-btn
-              >
+              <v-btn small color="warning" dark @click="fecharDesativar">Não</v-btn>
+              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -100,9 +69,11 @@
   width: 40px;
   height: 40px;
 }
+
 .template-add {
   padding-top: 1%;
 }
+
 .data-table {
   padding: 3%;
 }
@@ -145,13 +116,17 @@ export default {
       return this.editIndice === -1 ? "Cadastrar Campus" : "Editar Campus";
     },
     mudarStatus() {
-      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
+      return this.atributo.ativo == "Ativado" ? "desativar " : "ativar ";
     },
   },
 
   watch: {
     dialog(val) {
       val || this.fechar();
+    },
+
+    dialogDesativar(val){
+      val || this.fecharDesativar();
     },
   },
 
@@ -160,24 +135,17 @@ export default {
   },
 
   methods: {
-
     inicializar() {
       axios.get(`${baseApiUrl}api/campus/search`).then((res) => {
-        this.campus = res.data.content;
-        console.log(this.campus + "Arrayyyy de Campussss");
+        this.campus = res.data.content.map((c) => {
+          c.ativo = c.ativo ? "Ativado" : "Desativado"
+          return c;
+        });
+
+        console.log(this.campus + "Array de câmpuss");
+        console.log(res.data);
       }).catch(console.warn("erro"));
     },
-
-    // inicializar() {
-    //   axios.get(testeUrl + "api/campus/search", this.campus).then((res) => {
-    //     this.campus = res.data.map((p) => {
-    //       p.ativo = p.ativo ? "Ativado" : "Desativado";
-    //       return p;
-    //     });
-    //     console.log("arrayyyyy");
-    //     console.log(res.data);
-    //   });
-    // },
 
     editItem(item) {
       this.editIndice = this.campus.indexOf(item);
@@ -192,26 +160,29 @@ export default {
     },
 
     desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
-        axios
-          .patch(`${baseApiUrl}api/campus`, {
+      if (this.atributo.ativo == "Ativado") {
+        axios.patch(`${baseApiUrl}api/campus/` + this.atributo.id,{
+            id: this.atributo.id,
             ativo: false,
           })
           .then((res) => {
             console.log(res.data);
-            alert("Este campus foi desativado com sucesso !");
+            alert("Este câmpus foi desativado com sucesso !");
+            console.warn("entrou no desativar");
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
         axios
-          .patch(`${baseApiUrl}api/campus`, {
+          .patch(`${baseApiUrl}api/campus/` + this.atributo.id, {
             ativo: true,
+            
           })
           .then((res) => {
             console.log(res.data);
-            alert("Esta campus foi ativada com sucesso !");
+            alert("Este câmpus foi ativado com sucesso !");
+            console.warn("entrou no ativar");
           })
           .catch((error) => {
             console.log(error);
@@ -236,7 +207,7 @@ export default {
       });
     },
 
-    reloadPage(){
+    reloadPage() {
       window.location.reload();
     },
 
@@ -246,7 +217,7 @@ export default {
           .put(`${baseApiUrl}api/campus`, {
             id: this.atributo.id,
             label: this.atributo.label,
-            ativo: this.atributo.ativo === "Ativo",
+            ativo: this.atributo.ativo === "Ativado",
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
