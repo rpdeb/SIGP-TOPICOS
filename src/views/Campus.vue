@@ -6,9 +6,7 @@
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Câmpus</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
-
-        <v-text-field v-model="pesquisar" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
-        </v-text-field>
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details></v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
@@ -125,7 +123,7 @@ export default {
       val || this.fechar();
     },
 
-    dialogDesativar(val){
+    dialogDesativar(val) {
       val || this.fecharDesativar();
     },
   },
@@ -161,10 +159,10 @@ export default {
 
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativado") {
-        axios.patch(`${baseApiUrl}api/campus/` + this.atributo.id,{
-            id: this.atributo.id,
-            ativo: false,
-          })
+        axios.patch(`${baseApiUrl}api/campus/` + this.atributo.id + this.atributo.ativo, {
+          id: this.atributo.id,
+          ativo: false,
+        })
           .then((res) => {
             console.log(res.data);
             alert("Este câmpus foi desativado com sucesso !");
@@ -177,7 +175,7 @@ export default {
         axios
           .patch(`${baseApiUrl}api/campus/` + this.atributo.id, {
             ativo: true,
-            
+
           })
           .then((res) => {
             console.log(res.data);

@@ -1,38 +1,20 @@
 <template>
-  <v-data-table
-    :headers="titulos"
-    :items="cursos"
-    :search="search"
-    class="elevation-2 data-table" 
-      :footer-props="{
-           'items-per-page-text':'produtos por página'
-      }"
-  >
+  <v-data-table :headers="titulos" :items="cursos" :search="search" class="elevation-2 data-table" :footer-props="{
+    'items-per-page-text': 'Itens por página'
+  }">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Curso</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Pesquisar"
-          single-line
-          hide-details
-        ></v-text-field>
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
-            <v-btn
-              small
-              class="mx-2 add"
-              fab
-              dark
-              color="green"
-              v-bind="attrs"
-              v-on="on"
-              ><v-icon dark> mdi-plus</v-icon></v-btn
-            >
+            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+              <v-icon dark> mdi-plus</v-icon>
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -44,22 +26,12 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.label"
-                        label="Curso"
-                        required
-                      ></v-text-field>
+                      <v-text-field v-model="atributo.label" label="Curso" required></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.campus"
-                        label="Campus"
-                        item-text="label"
-                         item-value=id
-                        :items="arraycampus"
-                      >
-                        ></v-select
-                      >
+                      <v-select v-model="atributo.campus" label="Campus" item-text="label" item-value=id
+                        :items="arraycampus">
+                        ></v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -67,29 +39,20 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fechar"
-                >Cancelar</v-btn
-              >
-              <v-btn small color="primary" class="mr-4" @click="salvar"
-                >Salvar</v-btn
-              >
+              <v-btn small color="warning" dark @click="fechar">Cancelar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} esta Curso ?</v-card-title
-            >
+            <v-card-title class="text-h5">Deseja {{ mudarStatus }} esta Curso ?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn small color="warning" dark @click="dialogDesativar = false">
-                Não</v-btn
-              >
-              <v-btn small color="primary" dark @click="desativeItemConfirm"
-                >Sim</v-btn
-              >
+                Não</v-btn>
+              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -112,9 +75,11 @@
   width: 40px;
   height: 40px;
 }
+
 .template-add {
   padding-top: 1%;
 }
+
 .data-table {
   padding: 3%;
 }
@@ -124,7 +89,7 @@
 import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import {  baseApiUrl } from "@/global";
+import { baseApiUrl } from "@/global";
 Vue.use(VueAxios, axios);
 
 export default {
@@ -134,10 +99,10 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-     { text: "Curso", value: "label" },
-     { text: "Campus", value: "campus.label" },
-     { text: "Status", value: "ativo" },
-     { text: "Ações", value: "acoes" },
+      { text: "Curso", value: "label" },
+      { text: "Campus", value: "campus.label" },
+      { text: "Status", value: "ativo" },
+      { text: "Ações", value: "acoes" },
     ],
     cursos: [],
     arraycampus: [],
@@ -178,14 +143,14 @@ export default {
 
   methods: {
     //método para preencher o data table
-     async inicializar() {
+    async inicializar() {
       axios.get(`${baseApiUrl}api/curso/search`).then((res) => {
         this.cursos = res.data.content;
         console.log(this.cursos + "Arrayyyy de Campussss");
       }).catch(console.warn("erro"));
     },
-      //método para buscar campus existentes e preencher no array 
-      async getCampus() {
+    //método para buscar campus existentes e preencher no array 
+    async getCampus() {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
       this.cursosRaw = data;
       this.arraycampus = data.content;
@@ -235,7 +200,7 @@ export default {
       this.fecharDesativar();
     },
 
-     reloadPage(){
+    reloadPage() {
       window.location.reload();
     },
 
@@ -255,7 +220,7 @@ export default {
       });
     },
 
-    async findCampus(id){
+    async findCampus(id) {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/${id}`);
       this.cursosRaw = data;
       this.arraycampus = data.content;
@@ -283,9 +248,9 @@ export default {
         Object.assign(this.cursos[this.editIndice], this.atributo);
       } else {
         axios.post(`${baseApiUrl}api/curso`, {
-         label: this.atributo.label,
-         campus: this.atributo.campus,
-         
+          label: this.atributo.label,
+          campus: this.atributo.campus,
+
         }).then((res) => {
           this.cursos = res.data;
           alert("Os dados foram adicionados com sucesso !");
@@ -294,7 +259,7 @@ export default {
         });
         console.log(this.atributo)
         this.cursos.push(this.atributo);
-        
+
       }
       this.fechar();
     },

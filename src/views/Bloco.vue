@@ -1,65 +1,37 @@
 <template>
-  <v-data-table
-   :headers="titulos"
-    :items="bloco"
-    :search="Pesquisar"
-    class="elevation-2 data-table" 
-      :footer-props="{
-           'items-per-page-text':'produtos por página'
-      }" 
-  >
+  <v-data-table :headers="titulos" :items="bloco" :search="Pesquisar" class="elevation-2 data-table" :footer-props="{
+    'items-per-page-text': 'Itens por página'
+  }">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Bloco</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Pesquisar"
-          single-line
-          hide-details
-        ></v-text-field>
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              small
-              class="mx-2 add"
-              fab
-              dark
-              color="green"
-              v-bind="attrs"
-              v-on="on"
-              ><v-icon dark> mdi-plus</v-icon></v-btn
-            >
+            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+              <v-icon dark> mdi-plus</v-icon>
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{tituloForm}}</span>
+              <span class="text-h5">{{ tituloForm }}</span>
             </v-card-title>
             <!-- inserir mensagem para a interface -->
             <v-card-text>
               <v-form>
                 <v-container>
                   <v-row>
-                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.bloco"
-                        :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
-                        label="Bloco/Piso"
-                        required
-                      ></v-text-field>
+                    <v-col cols="8" sm="6" md="4">
+                      <v-text-field v-model="atributo.bloco" :items="items" :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Bloco/Piso" required></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.campus"
-                        :items="items"
-                        :rules="[v => !!v || 'Item obrigatório!']"
-                        label="Campus"
-                        required
-                      ></v-select>
+                      <v-select v-model="atributo.campus" :items="items" :rules="[v => !!v || 'Item obrigatório!']"
+                        label="Campus" required></v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -70,27 +42,19 @@
               <v-btn small color="warning" dark @click="fechar">
                 Cancelar
               </v-btn>
-              <v-btn 
-              small color="primary" 
-              class="mr-4"
-              @click="salvar">Salvar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
-         <v-dialog v-model="dialogDelete" max-width="400px">
+        <v-dialog v-model="dialogDelete" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5"
-              >Deseja {{mudarStatus}} este Bloco ?</v-card-title
-            >
+            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este Bloco ?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog=false">
-                Não</v-btn
-              >
-              <v-btn small color="primary" dark @click="deleteItemConfirm"
-                >Sim</v-btn
-              >
+              <v-btn small color="warning" dark @click="dialog = false">
+                Não</v-btn>
+              <v-btn small color="primary" dark @click="deleteItemConfirm">Sim</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -108,9 +72,11 @@
   width: 40px;
   height: 40px;
 }
+
 .template-add {
   padding-top: 1%;
 }
+
 .data-table {
   padding: 3%;
 }
@@ -160,7 +126,7 @@ export default {
     tituloForm() {
       return this.editIndice === -1 ? "Cadastrar Bloco" : "Editar Dados";
     },
-     mudarStatus() {
+    mudarStatus() {
       return this.atributo.ativo == "Ativo" ? "desativar " : "remover ";
     },
   },
@@ -169,23 +135,23 @@ export default {
   },
   methods: {
     inicializar() {
-     //requisição get
+      //requisição get
     },
 
-  watch: {
-    dialog(val) {
-      val || this.fechar();
+    watch: {
+      dialog(val) {
+        val || this.fechar();
+      },
     },
-  },
 
-  deleteItem(item) {
-    this.editIndice = this.blocos.indexOf(item);
-    this.atributo = Object.assign({}, item);
-    this.dialogDelete = true;
-  },
+    deleteItem(item) {
+      this.editIndice = this.blocos.indexOf(item);
+      this.atributo = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
 
-  deleteItemConfirm(){
-    if (this.atributo.ativo == "Ativo") {
+    deleteItemConfirm() {
+      if (this.atributo.ativo == "Ativo") {
         axios
           .patch(url + this.atributo.id, {
             ativo: false,
@@ -194,7 +160,7 @@ export default {
             this.bloco = res.data;
             console.log(res.data);
             alert("Este bloco foi desativado com sucesso !");
-            
+
           })
           .catch((error) => {
             console.log(error);
@@ -207,16 +173,16 @@ export default {
           .then((res) => {
             console.log(res.data);
             alert("Este bloco foi ativado com sucesso !");
-         
+
           })
           .catch((error) => {
             console.log(error);
           });
       }
       this.fecharDesativar();
-},
+    },
 
-  fechar() {
+    fechar() {
       this.dialog = false;
       this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
@@ -234,7 +200,7 @@ export default {
       if (this.editIndice > -1) {
         axios
           .put(url, {
-           
+
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
@@ -248,7 +214,7 @@ export default {
       } else {
         axios
           .post(url, {
-          
+
           })
           .then((res) => {
             this.bloco = res.data;
