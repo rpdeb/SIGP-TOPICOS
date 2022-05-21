@@ -155,7 +155,7 @@ export default {
       this.cursosRaw = data;
       this.arraycampus = data.content;
       //this.arraycampus = data.filter((d) => d.label);
-      console.log(`${this.arraycampus}array de campus aquii !!!!!!!!!!!`)
+      console.log(this.arraycampus + "array de campus aqui")
     },
 
     editItem(item) {

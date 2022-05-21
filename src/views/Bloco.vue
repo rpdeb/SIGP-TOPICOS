@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="titulos" :items="bloco" :search="Pesquisar" class="elevation-2 data-table" :footer-props="{
+  <v-data-table :headers="titulos" :items="blocos" :search="search" class="elevation-2 data-table" :footer-props="{
     'items-per-page-text': 'Itens por página'
   }">
     <template v-slot:top>
@@ -26,11 +26,11 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.bloco" :items="items" :rules="[v => !!v || 'Item obrigatório!']"
+                      <v-text-field v-model="atributo.bloco" :rules="[v => !!v || 'Item obrigatório!']"
                         label="Bloco/Piso" required></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.campus" :items="items" :rules="[v => !!v || 'Item obrigatório!']"
+                      <v-select v-model="atributo.campus" :items="arraycampus" item-value=id :rules="[v => !!v || 'Item obrigatório!']"
                         label="Campus" required></v-select>
                     </v-col>
                   </v-row>
@@ -92,7 +92,7 @@ export default {
     titulos: [
       {
         text: "Campus",
-        value: "campus",
+        value: "campus.label",
         sortable: false,
       },
       {
@@ -107,17 +107,19 @@ export default {
       },
     ],
     blocos: [],
+    blocosRaw:[],
+    arraycampus: [],
     editIndice: -1,
     atributo: {
       id: null,
-      campus: "",
+      campus:null,
       bloco: "",
       ativo: true,
     },
     atributoPadrao: {
       id: null,
-      campus: "",
       bloco: "",
+      campus: null,
       ativo: true,
     },
   }),
@@ -131,11 +133,23 @@ export default {
     },
   },
   mounted() {
-    //this.inicializar();
+    this.inicializar();
+    this.getCampus();
   },
   methods: {
-    inicializar() {
-      //requisição get
+    async inicializar() {
+      axios.get(`${baseApiUrl}api/curso/search`).then((res) => {
+        this.blocos = res.data.content;
+        console.log(this.blocos + "Arrayyyy de Campussss");
+      }).catch(console.warn("erro"));
+    },
+    //método para buscar campus existentes e preencher no array 
+    async getCampus() {
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
+      this.blocosRaw = data;
+      this.arraycampus = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(this.arraycampus + "array de campus aqui")
     },
 
     watch: {
@@ -157,7 +171,7 @@ export default {
             ativo: false,
           })
           .then((res) => {
-            this.bloco = res.data;
+            this.blocos = res.data;
             console.log(res.data);
             alert("Este bloco foi desativado com sucesso !");
 
@@ -196,10 +210,19 @@ export default {
         this.editIndice = -1;
       });
     },
+
+    async findCampus(id) {
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/${id}`);
+      this.cursosRaw = data;
+      this.arraycampus = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(`${this.arraycampus}array de campus aquii !!!!!!!!!!!`)
+    },
+
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(url, {
+          .put(`${baseApiUrl}api/bloco`, {
 
           })
           .then((res) => {
@@ -210,19 +233,19 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-        Object.assign(this.bloco[this.editIndice], this.atributo);
+        Object.assign(this.blocos[this.editIndice], this.atributo);
       } else {
         axios
-          .post(url, {
+          .post(`${baseApiUrl}api/curso`, {
 
           })
           .then((res) => {
-            this.bloco = res.data;
+            this.blocos = res.data;
             alert("Os dados foram adicionados com sucesso !");
             console.log(res.data);
             this.reloadPage();
           });
-        this.bloco.push(this.atributo);
+        this.blocos.push(this.atributo);
       }
       this.fechar();
     },

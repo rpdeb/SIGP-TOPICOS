@@ -101,7 +101,7 @@ export default {
     dialog: false,
     titulos: [
       {
-        text: "tipo",
+        text: "Tipo",
         value: "tipo",
         sortable: false,
       },
@@ -223,7 +223,7 @@ export default {
           });
       } else {
         axios
-          .patch(`${baseApiUrl}api/usuarios/${this.atributo.id}`, {
+          .patch(`${baseApiUrl}api/usuario/${this.atributo.id}`, {
             ativo: true,
           })
           .then((res) => {
