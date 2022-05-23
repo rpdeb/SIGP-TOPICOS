@@ -105,6 +105,7 @@ export default {
       { text: "Ações", value: "acoes" },
     ],
     cursos: [],
+    campusRaw: [],
     arraycampus: [],
     editIndice: -1,
     atributo: {
@@ -145,14 +146,18 @@ export default {
     //método para preencher o data table
     async inicializar() {
       axios.get(`${baseApiUrl}api/curso/search`).then((res) => {
-        this.cursos = res.data.content;
-        console.log(this.cursos + "Arrayyyy de Campussss");
-      }).catch(console.warn("erro"));
+  
+        this.cursos = res.data.content.map((c) => {
+          c.ativo = c.ativo ? "Ativo" : "Inativo"
+          return c;
+        });
+
+      }).catch(console.warn("erro"))
     },
     //método para buscar campus existentes e preencher no array 
     async getCampus() {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
-      this.cursosRaw = data;
+      this.campusRaw = data;
       this.arraycampus = data.content;
       //this.arraycampus = data.filter((d) => d.label);
       console.log(this.arraycampus + "array de campus aqui")
@@ -171,27 +176,22 @@ export default {
     },
 
     desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
+      if (this.atributo.ativo) {
         axios
-          .patch(`${baseApiUrl}api/curso/${this.atributo.id}`, {
-            ativo: false,
-          })
+          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${false}`)
           .then((res) => {
-            this.cursos = res.data;
             console.log(res.data);
-            alert("Esta sala foi desativada com sucesso !");
+            alert("Este curso foi desabilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
         axios
-          .patch(`${baseApiUrl}api/curso/${this.atributo.id}`, {
-            ativo: true,
-          })
+          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${true}`)
           .then((res) => {
             console.log(res.data);
-            alert("Este curso foi ativado com sucesso !");
+            alert("Este curso foi habilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
@@ -222,7 +222,7 @@ export default {
 
     async findCampus(id) {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/${id}`);
-      this.cursosRaw = data;
+      this.campusRaw = data;
       this.arraycampus = data.content;
       //this.arraycampus = data.filter((d) => d.label);
       console.log(this.arraycampus+ "array de campus aqui !!");
