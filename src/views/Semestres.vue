@@ -65,7 +65,7 @@
                     <v-col cols="8" sm="6" md="4">
                       <v-select
                         v-model="atributo.curso"
-                        label="curso"
+                        label="Curso"
                         item-text="label"
                         item-value="id"
                         :items="arraycursos"
@@ -117,6 +117,9 @@
       <v-icon small class="mr-2" @click="editItem(item)" color="blue">
         mdi-pencil
       </v-icon>
+        <v-icon small class="mr-2" @click="desativeItem(item)" color="red">
+        mdi-power
+      </v-icon>
     </template>
   </v-data-table>
 </template>
@@ -145,7 +148,7 @@ export default {
         sortable: false,
       },
       {
-        text: "curso",
+        text: "Curso",
         value: "curso.label",
         sortable: false,
       },
@@ -156,6 +159,8 @@ export default {
       },
     ],
     semestres: [],
+    arraycursos:[],
+    cursosRaw:[],
     editIndice: -1,
     atributo: {
       id: null,
@@ -192,20 +197,30 @@ export default {
   },
 
   methods: {
-    inicializar() {
+   async inicializar() {
       axios
         .get(`${baseApiUrl}api/semestre/search`)
         .then((res) => {
           this.semestres = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
             return c;
-          });
+          }).map((d) => ({
+            ...d,
+            curso: d.curso.map((c) => c.label),
+          }));
 
           console.log(this.semestres + "Array de Semestre");
         })
         .catch((error) => {
             console.log(error);
           });
+    },
+
+    async getCursos() {
+      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search`);
+      this.cursosRaw = data;
+      this.arraycursos = data.content;
+      console.log(this.arraycursos + "array de cursos aqui !!");
     },
 
     obterItem(item){
@@ -241,26 +256,22 @@ export default {
     },
 
     desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
+      if (this.atributo.ativo) {
         axios
-          .patch(`${baseApiUrl}/api/semestre`, {
-            ativo: false,
-          })
+          .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
-            alert("Este semestre foi desativado com sucesso !");
+            alert("Este semestre foi desabilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
         axios
-          .patch(`${baseApiUrl}/api/semestre`, {
-            ativo: true,
-          })
+          .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
-            alert("Esta semestre foi ativada com sucesso !");
+            alert("Esta semestre foi habilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
@@ -272,9 +283,10 @@ export default {
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(`${baseApiUrl}/api/semestre`, {
+          .put(`${baseApiUrl}api/semestre`, {
             id: this.atributo.id,
             label: this.atributo.label,
+            curso: this.atributo.curso,
             ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
@@ -288,9 +300,10 @@ export default {
         Object.assign(this.semestres[this.editIndice], this.atributo);
       } else {
         axios
-          .post(`${baseApiUrl}/api/semestre`, {
+          .post(`${baseApiUrl}api/semestre`, {
             label: this.atributo.label,
             curso: this.atributo.curso,
+            ativo:true,
           })
           .then((res) => {
             this.semestres = res.data;
