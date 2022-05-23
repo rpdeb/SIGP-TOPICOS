@@ -234,7 +234,7 @@ export default {
           .put(`${baseApiUrl}api/curso`, {
             id: this.atributo.id,
             label: this.atributo.label,
-            campus: this.atributo.campus,
+            campus: this.atributo.campus.id,
             ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
