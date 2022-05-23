@@ -18,7 +18,7 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ tituloForm }}</span>
+              <span class="text-h5">Cadastrar Bloco</span>
             </v-card-title>
             <!-- inserir mensagem para a interface -->
             <v-card-text>
@@ -49,7 +49,7 @@
 
         <v-dialog v-model="dialogDelete" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este Bloco ?</v-card-title>
+            <v-card-title class="text-h5">Deseja remover este Bloco ?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn small color="warning" dark @click="dialog = false">
@@ -83,6 +83,7 @@
 </style>
 
 <script>
+import { baseApiUrl } from '@/global';
 //Inserir importações
 export default {
   data: () => ({
@@ -124,21 +125,13 @@ export default {
     },
   }),
 
-  computed: {
-    tituloForm() {
-      return this.editIndice === -1 ? "Cadastrar Bloco" : "Editar Dados";
-    },
-    mudarStatus() {
-      return this.atributo.ativo == "Ativo" ? "desativar " : "remover ";
-    },
-  },
   mounted() {
     this.inicializar();
     this.getCampus();
   },
   methods: {
     async inicializar() {
-      axios.get(`${baseApiUrl}api/curso/search`).then((res) => {
+      axios.get(`${baseApiUrl}api/bloco/search`).then((res) => {
         this.blocos = res.data.content;
         console.log(this.blocos + "Arrayyyy de Campussss");
       }).catch(console.warn("erro"));
@@ -165,35 +158,21 @@ export default {
     },
 
     deleteItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
         axios
-          .patch(url + this.atributo.id, {
-            ativo: false,
+          .remove(`${baseApiUrl}api/bloco`, {
+           
           })
           .then((res) => {
             this.blocos = res.data;
             console.log(res.data);
-            alert("Este bloco foi desativado com sucesso !");
+            alert("Este bloco foi removido com sucesso !");
 
           })
           .catch((error) => {
             console.log(error);
           });
-      } else {
-        axios
-          .patch(url + this.atributo.id, {
-            ativo: true,
-          })
-          .then((res) => {
-            console.log(res.data);
-            alert("Este bloco foi ativado com sucesso !");
 
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      this.fecharDesativar();
+          this.fecharDelete();
     },
 
     fechar() {
@@ -203,7 +182,8 @@ export default {
         this.editIndice = -1;
       });
     },
-    fecharDesativar() {
+
+    fecharDelete() {
       this.dialogDesativar = false;
       this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
@@ -216,27 +196,12 @@ export default {
       this.cursosRaw = data;
       this.arraycampus = data.content;
       //this.arraycampus = data.filter((d) => d.label);
-      console.log(`${this.arraycampus}array de campus aquii !!!!!!!!!!!`)
+      console.log(this.arraycampus+ "array de campus aquii !");
     },
 
     salvar() {
-      if (this.editIndice > -1) {
         axios
-          .put(`${baseApiUrl}api/bloco`, {
-
-          })
-          .then((res) => {
-            alert("Os dados foram atualizados com sucesso !");
-            console.log(res.data);
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        Object.assign(this.blocos[this.editIndice], this.atributo);
-      } else {
-        axios
-          .post(`${baseApiUrl}api/curso`, {
+          .post(`${baseApiUrl}api/bloco`, {
 
           })
           .then((res) => {
@@ -246,7 +211,6 @@ export default {
             this.reloadPage();
           });
         this.blocos.push(this.atributo);
-      }
       this.fechar();
     },
   },
