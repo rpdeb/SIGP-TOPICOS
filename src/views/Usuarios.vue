@@ -69,6 +69,7 @@
                         v-model="atributo.campus"
                         :items="arraycampus"
                         item-value="id"
+                        item-text="label"
                         label="Campus"
                       ></v-select>
                     </v-col>
@@ -77,6 +78,7 @@
                         v-model="atributo.curso"
                         :items="arraycursos"
                         item-value="id"
+                        item-text="label"
                         label="Curso"
                       ></v-select>
                     </v-col>
