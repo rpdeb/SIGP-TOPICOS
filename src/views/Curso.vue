@@ -180,9 +180,16 @@ export default {
 
   methods: {
     //método para preencher o data table
+<<<<<<< Updated upstream
     async inicializar() {
       axios
         .get(`${baseApiUrl}api/curso/search`)
+=======
+     async inicializar() {
+      
+      this.axios
+        .get(`${baseApiUrl}api/campus/search`, this.cursos)
+>>>>>>> Stashed changes
         .then((res) => {
           this.cursos = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
