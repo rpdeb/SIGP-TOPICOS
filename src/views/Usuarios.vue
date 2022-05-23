@@ -264,15 +264,18 @@ export default {
       //console.log(this.arraycursos + "array de cursos aqui !!");
     },
 
-    editItem(item) {
+    obterItem(item){
       this.editIndice = this.usuarios.indexOf(item);
       this.atributo = Object.assign({}, item);
-      this.dialog = true;
+    },
+
+    editItem(item) {
+     this.obterItem();
+     this.dialog = true;
     },
 
     desativeItem(item) {
-      this.editIndice = this.usuarios.indexOf(item);
-      this.atributo = Object.assign({}, item);
+      this.obterItem();
       this.dialogDesativar = true;
     },
 
@@ -301,21 +304,23 @@ export default {
       this.fecharDesativar();
     },
 
-    fechar() {
-      this.dialog = false;
+   fecharDialog() {
       this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });
     },
 
+    fechar() {
+      this.dialog = false;
+      this.fecharDialog();
+    },
+
     fecharDesativar() {
       this.dialogDesativar = false;
-      this.$nextTick(() => {
-        this.atributo = Object.assign({}, this.atributoPadrao);
-        this.editIndice = -1;
-      });
+      this.fecharDialog();
     },
+
     selecionarPerfil() {
       switch (this.perfilSelecionado) {
         case "Admin":

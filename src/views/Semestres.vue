@@ -1,17 +1,37 @@
 <template>
-  <v-data-table :headers="titulos" :items="semestres" :search="search" class="elevation-2 data-table" :footer-props="{
-    'items-per-page-text': 'Itens por página',
-  }">
+  <v-data-table
+    :headers="titulos"
+    :items="semestres"
+    :search="search"
+    class="elevation-2 data-table"
+    :footer-props="{
+      'items-per-page-text': 'Itens por página',
+    }"
+  >
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Semestres</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Pesquisar"
+          single-line
+          hide-details
+        >
         </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+            <v-btn
+              small
+              class="mx-2 add"
+              fab
+              dark
+              color="green"
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon dark> mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -36,11 +56,22 @@
                       ></v-select>
                     </v-col> -->
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.label" label="Semestre" required></v-text-field>
+                      <v-text-field
+                        v-model="atributo.label"
+                        label="Semestre"
+                        required
+                      ></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Oferta" required></v-select>
+                      <v-select
+                        v-model="atributo.curso"
+                        label="curso"
+                        item-text="label"
+                        item-value="id"
+                        :items="arraycursos"
+                      >
+                        ></v-select
+                      >
                     </v-col>
                   </v-row>
                 </v-container>
@@ -51,24 +82,35 @@
               <v-btn small color="warning" dark @click="fechar">
                 Cancelar
               </v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar"
+                >Salvar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este Campus ?</v-card-title>
+            <v-card-title class="text-h5"
+              >Deseja {{ mudarStatus }} este Semestre ?</v-card-title
+            >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialogDesativar = false">
-                Não</v-btn>
-              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
+              <v-btn
+                small
+                color="warning"
+                dark
+                @click="dialogDesativar = false"
+              >
+                Não</v-btn
+              >
+              <v-btn small color="primary" dark @click="desativeItemConfirm"
+                >Sim</v-btn
+              >
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
         </v-dialog>
-
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
@@ -111,8 +153,8 @@ export default {
         sortable: false,
       },
       {
-        text: "Oferta",
-        value: "oferta",
+        text: "curso",
+        value: "curso.label",
         sortable: false,
       },
       {
@@ -126,13 +168,13 @@ export default {
     atributo: {
       id: null,
       label: "",
-      oferta: "",
+      curso: null,
       ativo: true,
     },
     atributoPadrao: {
       id: null,
       label: "",
-      oferta: "",
+      curso: null,
       ativo: true,
     },
   }),
@@ -154,6 +196,7 @@ export default {
 
   mounted() {
     this.inicializar();
+    this.getCursos();
   },
 
   methods: {
@@ -161,32 +204,48 @@ export default {
       axios
         .get(`${baseApiUrl}api/semestre/search`)
         .then((res) => {
-          this.semestre = res.data;
-          console.log(this.semestre + "Arrayyyy de Semestree");
+          this.semestres = res.data.content.map((c) => {
+            c.ativo = c.ativo ? "Ativo" : "Inativo";
+            return c;
+          });
+
+          console.log(this.semestres + "Array de Semestre");
         })
-        .catch(console.warn("erro"));
+        .catch((error) => {
+            console.log(error);
+          });
+    },
+
+    obterItem(item){
+      this.editIndice = this.usuarios.indexOf(item);
+      this.atributo = Object.assign({}, item);
     },
 
     editItem(item) {
-      this.editIndice = this.semestres.indexOf(item);
-      this.atributo = Object.assign({}, item);
-      this.dialog = true;
+     this.obterItem();
+     this.dialog = true;
+    },
+
+    desativeItem(item) {
+      this.obterItem();
+      this.dialogDesativar = true;
+    },
+
+    fecharDialog() {
+      this.$nextTick(() => {
+        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.editIndice = -1;
+      });
     },
 
     fechar() {
       this.dialog = false;
-      this.$nextTick(() => {
-        this.atributo = Object.assign({}, this.atributoPadrao);
-        this.editIndice = -1;
-      });
+      this.fecharDialog();
     },
 
     fecharDesativar() {
       this.dialogDesativar = false;
-      this.$nextTick(() => {
-        this.atributo = Object.assign({}, this.atributoPadrao);
-        this.editIndice = -1;
-      });
+      this.fecharDialog();
     },
 
     desativeItemConfirm() {
@@ -236,15 +295,17 @@ export default {
           });
         Object.assign(this.semestres[this.editIndice], this.atributo);
       } else {
-        axios.post(`${baseApiUrl}/api/semestre`, {
-          label: this.atributo.label,
-          oferta: this.atributo.oferta
-        }).then((res) => {
-          this.semestres = res.data;
-          alert("Os dados foram adicionados com sucesso !");
-          console.log(res.data);
-          this.reloadPage();
-        });
+        axios
+          .post(`${baseApiUrl}/api/semestre`, {
+            label: this.atributo.label,
+            curso: this.atributo.curso,
+          })
+          .then((res) => {
+            this.semestres = res.data;
+            alert("Os dados foram adicionados com sucesso !");
+            console.log(res.data);
+            this.reloadPage();
+          });
         this.semestres.push(this.atributo);
       }
       this.fechar();

@@ -152,7 +152,9 @@ export default {
           return c;
         });
 
-      }).catch(console.warn("erro"))
+      }).catch((error) => {
+            console.log(error);
+          })
     },
     //método para buscar campus existentes e preencher no array 
     async getCampus() {
@@ -256,7 +258,10 @@ export default {
           alert("Os dados foram adicionados com sucesso !");
           console.log(res.data);
           this.reloadPage();
-        });
+        })
+         .catch((error) => {
+            console.log(error);
+          });
         console.log(this.atributo)
         this.cursos.push(this.atributo);
 

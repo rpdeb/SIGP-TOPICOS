@@ -142,7 +142,9 @@ export default {
 
         console.log(this.campus + "Array de campuss");
         console.log(res.data);
-      }).catch(console.warn("erro"));
+      }).catch((error) => {
+            console.log(error);
+          });
     },
 
     editItem(item) {
