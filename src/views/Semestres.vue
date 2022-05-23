@@ -117,7 +117,7 @@
       <v-icon small class="mr-2" @click="editItem(item)" color="blue">
         mdi-pencil
       </v-icon>
-        <v-icon small class="mr-2" @click="desativeItem(item)" color="red">
+      <v-icon small class="mr-2" @click="desativeItem(item)" color="red">
         mdi-power
       </v-icon>
     </template>
@@ -152,6 +152,7 @@ export default {
         value: "curso.label",
         sortable: false,
       },
+      { text: "Status", value: "ativo" },
       {
         text: "Ações",
         value: "acoes",
@@ -159,8 +160,8 @@ export default {
       },
     ],
     semestres: [],
-    arraycursos:[],
-    cursosRaw:[],
+    arraycursos: [],
+    cursosRaw: [],
     editIndice: -1,
     atributo: {
       id: null,
@@ -197,23 +198,20 @@ export default {
   },
 
   methods: {
-   async inicializar() {
+    async inicializar() {
       axios
         .get(`${baseApiUrl}api/semestre/search`)
         .then((res) => {
-          this.semestres = res.data.content.map((c) => {
-            c.ativo = c.ativo ? "Ativo" : "Inativo";
-            return c;
-          }).map((d) => ({
-            ...d,
-            curso: d.curso.map((c) => c.label),
-          }));
-
+          this.semestres = res.data.content
+            .map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
           console.log(this.semestres + "Array de Semestre");
         })
         .catch((error) => {
-            console.log(error);
-          });
+          console.log(error);
+        });
     },
 
     async getCursos() {
@@ -223,14 +221,14 @@ export default {
       console.log(this.arraycursos + "array de cursos aqui !!");
     },
 
-    obterItem(item){
+    obterItem(item) {
       this.editIndice = this.usuarios.indexOf(item);
       this.atributo = Object.assign({}, item);
     },
 
     editItem(item) {
-     this.obterItem();
-     this.dialog = true;
+      this.obterItem();
+      this.dialog = true;
     },
 
     desativeItem(item) {
@@ -280,6 +278,10 @@ export default {
       this.fecharDesativar();
     },
 
+    reloadPage() {
+      window.location.reload();
+    },
+
     salvar() {
       if (this.editIndice > -1) {
         axios
@@ -303,7 +305,7 @@ export default {
           .post(`${baseApiUrl}api/semestre`, {
             label: this.atributo.label,
             curso: this.atributo.curso,
-            ativo:true,
+            ativo: true,
           })
           .then((res) => {
             this.semestres = res.data;

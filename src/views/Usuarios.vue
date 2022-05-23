@@ -170,6 +170,7 @@ export default {
         value: "curso.label",
         sortable: false,
       },
+      { text: "Status", value: "ativo" },
       {
         text: "Ações",
         value: "acoes",
@@ -230,11 +231,7 @@ export default {
       this.axios
         .get(`${baseApiUrl}api/usuario/search`)
         .then((res) => {
-          this.usuarios = res.data.map((d) => ({
-            ...d,
-            campus: d.campus.map((a) => a.label), 
-            curso: d.curso.map((c) => c.label),
-          }));
+          this.usuarios = res.data;
           console.log(this.usuarios + "array de usuários !!");
         })
         .catch((error) => {
@@ -338,6 +335,9 @@ export default {
          this.tipo = 0;
       } 
     */
+    },
+    reloadPage() {
+      window.location.reload();
     },
 
     salvar() {
