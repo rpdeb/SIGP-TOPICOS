@@ -1,17 +1,37 @@
 <template>
-  <v-data-table :headers="titulos" :items="semestres" :search="search" class="elevation-2 data-table" :footer-props="{
-    'items-per-page-text': 'Itens por página',
-  }">
+  <v-data-table
+    :headers="titulos"
+    :items="semestres"
+    :search="search"
+    class="elevation-2 data-table"
+    :footer-props="{
+      'items-per-page-text': 'Itens por página',
+    }"
+  >
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Semestres</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Pesquisar"
+          single-line
+          hide-details
+        >
         </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+            <v-btn
+              small
+              class="mx-2 add"
+              fab
+              dark
+              color="green"
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon dark> mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -36,11 +56,22 @@
                       ></v-select>
                     </v-col> -->
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.label" label="Semestre" required></v-text-field>
+                      <v-text-field
+                        v-model="atributo.label"
+                        label="Semestre"
+                        required
+                      ></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Oferta" required></v-select>
+                      <v-select
+                        v-model="atributo.curso"
+                        label="Curso"
+                        item-text="label"
+                        item-value="id"
+                        :items="arraycursos"
+                      >
+                        ></v-select
+                      >
                     </v-col>
                   </v-row>
                 </v-container>
@@ -51,48 +82,54 @@
               <v-btn small color="warning" dark @click="fechar">
                 Cancelar
               </v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar"
+                >Salvar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este Campus ?</v-card-title>
+            <v-card-title class="text-h5"
+              >Deseja {{ mudarStatus }} este Semestre ?</v-card-title
+            >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialogDesativar = false">
-                Não</v-btn>
-              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
+              <v-btn
+                small
+                color="warning"
+                dark
+                @click="dialogDesativar = false"
+              >
+                Não</v-btn
+              >
+              <v-btn small color="primary" dark @click="desativeItemConfirm"
+                >Sim</v-btn
+              >
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
         </v-dialog>
-
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)" color="blue">
         mdi-pencil
       </v-icon>
+      <v-icon small class="mr-2" @click="desativeItem(item)" color="red">
+         mdi-power-standby
+      </v-icon>
     </template>
   </v-data-table>
 </template>
 
+<!-- 
 <style>
-.add {
-  width: 40px;
-  height: 40px;
-}
 
-.template-add {
-  padding-top: 1%;
-}
-
-.data-table {
-  padding: 3%;
-}
 </style>
+-->
+
 <script>
 import Vue from "vue";
 import axios from "axios";
@@ -104,6 +141,7 @@ export default {
   data: () => ({
     search: "",
     dialog: false,
+    dialogDesativar: false,
     titulos: [
       {
         text: "Semestre",
@@ -111,10 +149,11 @@ export default {
         sortable: false,
       },
       {
-        text: "Oferta",
-        value: "oferta",
+        text: "Curso",
+        value: "curso.label",
         sortable: false,
       },
+      { text: "Status", value: "ativo" },
       {
         text: "Ações",
         value: "acoes",
@@ -122,17 +161,19 @@ export default {
       },
     ],
     semestres: [],
+    arraycursos: [],
+    cursosRaw: [],
     editIndice: -1,
     atributo: {
       id: null,
       label: "",
-      oferta: "",
+      curso: null,
       ativo: true,
     },
     atributoPadrao: {
       id: null,
       label: "",
-      oferta: "",
+      curso: null,
       ativo: true,
     },
   }),
@@ -150,32 +191,55 @@ export default {
     dialog(val) {
       val || this.fechar();
     },
+    dialogDesativar(val) {
+      val || this.fecharDesativar();
+    },
   },
 
   mounted() {
     this.inicializar();
+    this.getCursos();
   },
 
   methods: {
-    inicializar() {
+    async inicializar() {
       axios
         .get(`${baseApiUrl}api/semestre/search`)
         .then((res) => {
-          this.semestre = res.data;
-          console.log(this.semestre + "Arrayyyy de Semestree");
+          this.semestres = res.data.content
+            .map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
+          console.log(this.semestres + "Array de Semestre");
         })
-        .catch(console.warn("erro"));
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    async getCursos() {
+      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search`);
+      this.cursosRaw = data;
+      this.arraycursos = data.content;
+      console.log(this.arraycursos + "array de cursos aqui !!");
     },
 
     editItem(item) {
-      this.editIndice = this.semestres.indexOf(item);
+      this.editIndice = this.usuarios.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialog = true;
     },
 
+    desativeItem(item) {
+      this.editIndice = this.usuarios.indexOf(item);
+      this.atributo = Object.assign({}, item);
+      this.dialogDesativar = true;
+    },
+
     fechar() {
       this.dialog = false;
-      this.$nextTick(() => {
+       this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });
@@ -183,33 +247,29 @@ export default {
 
     fecharDesativar() {
       this.dialogDesativar = false;
-      this.$nextTick(() => {
+       this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });
     },
 
     desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
+      if (this.atributo.ativo) {
         axios
-          .patch(`${baseApiUrl}/api/semestre`, {
-            ativo: false,
-          })
+          .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
-            alert("Este semestre foi desativado com sucesso !");
+            alert("Este semestre foi desabilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
         axios
-          .patch(`${baseApiUrl}/api/semestre`, {
-            ativo: true,
-          })
+          .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
-            alert("Esta semestre foi ativada com sucesso !");
+            alert("Esta semestre foi habilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
@@ -218,12 +278,17 @@ export default {
       this.fecharDesativar();
     },
 
+    reloadPage() {
+      window.location.reload();
+    },
+
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(`${baseApiUrl}/api/semestre`, {
+          .put(`${baseApiUrl}api/semestre`, {
             id: this.atributo.id,
             label: this.atributo.label,
+            curso: this.atributo.curso,
             ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
@@ -236,15 +301,18 @@ export default {
           });
         Object.assign(this.semestres[this.editIndice], this.atributo);
       } else {
-        axios.post(`${baseApiUrl}/api/semestre`, {
-          label: this.atributo.label,
-          oferta: this.atributo.oferta
-        }).then((res) => {
-          this.semestres = res.data;
-          alert("Os dados foram adicionados com sucesso !");
-          console.log(res.data);
-          this.reloadPage();
-        });
+        axios
+          .post(`${baseApiUrl}api/semestre`, {
+            label: this.atributo.label,
+            curso: this.atributo.curso,
+            ativo: true,
+          })
+          .then((res) => {
+            this.semestres = res.data;
+            alert("Os dados foram adicionados com sucesso !");
+            console.log(res.data);
+            this.reloadPage();
+          });
         this.semestres.push(this.atributo);
       }
       this.fechar();

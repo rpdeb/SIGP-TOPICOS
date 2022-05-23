@@ -78,20 +78,11 @@
   </v-data-table>
 </template>
 
+<!-- 
 <style>
-.add {
-  width: 40px;
-  height: 40px;
-}
 
-.template-add {
-  padding-top: 1%;
-}
-
-.data-table {
-  padding: 3%;
-}
 </style>
+-->
 
 <script>
 export default {
