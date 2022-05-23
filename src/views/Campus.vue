@@ -4,7 +4,7 @@
   }">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Gerenciamento de Câmpus</v-toolbar-title>
+        <v-toolbar-title>Gerenciamento de Campus</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details></v-text-field>
         <v-spacer></v-spacer>
@@ -136,11 +136,11 @@ export default {
     inicializar() {
       axios.get(`${baseApiUrl}api/campus/search`).then((res) => {
         this.campus = res.data.content.map((c) => {
-          c.ativo = c.ativo ? "Ativado" : "Desativado"
+          c.ativo = c.ativo ? "Ativo" : "Inativo"
           return c;
         });
 
-        console.log(this.campus + "Array de câmpuss");
+        console.log(this.campus + "Array de campuss");
         console.log(res.data);
       }).catch(console.warn("erro"));
     },
@@ -158,14 +158,11 @@ export default {
     },
 
     desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativado") {
-        axios.patch(`${baseApiUrl}api/campus/` + this.atributo.id + this.atributo.ativo, {
-          id: this.atributo.id,
-          ativo: false,
-        })
+      if (this.atributo.ativo) {
+        axios.patch(`${baseApiUrl}api/campus/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
-            alert("Este câmpus foi desativado com sucesso !");
+            alert("Este campus foi desabilitado com sucesso !");
             console.warn("entrou no desativar");
           })
           .catch((error) => {
@@ -173,14 +170,10 @@ export default {
           });
       } else {
         axios
-          .patch(`${baseApiUrl}api/campus/` + this.atributo.id, {
-            ativo: true,
-
-          })
+          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${true}`)
           .then((res) => {
             console.log(res.data);
-            alert("Este câmpus foi ativado com sucesso !");
-            console.warn("entrou no ativar");
+            alert("Este campus foi habilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
@@ -215,7 +208,7 @@ export default {
           .put(`${baseApiUrl}api/campus`, {
             id: this.atributo.id,
             label: this.atributo.label,
-            ativo: this.atributo.ativo === "Ativado",
+            ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
