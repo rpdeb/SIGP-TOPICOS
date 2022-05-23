@@ -105,7 +105,7 @@
             </v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialogDesativar = false"
+              <v-btn small color="warning" dark @click="dialogDesativar=false"
                 >Não</v-btn
               >
               <v-btn
@@ -149,6 +149,7 @@ export default {
   data: () => ({
     search: "",
     dialog: false,
+    dialogDesativar: false,
     titulos: [
       {
         text: "Perfil",
@@ -217,6 +218,9 @@ export default {
   watch: {
     dialog(val) {
       val || this.fechar();
+    },
+    dialogDesativar(val) {
+      val || this.fecharDesativar();
     },
   },
 
@@ -294,21 +298,20 @@ export default {
       this.fecharDesativar();
     },
 
-   fecharDialog() {
+    fechar() {
+      this.dialog = false;
       this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });
     },
 
-    fechar() {
-      this.dialog = false;
-      this.fecharDialog();
-    },
-
     fecharDesativar() {
       this.dialogDesativar = false;
-      this.fecharDialog();
+      this.$nextTick(() => {
+        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.editIndice = -1;
+      });
     },
 
     selecionarPerfil() {

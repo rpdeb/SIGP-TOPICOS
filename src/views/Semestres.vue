@@ -118,7 +118,7 @@
         mdi-pencil
       </v-icon>
       <v-icon small class="mr-2" @click="desativeItem(item)" color="red">
-        mdi-power
+         mdi-power-standby
       </v-icon>
     </template>
   </v-data-table>
@@ -141,6 +141,7 @@ export default {
   data: () => ({
     search: "",
     dialog: false,
+    dialogDesativar: false,
     titulos: [
       {
         text: "Semestre",
@@ -190,6 +191,9 @@ export default {
     dialog(val) {
       val || this.fechar();
     },
+    dialogDesativar(val) {
+      val || this.fecharDesativar();
+    },
   },
 
   mounted() {
@@ -221,36 +225,32 @@ export default {
       console.log(this.arraycursos + "array de cursos aqui !!");
     },
 
-    obterItem(item) {
+    editItem(item) {
       this.editIndice = this.usuarios.indexOf(item);
       this.atributo = Object.assign({}, item);
-    },
-
-    editItem(item) {
-      this.obterItem();
       this.dialog = true;
     },
 
     desativeItem(item) {
-      this.obterItem();
+      this.editIndice = this.usuarios.indexOf(item);
+      this.atributo = Object.assign({}, item);
       this.dialogDesativar = true;
     },
 
-    fecharDialog() {
-      this.$nextTick(() => {
+    fechar() {
+      this.dialog = false;
+       this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });
     },
 
-    fechar() {
-      this.dialog = false;
-      this.fecharDialog();
-    },
-
     fecharDesativar() {
       this.dialogDesativar = false;
-      this.fecharDialog();
+       this.$nextTick(() => {
+        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.editIndice = -1;
+      });
     },
 
     desativeItemConfirm() {
