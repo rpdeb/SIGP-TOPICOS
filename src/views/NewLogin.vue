@@ -3,7 +3,7 @@
     <form>
       <div class="box-container">
         <v-img
-          :src="require('../assets/visitantes.jpg')"
+          :src="require('../assets/img/visitantes.jpg')"
           class="my-1"
           contain
           height="110"

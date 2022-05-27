@@ -1,38 +1,20 @@
 <template>
-  <v-data-table
-    :headers="titulos"
-    :items="ofertas"
-    :search="search"
-    class="elevation-2 data-table" 
-      :footer-props="{
-           'items-per-page-text':'produtos por página'
-      }"
-  >
+  <v-data-table :headers="titulos" :items="ofertas" :search="search" class="elevation-2 data-table" :footer-props="{
+    'items-per-page-text': 'Itens por página'
+  }">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Oferta</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Pesquisar"
-          single-line
-          hide-details
-        ></v-text-field>
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
-            <v-btn
-              small
-              class="mx-2 add"
-              fab
-              dark
-              color="green"
-              v-bind="attrs"
-              v-on="on"
-              ><v-icon dark> mdi-plus</v-icon></v-btn
-            >
+            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+              <v-icon dark> mdi-plus</v-icon>
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -44,118 +26,60 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.oferta"
-                        :items="items"
-                        :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Matriz Curricular"
-                        required
-                      ></v-select>
+                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Matriz Curricular" required></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.oferta"
-                        :items="items"
-                        :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Periodo"
-                        required
-                      ></v-select>
+                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Periodo" required></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.oferta"
-                        :items="items"
-                        :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Disciplina"
-                        required
-                      ></v-select>
+                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Disciplina" required></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.oferta"
-                        :items="items"
-                        :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Dia da semana"
-                        required
-                      ></v-select>
+                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Dia da semana" required></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.oferta"
-                        :items="items"
-                        :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Professor"
-                        required
-                      ></v-select>
+                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Professor" required></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.oferta"
-                        :items="items"
-                        :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Turno"
-                        required
-                      ></v-select>
+                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Turno" required></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.oferta"
-                        :items="items"
-                        :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Campus-Bloco/Piso"
-                        required
-                      ></v-select>
+                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Campus-Bloco/Piso" required></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.oferta"
-                        :items="items"
-                        :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Sala"
-                        required
-                      ></v-select>
+                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Sala" required></v-select>
                     </v-col>
                     <v-col cols="12" sm="6">
-                      <v-select
-                        v-model="value"
-                        :items="aulas"
-                        attach
-                        chips
-                        label="Aulas"
-                        multiple
-                      ></v-select>
+                      <v-select v-model="value" :items="aulas" attach chips label="Aulas" multiple></v-select>
                     </v-col>
-
-                   
                   </v-row>
                 </v-container>
               </v-form>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog = false"
-                >Cancelar</v-btn
-              >
-              <v-btn small color="primary" class="mr-4" @click="checkForm"
-                >Salvar</v-btn
-              >
+              <v-btn small color="warning" dark @click="dialog = false">Cancelar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="checkForm">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} esta Oferta ?</v-card-title
-            >
+            <v-card-title class="text-h5">Deseja {{ mudarStatus }} esta Oferta ?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn small color="warning" dark @click="dialog = false">
-                Não</v-btn
-              >
-              <v-btn small color="primary" dark @click="desativeItemConfirm"
-                >Sim</v-btn
-              >
+                Não</v-btn>
+              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -173,18 +97,11 @@
   </v-data-table>
 </template>
 
+<!-- 
 <style>
-.add {
-  width: 40px;
-  height: 40px;
-}
-.template-add {
-  padding-top: 1%;
-}
-.data-table {
-  padding: 3%;
-}
+
 </style>
+-->
 
 <script>
 export default {

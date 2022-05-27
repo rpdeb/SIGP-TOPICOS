@@ -3,10 +3,10 @@
     :headers="titulos"
     :items="cursos"
     :search="search"
-    class="elevation-2 data-table" 
-      :footer-props="{
-           'items-per-page-text':'produtos por página'
-      }"
+    class="elevation-2 data-table"
+    :footer-props="{
+      'items-per-page-text': 'Itens por página',
+    }"
   >
     <template v-slot:top>
       <v-toolbar flat>
@@ -19,7 +19,8 @@
           label="Pesquisar"
           single-line
           hide-details
-        ></v-text-field>
+        >
+        </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
@@ -31,8 +32,9 @@
               color="green"
               v-bind="attrs"
               v-on="on"
-              ><v-icon dark> mdi-plus</v-icon></v-btn
             >
+              <v-icon dark> mdi-plus</v-icon>
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -54,6 +56,8 @@
                       <v-select
                         v-model="atributo.campus"
                         label="Campus"
+                        item-text="label"
+                        item-value="id"
                         :items="arraycampus"
                       >
                         ></v-select
@@ -65,9 +69,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fechar"
-                >Cancelar</v-btn
-              >
+              <v-btn small color="warning" dark @click="fechar">Cancelar</v-btn>
               <v-btn small color="primary" class="mr-4" @click="salvar"
                 >Salvar</v-btn
               >
@@ -82,7 +84,12 @@
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialogDesativar = false">
+              <v-btn
+                small
+                color="warning"
+                dark
+                @click="dialogDesativar = false"
+              >
                 Não</v-btn
               >
               <v-btn small color="primary" dark @click="desativeItemConfirm"
@@ -105,24 +112,17 @@
   </v-data-table>
 </template>
 
+<!-- 
 <style>
-.add {
-  width: 40px;
-  height: 40px;
-}
-.template-add {
-  padding-top: 1%;
-}
-.data-table {
-  padding: 3%;
-}
+
 </style>
+-->
 
 <script>
 import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import {  baseApiUrl } from "@/global";
+import { baseApiUrl } from "@/global";
 Vue.use(VueAxios, axios);
 
 export default {
@@ -132,22 +132,25 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-     { text: "Curso", value: "label" },
-     { text: "Campus", value: "campus" },
-     { text: "Status", value: "ativo" },
-     { text: "Ações", value: "acoes" },
+      { text: "Curso", value: "label" },
+      { text: "Campus", value: "campus.label" },
+      { text: "Status", value: "ativo" },
+      { text: "Ações", value: "acoes" },
     ],
     cursos: [],
+    campusRaw: [],
     arraycampus: [],
     editIndice: -1,
     atributo: {
       id: null,
       label: "",
+      campus: null,
       ativo: true,
     },
     atributoPadrao: {
       id: null,
       label: "",
+      campus: null,
       ativo: true,
     },
   }),
@@ -165,34 +168,38 @@ export default {
     dialog(val) {
       val || this.fechar();
     },
+    dialogDesativar(val) {
+      val || this.fecharDesativar();
+    },
   },
 
   mounted() {
     this.inicializar();
+    this.getCampus();
   },
 
   methods: {
     //método para preencher o data table
-     async inicializar() {
-      this.axios
+    async inicializar() {
+      axios
         .get(`${baseApiUrl}api/curso/search`)
         .then((res) => {
-          this.cursos = res.data.map((d) => ({...d,campus: d.campus.map((a) => a.label),}))
-             console.dir(res+"sucesuuu");
-             console.dir(this.cursos+"segura papaiiii");
+          this.cursos = res.data.content.map((c) => {
+            c.ativo = c.ativo ? "Ativo" : "Inativo";
+            return c;
+          });
         })
         .catch((error) => {
-          console.warn(error);
+          console.log(error);
         });
-      await Promise.all([this.getCampus()]);
     },
-      //método para buscar campus existentes e preencher no array 
-      async getCampus() {
+    //método para buscar campus existentes e preencher no array
+    async getCampus() {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
       this.campusRaw = data;
-      this.arraycampus = data;
+      this.arraycampus = data.content;
       //this.arraycampus = data.filter((d) => d.label);
-      console.log(`${this.arraycampus}array de campus aquii !!!!!!!!!!!`)
+      console.log(this.arraycampus + "array de campus aqui");
     },
 
     editItem(item) {
@@ -208,33 +215,32 @@ export default {
     },
 
     desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
+      if (this.atributo.ativo) {
         axios
-          .patch(`${baseApiUrl}api/curso/${this.atributo.id}`, {
-            ativo: false,
-          })
+          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${false}`)
           .then((res) => {
-            this.cursos = res.data;
             console.log(res.data);
-            alert("Esta sala foi desativada com sucesso !");
+            alert("Este curso foi desabilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
         axios
-          .patch(`${baseApiUrl}api/curso/${this.atributo.id}`, {
-            ativo: true,
-          })
+          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${true}`)
           .then((res) => {
             console.log(res.data);
-            alert("Este curso foi ativado com sucesso !");
+            alert("Este curso foi habilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
           });
       }
       this.fecharDesativar();
+    },
+
+    reloadPage() {
+      window.location.reload();
     },
 
     fechar() {
@@ -253,10 +259,23 @@ export default {
       });
     },
 
+    async findCampus(id) {
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/${id}`);
+      this.campusRaw = data;
+      this.arraycampus = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(this.arraycampus + "array de campus aqui !!");
+    },
+
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(baseApiUrl, {})
+          .put(`${baseApiUrl}api/curso`, {
+            id: this.atributo.id,
+            label: this.atributo.label,
+            campus: this.atributo.campus.id,
+            ativo: this.atributo.ativo === "Ativo",
+          })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
             console.log(res.data);
@@ -267,12 +286,21 @@ export default {
           });
         Object.assign(this.cursos[this.editIndice], this.atributo);
       } else {
-        axios.post(baseApiUrl, {}).then((res) => {
-          this.cursos = res.data;
-          alert("Os dados foram adicionados com sucesso !");
-          console.log(res.data);
-          this.reloadPage();
-        });
+        axios
+          .post(`${baseApiUrl}api/curso`, {
+            label: this.atributo.label,
+            campus: this.atributo.campus,
+          })
+          .then((res) => {
+            this.cursos = res.data;
+            alert("Os dados foram adicionados com sucesso !");
+            console.log(res.data);
+            this.reloadPage();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        console.log(this.atributo);
         this.cursos.push(this.atributo);
       }
       this.fechar();

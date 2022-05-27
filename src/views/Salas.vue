@@ -1,38 +1,20 @@
 <template>
-  <v-data-table
-    :headers="titulos"
-    :items="sala"
-    :search="search"
-    class="elevation-2 data-table" 
-      :footer-props="{
-           'items-per-page-text':'produtos por página'
-      }"   
-  >
+  <v-data-table :headers="titulos" :items="sala" :search="search" class="elevation-2 data-table" :footer-props="{
+    'items-per-page-text': 'Itens por página'
+  }">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Sala</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Pesquisar"
-          single-line
-          hide-details
-        ></v-text-field>
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
-            <v-btn
-              small
-              class="mx-2 add"
-              fab
-              dark
-              color="green"
-              v-bind="attrs"
-              v-on="on"
-              ><v-icon dark> mdi-plus</v-icon></v-btn
-            >
+            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+              <v-icon dark> mdi-plus</v-icon>
+            </v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -44,40 +26,20 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.sala"
-                        label="Sala"
-                        required
-                      ></v-text-field>
+                      <v-text-field v-model="atributo.sala" label="Sala" required></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.campus"
-                        label="Campus-Bloco/Piso"
-                        :items="campusbloco"
-                      ></v-select>
+                      <v-select v-model="atributo.campus" label="Campus-Bloco/Piso" :items="campusbloco"></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.estruturafisica"
-                        label="Estrutura Física"
-                      ></v-text-field>
+                      <v-text-field v-model="atributo.estruturafisica" label="Estrutura Física"></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.tipodesala"
-                        label="Tipo de Sala"
-                        :items="tiposdesala"
-                      >
-                        ></v-select
-                      >
+                      <v-select v-model="atributo.tipodesala" label="Tipo de Sala" :items="tiposdesala">
+                        ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.capacidade"
-                        label="Capacidade"
-                        type="number"
-                      ></v-text-field>
+                      <v-text-field v-model="atributo.capacidade" label="Capacidade" type="number"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -85,29 +47,20 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog = false"
-                >Cancelar</v-btn
-              >
-              <v-btn small color="primary" class="mr-4" @click="checkForm"
-                >Salvar</v-btn
-              >
+              <v-btn small color="warning" dark @click="dialog = false">Cancelar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="checkForm">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} esta Sala ?</v-card-title
-            >
+            <v-card-title class="text-h5">Deseja {{ mudarStatus }} esta Sala ?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn small color="warning" dark @click="dialog = false">
-                Não</v-btn
-              >
-              <v-btn small color="primary" dark @click="desativeItemConfirm"
-                >Sim</v-btn
-              >
+                Não</v-btn>
+              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -125,18 +78,11 @@
   </v-data-table>
 </template>
 
+<!-- 
 <style>
-.add {
-  width: 40px;
-  height: 40px;
-}
-.template-add {
-  padding-top: 1%;
-}
-.data-table {
-  padding: 3%;
-}
+
 </style>
+-->
 
 <script>
 export default {
