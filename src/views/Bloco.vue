@@ -163,29 +163,19 @@ export default {
      mudarStatus() {
       return this.atributo.ativo == "Ativo" ? "desativar " : "remover ";
     },
-
-    watch: {
-    dialog(val) {
-      val || this.fechar();
-    },
-  },
-  
   },
   mounted() {
-    this.inicializar();
+    //this.inicializar();
   },
   methods: {
     inicializar() {
-     axios.get(`${baseApiUrl}api/bloco/search`).then((res) => {
-        this.bloco = res.data.content;
-        console.log(this.bloco + "Arrayyyy de Blocos");
-      }).catch(console.warn("erro"));
+     //requisição get
     },
 
-  editItem(item) {
-      this.editIndice = this.bloco.indexOf(item);
-      this.atributo = Object.assign({}, item);
-      this.dialog = true;
+  watch: {
+    dialog(val) {
+      val || this.fechar();
+    },
   },
 
   deleteItem(item) {
