@@ -67,13 +67,26 @@
   </v-data-table>
 </template>
 
-<!-- 
-<style>
 
+<style>
+.add {
+  width: 40px;
+  height: 40px;
+}
+.template-add {
+  padding-top: 1%;
+}
+.data-table {
+  padding: 3%;
+}
 </style>
--->
+
 
 <script>
+import Vue from "vue";
+import axios from "axios";
+import VueAxios from "vue-axios";
+Vue.use(VueAxios, axios);
 import { baseApiUrl } from '@/global';
 //Inserir importações
 export default {
@@ -116,6 +129,12 @@ export default {
     },
   }),
 
+    watch: {
+      dialog(val) {
+        val || this.fechar();
+      },
+    },
+
   mounted() {
     this.inicializar();
     this.getCampus();
@@ -124,7 +143,7 @@ export default {
     async inicializar() {
       axios.get(`${baseApiUrl}api/bloco/search`).then((res) => {
         this.blocos = res.data.content;
-        console.log(this.blocos + "Arrayyyy de Campussss");
+        console.log(this.blocos + "Arrayyyy de Blocossss");
       }).catch(console.warn("erro"));
     },
     //método para buscar campus existentes e preencher no array 
@@ -136,34 +155,47 @@ export default {
       console.log(this.arraycampus + "array de campus aqui")
     },
 
-    watch: {
-      dialog(val) {
-        val || this.fechar();
-      },
-    },
-
-    deleteItem(item) {
+    editItem(item) {
       this.editIndice = this.blocos.indexOf(item);
       this.atributo = Object.assign({}, item);
-      this.dialogDelete = true;
+      this.dialog = true;
     },
 
-    deleteItemConfirm() {
+  
+
+    desativeItem(item) {
+      this.editIndice = this.blocos.indexOf(item);
+      this.atributo = Object.assign({}, item);
+      this.dialogDesativar = true;
+    },
+
+    desativeItemConfirm() {
+      if (this.atributo.ativo == "Ativo") {
         axios
-          .remove(`${baseApiUrl}api/bloco`, {
-           
+          .patch(`${baseApiUrl}api/blocos`, {
+            ativo: false,
           })
           .then((res) => {
-            this.blocos = res.data;
             console.log(res.data);
-            alert("Este bloco foi removido com sucesso !");
-
+            alert("Este blocos foi desativado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
           });
-
-          this.fecharDelete();
+      } else {
+        axios
+          .patch(`${baseApiUrl}api/blocos`, {
+            ativo: true,
+          })
+          .then((res) => {
+            console.log(res.data);
+            alert("Esta blocos foi ativada com sucesso !");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      this.fecharDesativar();
     },
 
     fechar() {
@@ -174,7 +206,7 @@ export default {
       });
     },
 
-    fecharDelete() {
+    fecharDesativar() {
       this.dialogDesativar = false;
       this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
@@ -188,6 +220,10 @@ export default {
       this.arraycampus = data.content;
       //this.arraycampus = data.filter((d) => d.label);
       console.log(this.arraycampus+ "array de campus aquii !");
+    },
+
+     reloadPage(){
+      window.location.reload();
     },
 
     salvar() {
