@@ -105,7 +105,7 @@ export default {
       return this.editIndice === -1 ? "Cadastrar Campus" : "Editar Campus";
     },
     mudarStatus() {
-      return this.atributo.ativo == "Ativado" ? "desativar " : "ativar ";
+      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
     },
   },
 
@@ -151,12 +151,13 @@ export default {
     },
 
     desativeItemConfirm() {
-      if (this.atributo.ativo) {
+      if (this.atributo.ativo == "Ativo") {
         axios.patch(`${baseApiUrl}api/campus/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
             alert("Este campus foi desabilitado com sucesso !");
             console.warn("entrou no desativar");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
@@ -167,6 +168,7 @@ export default {
           .then((res) => {
             console.log(res.data);
             alert("Este campus foi habilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
