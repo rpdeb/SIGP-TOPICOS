@@ -60,7 +60,7 @@
                         item-value="id"
                         :items="arraycampus"
                       >
-                        ></v-select
+                        </v-select
                       >
                     </v-col>
                   </v-row>
@@ -80,7 +80,7 @@
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
             <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} esta Curso ?</v-card-title
+              >Deseja {{ mudarStatus }} este Curso ?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -160,7 +160,9 @@ export default {
       return this.editIndice === -1 ? "Cadastrar Curso" : "Editar Curso";
     },
     mudarStatus() {
-      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
+      console.log(this.atributo)
+      return this.atributo.ativo == true ? "desativar " : "ativar";
+      
     },
   },
 
@@ -185,7 +187,7 @@ export default {
         .get(`${baseApiUrl}api/curso/search`)
         .then((res) => {
           this.cursos = res.data.content.map((c) => {
-            c.ativo = c.ativo ? "Ativo" : "Inativo";
+            c.ativo = c.ativo ? true : false;
             return c;
           });
         })
@@ -215,12 +217,18 @@ export default {
     },
 
     desativeItemConfirm() {
+<<<<<<< HEAD
       if (this.atributo.ativo == "Ativo") {
+=======
+      
+      if (this.atributo.ativo == true) {
+>>>>>>> b33d6feb54526d391c400437ae00a228463d4c16
         axios
           .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
             alert("Este curso foi desabilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
@@ -231,6 +239,7 @@ export default {
           .then((res) => {
             console.log(res.data);
             alert("Este curso foi habilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
@@ -274,7 +283,7 @@ export default {
             id: this.atributo.id,
             label: this.atributo.label,
             campus: this.atributo.campus.id,
-            ativo: this.atributo.ativo === "Ativo",
+            ativo: this.atributo.ativo === true,
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
