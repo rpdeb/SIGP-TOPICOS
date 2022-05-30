@@ -207,7 +207,11 @@ export default {
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(url, {})
+          .put(`${baseApiUrl}api/sala`, {
+            id: this.atributo.id,
+            label: this.atributo.label,
+            ativo: this.atributo.ativo === "Ativo",
+          })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
             console.log(res.data);
@@ -216,15 +220,20 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-        Object.assign(this.salas[this.editIndice], this.atributo);
+        Object.assign(this.cursos[this.editIndice], this.atributo);
       } else {
-        axios.post(url, {}).then((res) => {
-          this.salas = res.data;
-          alert("Os dados foram adicionados com sucesso !");
-          console.log(res.data);
-          this.reloadPage();
-        });
-        this.salas.push(this.atributo);
+        axios
+          .post(`${baseApiUrl}api/sala`, {
+            label: this.atributo.label,
+            campus: this.atributo.campus,
+          }).then((res) => {
+            this.cursos = res.data;
+            alert("Os dados foram adicionados com sucesso !");
+            console.log(res.data);
+            this.reloadPage();
+          });
+        console.log(this.atributo);
+        this.cursos.push(this.atributo);
       }
       this.fechar();
     },
