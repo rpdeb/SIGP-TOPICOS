@@ -217,12 +217,7 @@ export default {
     },
 
     desativeItemConfirm() {
-<<<<<<< HEAD
       if (this.atributo.ativo == "Ativo") {
-=======
-      
-      if (this.atributo.ativo == true) {
->>>>>>> b33d6feb54526d391c400437ae00a228463d4c16
         axios
           .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${false}`)
           .then((res) => {
