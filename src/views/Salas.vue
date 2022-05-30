@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="titulos" :items="sala" :search="search" class="elevation-2 data-table" :footer-props="{
+  <v-data-table :headers="titulos" :items="salas" :search="search" class="elevation-2 data-table" :footer-props="{
     'items-per-page-text': 'Itens por página'
   }">
     <template v-slot:top>
@@ -26,16 +26,17 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.sala" label="Sala" required></v-text-field>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.campus" label="Campus-Bloco/Piso" :items="campusbloco"></v-select>
+                      <v-text-field v-model="atributo.label" label="Sala" required></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field v-model="atributo.estruturafisica" label="Estrutura Física"></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.tipodesala" label="Tipo de Sala" :items="tiposdesala">
+                      <v-select v-model="atributo.tipo" label="Tipo de Sala" :items="tiposdesala" @input="selecionarTipoSala">
+                        ></v-select>
+                    </v-col>
+                    <v-col cols="8" sm="6" md="4">
+                      <v-select v-model="atributo.bloco" label="Tipo de Sala" :items="blocos">
                         ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
@@ -48,7 +49,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn small color="warning" dark @click="dialog = false">Cancelar</v-btn>
-              <v-btn small color="primary" class="mr-4" @click="checkForm">Salvar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -92,40 +93,34 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-      { text: "Sala", value: "sala" },
-      { text: "Campus-Bloco/Piso", value: "campus" },
+      { text: "Sala", value: "label" },
+      { text: "Capacidade", value: "capacidade" },
+      { text: "Bloco/Piso", value: "bloco.label" },
+      { text: "Estrutura Física", value: "estruturaFisica" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    salas: [
-      {
-        sala: "Sala 14",
-        campus: "Palmas - Bloco B",
-      },
-      {
-        sala: "Sala 11",
-        campus: "Dianopolis - Bloco A",
-      },
-    ],
-    campus: [],
-    campusbloco: [],
-    tiposdesala: [],
+    tiposdesala: ["Sala", "Laboratório",],
+    tipodesalaselecionado: null,
+    salas: [],
+    blocos: [],
     editIndice: -1,
     atributo: {
       id: null,
-      sala: " ",
-      campus: "",
+      label: "",
       capacidade: null,
-      estruturafisica: "",
-      tipodesala: " ",
+      estruturaFisica: "",
+      tipo: null,
+      bloco: null,
       ativo: true,
     },
     atributoPadrao: {
       id: null,
-      sala: "",
-      campus: "",
+      label: "",
       capacidade: null,
-      estruturafisica: "",
+      estruturaFisica: "",
+      tipo: null,
+      bloco: null,
       ativo: true,
     },
   }),
@@ -145,7 +140,27 @@ export default {
     },
   },
 
+  mounted() {
+    this.inicializar();
+    this.getBlocos();
+  },
+
   methods: {
+
+    async inicializar() {
+      axios.get(`${baseApiUrl}api/sala/search`).then((res) => {
+        this.salas = res.data.content;
+        console.log(this.blocos + "Array de Sala");
+      }).catch(console.warn("erro"));
+    },
+
+    async getBlocos() {
+      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search`);
+      this.blocos = data.content;
+      //this.arrayBlocos = data.filter((d) => d.label);
+      console.log(this.blocos + "array de campus aqui")
+    },
+
     editItem(item) {
       this.editIndice = this.salas.indexOf(item);
       this.atributo = Object.assign({}, item);
@@ -160,26 +175,21 @@ export default {
 
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativo") {
-        axios
-          .patch(url + "/desativar/" + this.atributo.id, {
-            ativo: false,
-          })
+      axios
+          .patch(`${baseApiUrl}api/sala/${this.atributo.id}/${false}`)
           .then((res) => {
-            this.salas = res.data;
             console.log(res.data);
-            alert("Esta sala foi desativada com sucesso !");
+            alert("Este curso foi desabilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
         axios
-          .patch(url + "/ativar/" + this.atributo.id, {
-            ativo: true,
-          })
+          .patch(`${baseApiUrl}api/sala/${this.atributo.id}/${true}`)
           .then((res) => {
             console.log(res.data);
-            alert("Esta sala foi ativada com sucesso !");
+            alert("Este curso foi habilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
@@ -202,6 +212,19 @@ export default {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });
+    },
+
+    selecionarTipoSala() {
+      switch (this.tipodesalaselecionado) {
+        case "Sala":
+          this.tipo = 1;
+          break;
+        case "Laboratório":
+          this.tipo = 2;
+          break;
+        default:
+          this.tipo = 0;
+      }
     },
 
     salvar() {
