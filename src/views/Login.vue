@@ -17,7 +17,7 @@
                             <small><a href="#">Esqueceu sua senha?</a></small>
                         </label>
                         <v-form id="password" type="password" placeholder="Digite aqui a sua senha"
-                            v-model.trim="$v.model.password.$model" :state="getValidation('password')"></v-form>
+                            v-model.trim="$v.form.password.$model" :state="getValidation('password')"></v-form>
                     </v-text-field>
 
                     <v-btn
