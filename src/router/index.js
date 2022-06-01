@@ -63,18 +63,23 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  if (
-    to.name !== "login" &&
-    to.name !== "register" &&
-    !localStorage.getItem("authUser")
-  ) {
-    next({ name: "login" });
-  } else {
-    next();
-  } 
-  
-});
+// router.beforeEach((to, from, next) => {
+//   if (
+//     to.name !== "login" &&
+//     to.name !== "register" &&
+//     !localStorage.getItem("authUser")
+//   ) {
+//     next({ name: "login" });
+//   } else {
+//     next();
+//   }
+
+//   setTimeout(function () {
+//   window.location.reload();
+//   }, 5000);
+
+
+// });
 
 // router.beforeEach((to, from, next) => {
 //   // redirect to login page if not logged in and trying to access a restricted page
@@ -83,14 +88,14 @@ router.beforeEach((to, from, next) => {
 //   const loggedIn = localStorage.getItem('user')
 //   if (authRequired && !loggedIn) {
 //     return next('/semestres')
-    
+
 //   }
 //   next()
-  
+
 //   // setTimeout(function(){
 //   //   window.location.reload();
 //   // }, 1000);
-  
+
 // })
 
 export default router

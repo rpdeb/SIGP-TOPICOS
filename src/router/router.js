@@ -22,22 +22,22 @@ const router = new Router({
   routes: baseRoutes
 })
 
-// router.beforeEach((to, from, next) => {
-//   // redirect to login page if not logged in and trying to access a restricted page
-//   const publicPages = ['/semestres', ]
-//   const authRequired = !publicPages.includes(to.path)
-//   const loggedIn = localStorage.getItem('user')
-//   if (authRequired && !loggedIn) {
-//     return next('/semestres')
+router.beforeEach((to, from, next) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  const publicPages = ['/semestres', ]
+  const authRequired = !publicPages.includes(to.path)
+  const loggedIn = localStorage.getItem('user')
+  if (authRequired && !loggedIn) {
+    return next('/semestres')
     
-//   }
-//   next()
+  }
+  next()
   
-//   setTimeout(function(){
-//     window.location.reload();
-//   }, 1000);
+  setTimeout(function(){
+    window.location.reload();
+  }, 1000);
   
-// })
+})
 
 
 export default router

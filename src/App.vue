@@ -89,7 +89,7 @@ export default {
 
   computed: {
     notIsLoginPage() {
-      return this.$route.name !== "login" && this.$route.name !== "register";
+      return this.$route.name !== "login";
     }
   },
 };
