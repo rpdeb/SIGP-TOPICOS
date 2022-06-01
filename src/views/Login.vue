@@ -1,118 +1,97 @@
 <template>
-    <v-row class="vh-100 vw-100 row-login">
-        <v-col sm="5" class="d-flex justify-content-center align-items-center left-login">
-
-            <div class="col-8">
-                <h2 class="text-center mv-5 title-login">Faça o login</h2>
-                <v-form>
-                    <v-text-field label="E-mail:" label-for="email">
-                        <v-form id="email" type="email" placeholder="joaosilva@email.com" autocomplete="off"
-                            v-model.trim="$v.form.email.$model" :state="getValidation('email')"></v-form>
-                    </v-text-field>
-
-                    <v-text-field label="Senha:" label-for="password">
-                        <label class="d-flex justify-content-between">
-                            Senha
-
-                            <small><a href="#">Esqueceu sua senha?</a></small>
-                        </label>
-                        <v-form id="password" type="password" placeholder="Digite aqui a sua senha"
-                            v-model.trim="$v.form.password.$model" :state="getValidation('password')"></v-form>
-                    </v-text-field>
-
-                    <v-btn
-                        type="button"
-                        color="success"
-                        block
-                        variant="primary" 
-                        @click="login">
-                        <i class="fas fa-sign-in-alt"></i>Entrar
-                    </v-btn>
-                </v-form>
+    <div class="main-container">
+        <form>
+            <div class="box-container">
+                <v-img :src="require('../assets/img/visitantes.jpg')" class="my-1" contain height="110" />
+                <h4 class="heading">Olá, visitante</h4>
+                <div class="form-fields">
+                </div>
+                <SocialLogin />
             </div>
-
-        </v-col>
-        
-        <v-col sm="7" class="side-login d-flex justify-content-center align-items-center">
-            <img src="../assets/images/login.svg" class="img-login" />
-        </v-col>
-    </v-row>
+        </form>
+    </div>
 </template>
 
 <script>
-import { required, minLength, email } from "vuelidate/lib/validators";
-import UsersModel from "@/models/UsersModel";
-import ToastMixin from "@/mixins/toastMixin.js";
+//import { required, minLength, email } from "vuelidate/lib/validators";
+//import UsersModel from "@/models/UsersModel";
+//import ToastMixin from "@/mixins/toastMixin.js";
+import SocialLogin from '@/components/SocialLogin'
 
 export default {
-    mixins: [ToastMixin],
-
-    data() {
-        return {
-            form: {
-                email: "",
-                password: ""
-            }
-        }
+    name: 'login',
+    components: {
+        SocialLogin
     },
 
-    validations: {
-        form: {
-            email: {
-                required,
-                email
-            },
+    // mixins: [ToastMixin],
 
-            password: {
-                required,
-                minLength: minLength(6),
-            },
-        },
-    },
+    // data() {
+    //     return {
+    //         form: {
+    //             email: "",
+    //             password: ""
+    //         }
+    //     }
+    // },
 
-    methods: {
-        async login() {
-            this.$v.$touch();
-            if (this.$v.$error) return;
+    // validations: {
+    //     form: {
+    //         email: {
+    //             required,
+    //             email
+    //         },
 
-            let user = await UsersModel.params({ email: this.form.email }).get();
+    //         password: {
+    //             required,
+    //             minLength: minLength(6),
+    //         },
+    //     },
+    // },
 
-            if (!user || !user[0] || !user[0].email) {
-                this.showToast("danger", "Erro!", "Usuário e/ou senha incorretos");
-                this.clearForm();
-                return;
-            }
+    // methods: {
+    //     async login() {
+    //         this.$v.$touch();
+    //         if (this.$v.$error) return;
 
-            user = user[0];
-            if (user.password !== this.form.password) {
-                this.showToast("danger", "Erro!", "Usuário e/ou senha incorretos");
-                this.clearForm();
-                return;
-            }
+    //         let user = await UsersModel.params({ email: this.form.email }).get();
 
-            localStorage.setItem('authUser', JSON.stringify(user));
-            this.$router.push({ name: "list" });
-        },
+    //         if (!user || !user[0] || !user[0].email) {
+    //             this.showToast("danger", "Erro!", "Usuário e/ou senha incorretos");
+    //             this.clearForm();
+    //             return;
+    //         }
 
-        clearForm() {
-            this.form = {
-                email: "",
-                password: ""
-            }
-        },
+    //         user = user[0];
+    //         if (user.password !== this.form.password) {
+    //             this.showToast("danger", "Erro!", "Usuário e/ou senha incorretos");
+    //             this.clearForm();
+    //             return;
+    //         }
 
-        getValidation(field) {
-            if (this.$v.form.$dirty === false) {
-                return null;
-            }
+    //         localStorage.setItem('authUser', JSON.stringify(user));
+    //         this.$router.push({ name: "list" });
+    //     },
 
-            return !this.$v.form[field].$error;
-        },
+    //     clearForm() {
+    //         this.form = {
+    //             email: "",
+    //             password: ""
+    //         }
+    //     },
 
-        goToRegister() {
-            this.$router.push({ name: "register" });
-        }
-    },
+    //     getValidation(field) {
+    //         if (this.$v.form.$dirty === false) {
+    //             return null;
+    //         }
+
+    //         return !this.$v.form[field].$error;
+    //     },
+
+    //     goToRegister() {
+    //         this.$router.push({ name: "register" });
+    //     }
+    // },
 }
 </script>
 

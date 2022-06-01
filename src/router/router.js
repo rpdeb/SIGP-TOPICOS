@@ -1,43 +1,43 @@
-// import Vue from 'vue'
-// import Router from 'vue-router'
-// import Login from '@/views/NewLogin'
-// import PageNotFound from '@/components/PageNotFound'
+import Vue from 'vue'
+import Router from 'vue-router'
 
-// Vue.use(Router)
+Vue.use(Router)
 
-// let baseRoutes = [
-//   {
-//     path: '/',
-//     redirect: '/newlogin'
-//   },
-//   {
-//     path: '/newlogin',
-//     name: 'Login',
-//     component: Login
-//   },
-//   {
-//     path: '*',
-//     name: 'PageNotFound',
-//     component: PageNotFound
-//   }
-// ]
+let baseRoutes = [
+  {
+    path: '/',
+    redirect: '/login'
+  },
+  {
+    path: '/semestres',
+    name: 'Semestres',
+    component: () => import('../views/Semestres.vue')
+  },
+]
 
-// const router = new Router({
-//   mode: 'history',
-//   linkExactActiveClass: 'active',
-//   base: process.env.BASE_URL,
-//   routes: baseRoutes
-// })
+const router = new Router({
+  mode: 'history',
+  linkExactActiveClass: 'active',
+  base: process.env.BASE_URL,
+  routes: baseRoutes
+})
 
 // router.beforeEach((to, from, next) => {
 //   // redirect to login page if not logged in and trying to access a restricted page
-//   const publicPages = ['/newlogin', ]
+//   const publicPages = ['/semestres', ]
 //   const authRequired = !publicPages.includes(to.path)
 //   const loggedIn = localStorage.getItem('user')
 //   if (authRequired && !loggedIn) {
-//     return next('/newlogin')
+//     return next('/semestres')
+    
 //   }
 //   next()
+  
+//   setTimeout(function(){
+//     window.location.reload();
+//   }, 1000);
+  
 // })
 
-// export default router
+
+export default router

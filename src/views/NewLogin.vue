@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="main-container">
     <form>
       <div class="box-container">
@@ -25,4 +25,4 @@ export default {
     SocialLogin
   }
 }
-</script>
+</script> -->
