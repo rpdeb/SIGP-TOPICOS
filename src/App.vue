@@ -2,15 +2,18 @@
   <v-app id="inspire">
     <v-app-bar
       app
-      color="#104ADF"
+      color="#e7e7e7"
       flat
       v-if="notIsLoginPage"
+      
     >
+
+    <img src="../src/assets/images/logo-unitins.png" width="70px" height="50x" alt="">
 
       <v-tabs
         centered
         class="ml-n9"
-        color="#f1f1f1"
+        color="#104ADF"
       >
         <v-tab
           v-for="item in items"
@@ -70,13 +73,13 @@ export default {
   data: () => ({
     drawer: null,
     items: [
-      { title: "Semestres", icon: "mdi-sort-calendar-ascending",to: "/semestres"},
-      { title: "Salas", icon: "mdi-google-classroom", to: "/salas" },
-      { title: "Usuários", icon: "mdi-account-group", to: "/usuarios" },
-      { title: "Bloco", icon: "mdi-lan", to: "/bloco" },
-      { title: "Horários", icon: "mdi-book-clock", to: "/horarios" },
-      { title: "Curso", icon: "mdi-clock", to: "/curso" },
-      { title: "Campus", icon: "mdi-home", to: "/campus" },
+      { title: "Semestres", to: "/semestres"},
+      { title: "Salas", to: "/salas" },
+      { title: "Bloco", to: "/bloco" },
+      { title: "Horários", to: "/horarios" },
+      { title: "Curso", to: "/curso" },
+      { title: "Câmpus", to: "/campus" },
+      { title: "Usuários", to: "/usuarios" },
     ],
   }),
 
