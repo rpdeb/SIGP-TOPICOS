@@ -255,7 +255,7 @@ export default {
       const { data } = await this.axios.get(`${baseApiUrl}api/curso/search`);
       this.cursosRaw = data;
       this.arraycursos = data.content;
-      //console.log(this.arraycursos + "array de cursos aqui !!");
+      console.log(this.arraycursos + "array de cursos aqui !!");
     },
 
     obterItem(item){
