@@ -163,6 +163,10 @@ export default {
       dialog(val) {
         val || this.fechar();
       },
+
+      dialogDesativar(val) {
+      val || this.fecharDesativar();
+    },
     },
 
   mounted() {
