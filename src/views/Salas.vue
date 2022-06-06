@@ -36,10 +36,6 @@
                         ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.bloco" label="Tipo de Sala" :items="blocos">
-                        ></v-select>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
                       <v-text-field v-model="atributo.capacidade" label="Capacidade" type="number"></v-text-field>
                     </v-col>
                   </v-row>
