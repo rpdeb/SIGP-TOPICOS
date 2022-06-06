@@ -1,18 +1,38 @@
 <template>
-  <v-data-table :headers="titulos" :items="ofertas" :search="search" class="elevation-2 data-table" :footer-props="{
-    'items-per-page-text': 'Itens por página'
-  }">
+  <v-data-table
+    :headers="titulos"
+    :items="cursos"
+    :search="search"
+    class="elevation-2 data-table"
+    :footer-props="{
+      'items-per-page-text': 'Itens por página',
+    }"
+  >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Gerenciamento de Oferta</v-toolbar-title>
+        <v-toolbar-title>Oferta de Disciplina</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Pesquisar"
+          single-line
+          hide-details
+        >
         </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
-            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+            <v-btn
+              small
+              class="mx-2 add"
+              fab
+              dark
+              color="green"
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon dark> mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -26,39 +46,22 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Matriz Curricular" required></v-select>
+                      <v-text-field
+                        v-model="atributo.label"
+                        label="Curso"
+                        required
+                      ></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Periodo" required></v-select>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Disciplina" required></v-select>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Dia da semana" required></v-select>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Professor" required></v-select>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Turno" required></v-select>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Campus-Bloco/Piso" required></v-select>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.oferta" :items="items" :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Sala" required></v-select>
-                    </v-col>
-                    <v-col cols="12" sm="6">
-                      <v-select v-model="value" :items="aulas" attach chips label="Aulas" multiple></v-select>
+                      <v-select
+                        v-model="atributo.campus"
+                        label="Campus"
+                        item-text="label"
+                        item-value="id"
+                        :items="arraycampus"
+                      >
+                        </v-select
+                      >
                     </v-col>
                   </v-row>
                 </v-container>
@@ -66,20 +69,32 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog = false">Cancelar</v-btn>
-              <v-btn small color="primary" class="mr-4" @click="checkForm">Salvar</v-btn>
+              <v-btn small color="warning" dark @click="fechar">Cancelar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar"
+                >Salvar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} esta Oferta ?</v-card-title>
+            <v-card-title class="text-h5"
+              >Deseja {{ mudarStatus }} este Curso ?</v-card-title
+            >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog = false">
-                Não</v-btn>
-              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
+              <v-btn
+                small
+                color="warning"
+                dark
+                @click="dialogDesativar = false"
+              >
+                Não</v-btn
+              >
+              <v-btn small color="primary" dark @click="desativeItemConfirm"
+                >Sim</v-btn
+              >
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -104,69 +119,50 @@
 -->
 
 <script>
+import Vue from "vue";
+import axios from "axios";
+import VueAxios from "vue-axios";
+import { baseApiUrl } from "@/global";
+Vue.use(VueAxios, axios);
+
 export default {
   data: () => ({
     search: "",
     dialog: false,
     dialogDesativar: false,
     dialogDetalhar: false,
-
     titulos: [
-      { text: "Periodo", value: "periodo" },
-      { text: "Disciplina", value: "disciplina" },
-      { text: "Turno", value: "turno" },
+      { text: "Curso", value: "label" },
+      { text: "Campus", value: "campus.label" },
+      { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    aulas: [
-      { text: "1º Aula", value: "1Aula" },
-      { text: "2º Aula", value: "2Aula" },
-      { text: "3º Aula", value: "3Aula" },
-      { text: "4º Aula", value: "4Aula" },
-    ],
-    salas: [
-      {
-        periodo: "1 preiodo",
-        disciplina: "Algoritmo",
-        turno: "Matutino",
-      },
-      {
-        periodo: "4 preiodo",
-        disciplina: "Sistemas operacionais",
-        turno: "Matutino",
-      },
-      {
-        periodo: "7 preiodo",
-        disciplina: "PCC",
-        turno: "Matutino",
-      },
-    ],
-    errors: [],
-    ofertas: [],
+    cursos: [],
+    campusRaw: [],
+    arraycampus: [],
     editIndice: -1,
     atributo: {
       id: null,
-      periodo: "",
-      disciplina: "",
-      turno: "",
-      semestre: "",
+      label: "",
+      campus: null,
       ativo: true,
     },
     atributoPadrao: {
       id: null,
-      periodo: "",
-      disciplina: "",
-      turno: "",
-      semestre: "",
+      label: "",
+      campus: null,
       ativo: true,
     },
   }),
 
   computed: {
     tituloForm() {
-      return this.editIndice === -1 ? "Cadastrar Oferta" : "Editar Oferta";
+      return this.editIndice === -1 ? "Cadastrar Curso" : "Editar Curso";
     },
     mudarStatus() {
-      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
+      console.log(this.atributo)
+      return this.atributo.ativo == true ? "desativar " : "ativar";
+      
     },
   },
 
@@ -174,17 +170,48 @@ export default {
     dialog(val) {
       val || this.fechar();
     },
+    dialogDesativar(val) {
+      val || this.fecharDesativar();
+    },
+  },
+
+  mounted() {
+    this.inicializar();
+    this.getCampus();
   },
 
   methods: {
+    //método para preencher o data table
+    async inicializar() {
+      axios
+        .get(`${baseApiUrl}api/curso/search`)
+        .then((res) => {
+          this.cursos = res.data.content.map((c) => {
+            c.ativo = c.ativo ? true : false;
+            return c;
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    //método para buscar campus existentes e preencher no array
+    async getCampus() {
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
+      this.campusRaw = data;
+      this.arraycampus = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(this.arraycampus + "array de campus aqui");
+    },
+
     editItem(item) {
-      this.editIndice = this.ofertas.indexOf(item);
+      this.editIndice = this.cursos.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialog = true;
     },
 
     desativeItem(item) {
-      this.editIndice = this.ofertas.indexOf(item);
+      this.editIndice = this.cursos.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialogDesativar = true;
     },
@@ -192,31 +219,32 @@ export default {
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativo") {
         axios
-          .patch(url + "/desativar/" + this.atributo.id, {
-            ativo: false,
-          })
+          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${false}`)
           .then((res) => {
-            this.ofertas = res.data;
             console.log(res.data);
-            alert("Esta oferta foi desativada com sucesso !");
+            alert("Este curso foi desabilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
         axios
-          .patch(url + "/ativar/" + this.atributo.id, {
-            ativo: true,
-          })
+          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${true}`)
           .then((res) => {
             console.log(res.data);
-            alert("Esta oferta foi ativada com sucesso !");
+            alert("Este curso foi habilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
           });
       }
       this.fecharDesativar();
+    },
+
+    reloadPage() {
+      window.location.reload();
     },
 
     fechar() {
@@ -235,10 +263,23 @@ export default {
       });
     },
 
+    async findCampus(id) {
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/${id}`);
+      this.campusRaw = data;
+      this.arraycampus = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(this.arraycampus + "array de campus aqui !!");
+    },
+
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(url, {})
+          .put(`${baseApiUrl}api/curso`, {
+            id: this.atributo.id,
+            label: this.atributo.label,
+            campus: this.atributo.campus.id,
+            ativo: this.atributo.ativo === true,
+          })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
             console.log(res.data);
@@ -247,15 +288,24 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-        Object.assign(this.ofertas[this.editIndice], this.atributo);
+        Object.assign(this.cursos[this.editIndice], this.atributo);
       } else {
-        axios.post(url, {}).then((res) => {
-          this.ofertas = res.data;
-          alert("Os dados foram adicionados com sucesso !");
-          console.log(res.data);
-          this.reloadPage();
-        });
-        this.ofertas.push(this.atributo);
+        axios
+          .post(`${baseApiUrl}api/curso`, {
+            label: this.atributo.label,
+            campus: this.atributo.campus,
+          })
+          .then((res) => {
+            this.cursos = res.data;
+            alert("Os dados foram adicionados com sucesso !");
+            console.log(res.data);
+            this.reloadPage();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        console.log(this.atributo);
+        this.cursos.push(this.atributo);
       }
       this.fechar();
     },
