@@ -54,6 +54,11 @@ const routes = [
     name: 'Oferta',
     component: () => import('../views/Oferta.vue')
   },
+  {
+    path: '/relatorio',
+    name: 'Relatorio',
+    component: () => import('../views/Relatorio.vue')
+  },
 
 ]
 

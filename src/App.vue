@@ -80,6 +80,7 @@ export default {
       { title: "Curso", to: "/curso" },
       { title: "Câmpus", to: "/campus" },
       { title: "Usuários", to: "/usuarios" },
+      { title: "Relatório", to: "/relatorio" },
     ],
   }),
 
