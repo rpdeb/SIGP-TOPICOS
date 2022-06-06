@@ -226,13 +226,13 @@ export default {
     },
 
     editItem(item) {
-      this.editIndice = this.usuarios.indexOf(item);
+      this.editIndice = this.semestres.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialog = true;
     },
 
     desativeItem(item) {
-      this.editIndice = this.usuarios.indexOf(item);
+      this.editIndice = this.semestres.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialogDesativar = true;
     },
