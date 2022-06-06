@@ -83,7 +83,9 @@ export default {
     dialogDetalhar: false,
     titulos: [
       { text: "Campus", value: "label" },
-      { text: "Status", value: "ativo" },
+      { text: "Curso", value: "label" },
+      { text: "Turno", value: "label" },
+      { text: "Tipo de Sala", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
     campus: [],
