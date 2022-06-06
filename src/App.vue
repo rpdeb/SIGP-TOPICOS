@@ -74,13 +74,16 @@ export default {
     drawer: null,
     items: [
       { title: "Semestres", to: "/semestres"},
-      { title: "Salas", to: "/salas" },
-      { title: "Bloco", to: "/bloco" },
-      { title: "Horários", to: "/horarios" },
-      { title: "Curso", to: "/curso" },
       { title: "Câmpus", to: "/campus" },
+         { title: "Curso", to: "/curso" },
+            { title: "Bloco", to: "/bloco" },
+      { title: "Salas", to: "/salas" },
+   
+  
+   
+    
       { title: "Usuários", to: "/usuarios" },
-      { title: "Relatório", to: "/relatorio" },
+      { title: "Relatórios", to: "/relatorio" },
     ],
   }),
 
