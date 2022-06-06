@@ -7,6 +7,13 @@
         <v-toolbar-title>Relatório</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details></v-text-field>
+        <vue-select
+          @input="redefinirTable" 
+          v-model="filtroSelecionado"
+          :options="filtros"
+          label="Filtro"
+        ></vue-select>
+
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
@@ -88,6 +95,8 @@ export default {
       { text: "Tipo de Sala", value: "label" },
       { text: "Ações", value: "acoes" },
     ],
+    filtros:['Ativados', 'Todos'],
+    filtroSelecionado:"Ativados",
     campus: [],
     editIndice: -1,
     atributo: {
@@ -138,6 +147,20 @@ export default {
       }).catch((error) => {
             console.log(error);
           });
+    },
+
+    redefinirTable() {
+      if (this.filtroSelecionado === "Todos") {
+       this.inicializar();
+      } else {
+        axios.get(url + "/getAll/true", this.relatorio).then((res) => {
+          this.relatorio = res.data.map((p) => {
+            p.ativo = p.ativo ? "Ativado" : "Desativado";
+            return p;
+          });
+          console.log(res.data);
+        });
+      }
     },
 
     editItem(item) {
