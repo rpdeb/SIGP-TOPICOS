@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="titulos"
-    :items="cursos"
+    :items="ofertas"
     :search="search"
     class="elevation-2 data-table"
     :footer-props="{
@@ -46,11 +46,16 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field
-                        v-model="atributo.label"
-                        label="Curso"
-                        required
-                      ></v-text-field>
+                      <v-container class="px-0" fluid>
+                        <v-radio-group v-model="radioHorario">
+                          <v-radio
+                            v-for="n in 3"
+                            :key="n"
+                            :label="`Radio ${n}`"
+                            :value="n"
+                          ></v-radio>
+                        </v-radio-group>
+                      </v-container>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
@@ -60,8 +65,7 @@
                         item-value="id"
                         :items="arraycampus"
                       >
-                        </v-select
-                      >
+                      </v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -137,7 +141,7 @@ export default {
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    cursos: [],
+    oferta: [],
     campusRaw: [],
     arraycampus: [],
     editIndice: -1,
@@ -160,9 +164,8 @@ export default {
       return this.editIndice === -1 ? "Cadastrar Curso" : "Editar Curso";
     },
     mudarStatus() {
-      console.log(this.atributo)
+      console.log(this.atributo);
       return this.atributo.ativo == true ? "desativar " : "ativar";
-      
     },
   },
 
@@ -186,7 +189,7 @@ export default {
       axios
         .get(`${baseApiUrl}api/curso/search`)
         .then((res) => {
-          this.cursos = res.data.content.map((c) => {
+          this.oferta = res.data.content.map((c) => {
             c.ativo = c.ativo ? true : false;
             return c;
           });
@@ -205,13 +208,13 @@ export default {
     },
 
     editItem(item) {
-      this.editIndice = this.cursos.indexOf(item);
+      this.editIndice = this.oferta.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialog = true;
     },
 
     desativeItem(item) {
-      this.editIndice = this.cursos.indexOf(item);
+      this.editIndice = this.ofertas.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialogDesativar = true;
     },
@@ -288,7 +291,7 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-        Object.assign(this.cursos[this.editIndice], this.atributo);
+        Object.assign(this.ofertas[this.editIndice], this.atributo);
       } else {
         axios
           .post(`${baseApiUrl}api/curso`, {
@@ -296,7 +299,7 @@ export default {
             campus: this.atributo.campus,
           })
           .then((res) => {
-            this.cursos = res.data;
+            this.ofertas = res.data;
             alert("Os dados foram adicionados com sucesso !");
             console.log(res.data);
             this.reloadPage();
@@ -305,7 +308,7 @@ export default {
             console.log(error);
           });
         console.log(this.atributo);
-        this.cursos.push(this.atributo);
+        this.ofertas.push(this.atributo);
       }
       this.fechar();
     },
