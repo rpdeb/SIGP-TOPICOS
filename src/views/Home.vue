@@ -1,6 +1,5 @@
 <template>
   <div>
-    <HomeMenu />
     <div class="">
       <div class="">
         <h2 class="">Login Success!</h2>
@@ -20,12 +19,12 @@
 </template>
 
 <script>
-import HomeMenu from '@/components/Menu'
+// import HomeMenu from '@/components/Menu'
 
 export default {
-  name: 'home',
-  components: {
-    HomeMenu
-  }
+  // name: 'home',
+  // components: {
+  //   HomeMenu
+  // }
 }
 </script>
