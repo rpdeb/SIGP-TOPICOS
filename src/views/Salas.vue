@@ -32,11 +32,21 @@
                       <v-text-field v-model="atributo.estruturafisica" label="Estrutura Física"></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.tipo" label="Tipo de Sala" :items="tiposdesala" @input="selecionarTipoSala">
+                      <v-select v-model="atributo.tipo" label="Tipo de Sala" :items="tiposdesala" item-text="label" item-value="id" @input="selecionarTipoSala">
                         ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field v-model="atributo.capacidade" label="Capacidade" type="number"></v-text-field>
+                    </v-col>
+                    <v-col cols="8" sm="6" md="4">
+                      <v-select
+                        v-model="atributo.bloco"
+                        label="Bloco"
+                        item-text="label"
+                        item-value="id"
+                        :items="arrayBlocos"
+                      >
+                        ></v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -102,10 +112,12 @@ export default {
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    tiposdesala: ["Sala", "Laboratório",],
+    tiposdesala: [{id:"1", label:"Sala"}, {id:"2", label:"Laboratório"}],
     tipodesalaselecionado: null,
     salas: [],
     blocos: [],
+    blocosRaw: [],
+    arrayBlocos: [],
     editIndice: -1,
     atributo: {
       id: null,
@@ -156,11 +168,13 @@ export default {
       }).catch(console.warn("erro"));
     },
 
-    async getBlocos() {
+
+     async getBlocos() {
       const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search`);
-      this.blocos = data.content;
-      //this.arrayBlocos = data.filter((d) => d.label);
-      console.log(this.blocos + "array de campus aqui")
+      this.blocosRaw = data;
+      this.arrayBlocos = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(this.arraycampus + "array de campus aqui");
     },
 
     editItem(item) {
@@ -181,7 +195,7 @@ export default {
           .patch(`${baseApiUrl}api/sala/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
-            alert("Este curso foi desabilitado com sucesso !");
+            alert("Esta sala foi desabilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
@@ -191,7 +205,7 @@ export default {
           .patch(`${baseApiUrl}api/sala/${this.atributo.id}/${true}`)
           .then((res) => {
             console.log(res.data);
-            alert("Este curso foi habilitado com sucesso !");
+            alert("Esta sala foi habilitado com sucesso !");
           })
           .catch((error) => {
             console.log(error);
@@ -235,6 +249,10 @@ export default {
           .put(`${baseApiUrl}api/sala`, {
             id: this.atributo.id,
             label: this.atributo.label,
+            estruturaFisica: this.atributo.estruturaFisica,
+            capacidade: this.atributo.capacidade,
+            tipo: this.atributo.tipo,
+            bloboId: this.atributo.bloco.id,
             ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
@@ -245,20 +263,23 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-        Object.assign(this.cursos[this.editIndice], this.atributo);
+        Object.assign(this.salas[this.editIndice], this.atributo);
       } else {
         axios
           .post(`${baseApiUrl}api/sala`, {
             label: this.atributo.label,
-            campus: this.atributo.campus,
+            capacidade: this.atributo.capacidade,
+            estruturaFisica: this.atributo.estruturaFisica,
+            tipo: this.atributo.tipo,
+            bloco: this.atributo.bloco,
           }).then((res) => {
-            this.cursos = res.data;
+            this.salas = res.data;
             alert("Os dados foram adicionados com sucesso !");
             console.log(res.data);
             this.reloadPage();
           });
         console.log(this.atributo);
-        this.cursos.push(this.atributo);
+        this.salas.push(this.atributo);
       }
       this.fechar();
     },
