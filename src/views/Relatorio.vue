@@ -85,7 +85,7 @@ export default {
       { text: "Campus", value: "label" },
       { text: "Curso", value: "label" },
       { text: "Turno", value: "label" },
-      { text: "Tipo de Sala", value: "ativo" },
+      { text: "Tipo de Sala", value: "label" },
       { text: "Ações", value: "acoes" },
     ],
     campus: [],
