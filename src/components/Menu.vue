@@ -23,11 +23,6 @@
         </v-tab>
       </v-tabs>
 
-      <!-- <v-btn @click.prevent="logout()" v-if="this.$store.state.loginUser"> 
-          Sair
-         <i class="fas fa-sign-out-alt"></i>
-      </v-btn> -->
-
       <v-btn v-if="this.$store.state.loginUser" @click.prevent="logout">Sair</v-btn>
 
     </v-app-bar>

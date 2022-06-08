@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <HomeMenu v-if="notIsLoginPage"/>
-     <v-main>
+     <!-- <v-main>
       <router-view />
-    </v-main>
+    </v-main> -->
   </div>
 </template>
 
@@ -20,7 +20,7 @@ export default {
   computed: {
     notIsLoginPage() {
       console.log(this.$route.name)
-      return this.$route.name !== "Login";
+      return this.$route.name !== "login";
     },
   },
   
