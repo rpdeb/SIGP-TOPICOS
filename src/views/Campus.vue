@@ -6,7 +6,8 @@
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Campus</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details></v-text-field>
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
@@ -40,7 +41,7 @@
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este Campus ?</v-card-title>
+            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este campus ?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn small color="warning" dark @click="fecharDesativar">Não</v-btn>
@@ -131,11 +132,11 @@ export default {
           return c;
         });
 
-        console.log(this.campus + "Array de campuss");
+        console.log(this.campus + "Array de campus");
         console.log(res.data);
       }).catch((error) => {
-            console.log(error);
-          });
+        console.log(error);
+      });
     },
 
     editItem(item) {
@@ -164,7 +165,7 @@ export default {
           });
       } else {
         axios
-          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${true}`)
+          .patch(`${baseApiUrl}api/campus/${this.atributo.id}/${true}`)
           .then((res) => {
             console.log(res.data);
             alert("Este campus foi habilitado com sucesso !");
@@ -193,7 +194,7 @@ export default {
       });
     },
 
-    reloadPage() {
+    reloadPage: async function () {
       window.location.reload();
     },
 

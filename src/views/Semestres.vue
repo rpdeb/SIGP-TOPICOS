@@ -60,9 +60,10 @@
                         v-model="atributo.label"
                         label="Semestre"
                         required
+                        v-mask="'####/##'"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="8" sm="6" md="4">
+                    <v-col cols="8" sm="6" md="7">
                       <v-select
                         v-model="atributo.curso"
                         label="Curso"
@@ -89,10 +90,10 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialogDesativar" max-width="400px">
+        <v-dialog v-model="dialogDesativar" max-width="410px">
           <v-card>
             <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} este Semestre ?</v-card-title
+              >Deseja {{ mudarStatus }} este semestre ?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -253,33 +254,35 @@ export default {
       });
     },
 
+    reloadPage: async function () {
+      window.location.reload();
+    },
+
     desativeItemConfirm() {
-      if (this.atributo.ativo) {
+      if (this.atributo.ativo == "Ativo") {
         axios
           .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
             alert("Este semestre foi desabilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
         axios
-          .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${false}`)
+          .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${true}`)
           .then((res) => {
             console.log(res.data);
             alert("Esta semestre foi habilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
           });
       }
       this.fecharDesativar();
-    },
-
-    reloadPage() {
-      window.location.reload();
     },
 
     salvar() {

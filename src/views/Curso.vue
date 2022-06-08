@@ -45,14 +45,14 @@
               <v-form>
                 <v-container>
                   <v-row>
-                    <v-col cols="8" sm="6" md="4">
+                    <v-col cols="8" sm="6" md="7">
                       <v-text-field
                         v-model="atributo.label"
                         label="Curso"
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="8" sm="6" md="4">
+                    <v-col cols="8" sm="6" md="7">
                       <v-select
                         v-model="atributo.campus"
                         label="Campus"
@@ -80,7 +80,7 @@
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
             <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} este Curso ?</v-card-title
+              >Deseja {{ mudarStatus }} este curso ?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -160,8 +160,7 @@ export default {
       return this.editIndice === -1 ? "Cadastrar Curso" : "Editar Curso";
     },
     mudarStatus() {
-      console.log(this.atributo)
-      return this.atributo.ativo == true ? "desativar " : "ativar";
+      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar";
       
     },
   },
@@ -187,7 +186,7 @@ export default {
         .get(`${baseApiUrl}api/curso/search`)
         .then((res) => {
           this.cursos = res.data.content.map((c) => {
-            c.ativo = c.ativo ? true : false;
+            c.ativo = c.ativo ? "Ativo" : "Inativo"
             return c;
           });
         })
@@ -243,7 +242,7 @@ export default {
       this.fecharDesativar();
     },
 
-    reloadPage() {
+    reloadPage: async function() {
       window.location.reload();
     },
 
@@ -277,8 +276,8 @@ export default {
           .put(`${baseApiUrl}api/curso`, {
             id: this.atributo.id,
             label: this.atributo.label,
-            campus: this.atributo.campus.id,
-            ativo: this.atributo.ativo === true,
+            campus: this.atributo.campus,
+            ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
@@ -294,6 +293,7 @@ export default {
           .post(`${baseApiUrl}api/curso`, {
             label: this.atributo.label,
             campus: this.atributo.campus,
+            ativo: true,
           })
           .then((res) => {
             this.cursos = res.data;

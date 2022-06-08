@@ -29,16 +29,9 @@
                       <v-text-field v-model="atributo.label" label="Sala" required></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.estruturafisica" label="Estrutura Física"></v-text-field>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select v-model="atributo.tipo" label="Tipo de Sala" :items="tiposdesala" item-text="label" item-value="id" @input="selecionarTipoSala">
-                        ></v-select>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
                       <v-text-field v-model="atributo.capacidade" label="Capacidade" type="number"></v-text-field>
                     </v-col>
-                    <v-col cols="8" sm="6" md="4">
+                    <v-col cols="8" sm="6" md="6">
                       <v-select
                         v-model="atributo.bloco"
                         label="Bloco"
@@ -46,6 +39,13 @@
                         item-value="id"
                         :items="arrayBlocos"
                       >
+                        ></v-select>
+                    </v-col>
+                    <v-col cols="8" sm="6" md="4">
+                      <v-text-field v-model="atributo.estruturaFisica" label="Estrutura Física"></v-text-field>
+                    </v-col>
+                    <v-col cols="8" sm="6" md="7">
+                      <v-select v-model="atributo.tipo" label="Tipo de Sala" :items="tiposdesala" item-text="label" item-value="id" @input="selecionarTipoSala">
                         ></v-select>
                     </v-col>
                   </v-row>
@@ -109,6 +109,7 @@ export default {
       { text: "Capacidade", value: "capacidade" },
       { text: "Bloco/Piso", value: "bloco.label" },
       { text: "Estrutura Física", value: "estruturaFisica" },
+      { text: "Tipo de Sala", value: "tipo" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
@@ -123,18 +124,18 @@ export default {
       id: null,
       label: "",
       capacidade: null,
-      estruturaFisica: "",
-      tipo: null,
       bloco: null,
+      estruturaFisica: null,
+      tipo: null,
       ativo: true,
     },
     atributoPadrao: {
       id: null,
       label: "",
       capacidade: null,
-      estruturaFisica: "",
-      tipo: null,
       bloco: null,
+      estruturaFisica: null,
+      tipo: null,
       ativo: true,
     },
   }),
@@ -163,7 +164,10 @@ export default {
 
     async inicializar() {
       axios.get(`${baseApiUrl}api/sala/search`).then((res) => {
-        this.salas = res.data.content;
+        this.salas = res.data.content.map((s) => {
+          s.ativo = s.ativo ? "Ativo" : "Inativo"
+          return s;
+        });
         console.log(this.blocos + "Array de Sala");
       }).catch(console.warn("erro"));
     },
@@ -173,8 +177,7 @@ export default {
       const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search`);
       this.blocosRaw = data;
       this.arrayBlocos = data.content;
-      //this.arraycampus = data.filter((d) => d.label);
-      console.log(this.arraycampus + "array de campus aqui");
+      console.log(this.arrayBlocos + "array de blocos aqui");
     },
 
     editItem(item) {
@@ -196,6 +199,7 @@ export default {
           .then((res) => {
             console.log(res.data);
             alert("Esta sala foi desabilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
@@ -206,6 +210,7 @@ export default {
           .then((res) => {
             console.log(res.data);
             alert("Esta sala foi habilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
@@ -220,6 +225,10 @@ export default {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });
+    },
+
+    reloadPage: async function () {
+      window.location.reload();
     },
 
     fecharDesativar() {
@@ -243,17 +252,26 @@ export default {
       }
     },
 
+    async findBloco(id) {
+      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/${id}`);
+      this.blocosRaw = data;
+      this.arrayBlocos = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(this.arrayBlocos + "array de blocos aqui !!");
+    },
+
     salvar() {
       if (this.editIndice > -1) {
         axios
           .put(`${baseApiUrl}api/sala`, {
             id: this.atributo.id,
             label: this.atributo.label,
-            estruturaFisica: this.atributo.estruturaFisica,
             capacidade: this.atributo.capacidade,
+            bloco: this.atributo.bloco,
+            estruturaFisica: this.atributo.estruturaFisica,
             tipo: this.atributo.tipo,
-            bloboId: this.atributo.bloco.id,
             ativo: this.atributo.ativo === "Ativo",
+
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
@@ -269,9 +287,10 @@ export default {
           .post(`${baseApiUrl}api/sala`, {
             label: this.atributo.label,
             capacidade: this.atributo.capacidade,
+            bloco: this.atributo.bloco,
             estruturaFisica: this.atributo.estruturaFisica,
             tipo: this.atributo.tipo,
-            bloco: this.atributo.bloco,
+            ativo: true,
           }).then((res) => {
             this.salas = res.data;
             alert("Os dados foram adicionados com sucesso !");

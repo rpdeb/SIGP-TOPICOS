@@ -25,20 +25,14 @@
               <v-form>
                 <v-container>
                   <v-row>
+                    <v-col cols="8" sm="6" md="7">
+                      <v-select v-model="atributo.campus" label="Campus" item-text="label" item-value="id"
+                        :items="arraycampus">
+                      </v-select>
+                    </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field v-model="atributo.label" :rules="[v => !!v || 'Item obrigatório!']"
                         label="Bloco/Piso" required></v-text-field>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.campus"
-                        label="Campus"
-                        item-text="label"
-                        item-value="id"
-                        :items="arraycampus"
-                      >
-                        </v-select
-                      >
                     </v-col>
                   </v-row>
                 </v-container>
@@ -53,24 +47,14 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-         <v-dialog v-model="dialogDesativar" max-width="400px">
+        <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} este Bloco ?</v-card-title
-            >
+            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este bloco ?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn
-                small
-                color="warning"
-                dark
-                @click="dialogDesativar = false"
-              >
-                Não</v-btn
-              >
-              <v-btn small color="primary" dark @click="desativeItemConfirm"
-                >Sim</v-btn
-              >
+              <v-btn small color="warning" dark @click="dialogDesativar = false">
+                Não</v-btn>
+              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -94,9 +78,11 @@
   width: 40px;
   height: 40px;
 }
+
 .template-add {
   padding-top: 1%;
 }
+
 .data-table {
   padding: 3%;
 }
@@ -128,18 +114,23 @@ export default {
       },
       {
         text: "Ações",
+        value: "ativo",
+        sortable: false,
+      },
+      {
+        text: "Ações",
         value: "acoes",
         sortable: false,
       },
     ],
     blocos: [],
-    blocosRaw:[],
+    blocosRaw: [],
     arraycampus: [],
     editIndice: -1,
     atributo: {
       id: null,
-      campus:null,
       label: "",
+      campus: null,
       ativo: true,
     },
     atributoPadrao: {
@@ -154,20 +145,19 @@ export default {
       return this.editIndice === -1 ? "Cadastrar Bloco" : "Editar Bloco";
     },
     mudarStatus() {
-      console.log(this.atributo)
-      return this.atributo.ativo == true ? "desativar " : "ativar";
-      
+      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar";
+
     },
   },
-    watch: {
-      dialog(val) {
-        val || this.fechar();
-      },
+  watch: {
+    dialog(val) {
+      val || this.fechar();
+    },
 
-      dialogDesativar(val) {
+    dialogDesativar(val) {
       val || this.fecharDesativar();
     },
-    },
+  },
 
   mounted() {
     this.inicializar();
@@ -176,16 +166,19 @@ export default {
   methods: {
     async inicializar() {
       axios.get(`${baseApiUrl}api/bloco/search`).then((res) => {
-        this.blocos = res.data.content;
-        console.log(this.blocos + "Arrayyyy de Blocossss");
+        this.blocos = res.data.content.map((b) => {
+            b.ativo = b.ativo ? "Ativo" : "Inativo"
+            return b;
+          });
+
+        console.log(this.blocos + "Array de Blocos");
       }).catch(console.warn("erro"));
     },
     //método para buscar campus existentes e preencher no array 
     async getCampus() {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
       this.campusRaw = data;
-      this.arraycampus = data.content;
-      //this.arraycampus = data.filter((d) => d.label);
+      this.arraycampus = data.content
       console.log(this.arraycampus + "array de campus aqui");
     },
 
@@ -195,8 +188,6 @@ export default {
       this.dialog = true;
     },
 
-  
-
     desativeItem(item) {
       this.editIndice = this.blocos.indexOf(item);
       this.atributo = Object.assign({}, item);
@@ -204,8 +195,8 @@ export default {
     },
 
     desativeItemConfirm() {
-      
-      if (this.atributo.ativo == true) {
+
+      if (this.atributo.ativo == "Ativo") {
         axios
           .patch(`${baseApiUrl}api/bloco/${this.atributo.id}/${false}`)
           .then((res) => {
@@ -247,8 +238,15 @@ export default {
       });
     },
 
+    async findCampus(id) {
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/${id}`);
+      this.campusRaw = data;
+      this.arraycampus = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(this.arraycampus + "array de campus aqui !!");
+    },
 
-     reloadPage(){
+    reloadPage: async function() {
       window.location.reload();
     },
 
@@ -258,8 +256,8 @@ export default {
           .put(`${baseApiUrl}api/bloco`, {
             id: this.atributo.id,
             label: this.atributo.label,
-            campus: this.atributo.campus.id,
-            ativo: this.atributo.ativo === true,
+            campus: this.atributo.campus,
+            ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
@@ -275,6 +273,7 @@ export default {
           .post(`${baseApiUrl}api/bloco`, {
             label: this.atributo.label,
             campus: this.atributo.campus,
+            ativo: true,
           })
           .then((res) => {
             this.blocos = res.data;
