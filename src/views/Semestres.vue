@@ -60,7 +60,7 @@
                         v-model="atributo.label"
                         label="Semestre"
                         required
-                        v-mask="'####/##'"
+                        v-mask="'####/#'"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="6" md="7">
