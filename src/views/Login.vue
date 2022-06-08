@@ -3,7 +3,7 @@
     <form>
       <div class="box-container">
         <center>
-          <img class="heading" src="../assets/images/logo-unitins.png" width="150px" height="130px" />
+          <img class="heading" src="../assets/images/logo-unitins.png" width="170px" height="130px" />
         </center>
         <h2 class="heading">Bem-vindo ao SIGHA</h2>
         
