@@ -44,6 +44,7 @@ const routes = [
     name: 'Bloco',
     component: () => import('../views/Bloco.vue')
   },
+
   {
     path: '/oferta',
     name: 'Oferta',
