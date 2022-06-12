@@ -317,13 +317,13 @@ export default {
     selecionarPerfil() {
       switch (this.perfilSelecionado) {
         case "Admin":
-          this.tipo = 1;
+          this.tipo = 0;
           break;
         case "Coordenador de Curso":
-          this.tipo = 2;
+          this.tipo = 1;
           break;
         case "Gestão Administrativa":
-          this.tipo = 3;
+          this.tipo = 2;
           break;
         default:
           this.tipo = 0;
