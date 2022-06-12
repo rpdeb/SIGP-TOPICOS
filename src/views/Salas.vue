@@ -1,18 +1,38 @@
 <template>
-  <v-data-table :headers="titulos" :items="salas" :search="search" class="elevation-2 data-table" :footer-props="{
-    'items-per-page-text': 'Itens por página'
-  }">
+  <v-data-table
+    :headers="titulos"
+    :items="salas"
+    :search="search"
+    class="elevation-2 data-table"
+    :footer-props="{
+      'items-per-page-text': 'Itens por página',
+    }"
+  >
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Sala</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Pesquisar"
+          single-line
+          hide-details
+        >
         </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
-            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+            <v-btn
+              small
+              class="mx-2 add"
+              fab
+              dark
+              color="green"
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon dark> mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -25,13 +45,33 @@
               <v-form>
                 <v-container>
                   <v-row>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.label" label="Sala" required></v-text-field>
+                    <v-col cols="8" sm="6" md="5">
+                      <v-text-field
+                        v-model="atributo.label"
+                        label="Sala"
+                        required
+                      ></v-text-field>
                     </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.capacidade" label="Capacidade" type="number"></v-text-field>
+                    <v-col cols="8" sm="5" md="5">
+                      <v-select
+                        v-model="atributo.tipo"
+                        label="Tipo de Sala"
+                        :items="tiposdesala"
+                        item-text="label"
+                        item-value="id"
+                        @input="selecionarTipoSala"
+                      >
+                        ></v-select
+                      >
                     </v-col>
-                    <v-col cols="8" sm="6" md="6">
+                    <v-col cols="8" sm="6" md="5">
+                      <v-text-field
+                        v-model="atributo.capacidade"
+                        label="Capacidade"
+                        type="number"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="8" sm="6" md="5">
                       <v-select
                         v-model="atributo.bloco"
                         label="Bloco"
@@ -39,14 +79,14 @@
                         item-value="id"
                         :items="arrayBlocos"
                       >
-                        ></v-select>
+                        ></v-select
+                      >
                     </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.estruturaFisica" label="Estrutura Física"></v-text-field>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="7">
-                      <v-select v-model="atributo.tipo" label="Tipo de Sala" :items="tiposdesala" item-text="label" item-value="id" @input="selecionarTipoSala">
-                        ></v-select>
+                    <v-col cols="8" sm="30" md="40">
+                      <v-text-field
+                        v-model="atributo.estruturaFisica"
+                        label="Estrutura Física"
+                      ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -54,20 +94,29 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialog = false">Cancelar</v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
+              <v-btn small color="warning" dark @click="dialog = false"
+                >Cancelar</v-btn
+              >
+              <v-btn small color="primary" class="mr-4" @click="salvar"
+                >Salvar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} esta Sala ?</v-card-title>
+            <v-card-title class="text-h5"
+              >Deseja {{ mudarStatus }} esta Sala ?</v-card-title
+            >
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn small color="warning" dark @click="dialog = false">
-                Não</v-btn>
-              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
+                Não</v-btn
+              >
+              <v-btn small color="primary" dark @click="desativeItemConfirm"
+                >Sim</v-btn
+              >
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -113,7 +162,12 @@ export default {
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    tiposdesala: [{id:"1", label:"Sala"}, {id:"2", label:"Laboratório"}],
+    //tiposdesala: [{id:"0", label:"Sala"}, {id:"1", label:"Laboratório de Informática"}],
+    tiposdesala: [
+      "Sala",
+      "Laboratório de Informática",
+      "Laboratório de Ciências",
+    ],
     tipodesalaselecionado: null,
     salas: [],
     blocos: [],
@@ -161,19 +215,20 @@ export default {
   },
 
   methods: {
-
     async inicializar() {
-      axios.get(`${baseApiUrl}api/sala/search`).then((res) => {
-        this.salas = res.data.content.map((s) => {
-          s.ativo = s.ativo ? "Ativo" : "Inativo"
-          return s;
-        });
-        console.log(this.blocos + "Array de Sala");
-      }).catch(console.warn("erro"));
+      axios
+        .get(`${baseApiUrl}api/sala/search`)
+        .then((res) => {
+          this.salas = res.data.content.map((s) => {
+            s.ativo = s.ativo ? "Ativo" : "Inativo";
+            return s;
+          });
+          console.log(this.blocos + "Array de Sala");
+        })
+        .catch(console.warn("erro"));
     },
 
-
-     async getBlocos() {
+    async getBlocos() {
       const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search`);
       this.blocosRaw = data;
       this.arrayBlocos = data.content;
@@ -194,7 +249,7 @@ export default {
 
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativo") {
-      axios
+        axios
           .patch(`${baseApiUrl}api/sala/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
@@ -242,9 +297,12 @@ export default {
     selecionarTipoSala() {
       switch (this.tipodesalaselecionado) {
         case "Sala":
+          this.tipo = 0;
+          break;
+        case "Laboratório de Informática":
           this.tipo = 1;
           break;
-        case "Laboratório":
+        case "Laboratório de Ciências":
           this.tipo = 2;
           break;
         default:
@@ -271,7 +329,6 @@ export default {
             estruturaFisica: this.atributo.estruturaFisica,
             tipo: this.atributo.tipo,
             ativo: this.atributo.ativo === "Ativo",
-
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
@@ -291,7 +348,8 @@ export default {
             estruturaFisica: this.atributo.estruturaFisica,
             tipo: this.atributo.tipo,
             ativo: true,
-          }).then((res) => {
+          })
+          .then((res) => {
             this.salas = res.data;
             alert("Os dados foram adicionados com sucesso !");
             console.log(res.data);
