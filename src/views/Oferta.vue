@@ -45,30 +45,88 @@
               <v-form>
                 <v-container>
                   <v-row>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-container class="px-0" fluid>
-                        <v-radio-group v-model="radioHorario">
-                          <v-radio
-                            v-for="n in 3"
-                            :key="n"
-                            :label="`Radio ${n}`"
-                            :value="n"
-                          ></v-radio>
-                        </v-radio-group>
-                      </v-container>
-                    </v-col>
-                    <v-col cols="8" sm="6" md="4">
+                    <v-col cols="8" sm="5" md="5">
                       <v-select
-                        v-model="atributo.campus"
-                        label="Campus"
+                        v-model="atributo.sala"
+                        label="Sala"
                         item-text="label"
                         item-value="id"
-                        :items="arraycampus"
-                      >
-                      </v-select>
-                    </v-col>
+                        :items="arraysalas"
+                      ></v-select>
+                      <v-select
+                        v-model="atributo.semestre"
+                        label="Semestre"
+                        item-text="label"
+                        item-value="id"
+                        :items="arraysemestres"
+                      ></v-select></v-col
+                  ></v-row>
+                </v-container>
+
+                <v-container>
+                  <v-row>
+                    <v-col cols="8" sm="5" md="5">
+                      <v-select
+                        v-model="atributo.disciplina"
+                        label="Disciplina"
+                        item-text="label"
+                        item-value="id"
+                        :items="arraydisciplinas"
+                      ></v-select
+                    ></v-col>
+                    <v-col cols="8" sm="5" md="5">
+                      <v-select
+                        v-model="atributo.codDisciplina"
+                        label="Código de Disciplina"
+                        item-text="disciplina.codDisciplina"
+                        item-value="id"
+                        :items="arraydisciplinas"
+                      ></v-select
+                    ></v-col>
                   </v-row>
                 </v-container>
+                <v-col cols="8" sm="5" md="5">
+                  <v-select
+                    v-model="diaSemana"
+                    label="Dia da Semana"
+                    item-text="diasDaSemana"
+                    item-value="id"
+                    :items="diasDaSemana"
+                  />
+                </v-col>
+                <v-col cols="8" sm="5" md="5">
+                  <v-container fluid>
+                    <v-row>
+                      <v-checkbox
+                        v-model="horario1"
+                        label="horario1"
+                        value="horario1"
+                        hide-details
+                      ></v-checkbox>
+
+                      <v-checkbox
+                        v-model="horario2"
+                        label="horario2"
+                        value="horario2"
+                        hide-details
+                      ></v-checkbox>
+
+                      <v-checkbox
+                        v-model="horario3"
+                        label="horario3"
+                        value="horario3"
+                        hide-details
+                      ></v-checkbox>
+
+                      <v-checkbox
+                        v-model="horario4"
+                        label="horario4"
+                        value="horario4"
+                        hide-details
+                      ></v-checkbox>
+                    </v-row>
+                  </v-container>
+                </v-col>
               </v-form>
             </v-card-text>
             <v-card-actions>
@@ -84,7 +142,7 @@
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
             <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} este Curso ?</v-card-title
+              >Deseja {{ mudarStatus }} este oferta ?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -136,32 +194,60 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-      { text: "Curso", value: "label" },
-      { text: "Campus", value: "campus.label" },
+      { text: "Disciplina", value: "label" },
+      { text: "Sala", value: "sala.label" },
+      { text: "Turno", value: "horario.turno" },
+      { text: "Semestre", value: "semestre.label" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    oferta: [],
-    campusRaw: [],
-    arraycampus: [],
+    ofertas: [],
+    salasRaw: [],
+    arraysalas: [],
+    arraysemestres: [],
+    arraydisciplinas: [],
+    turnos: ["MANHA", "TARDE", "NOITE"],
+    diasDaSemana: ["SEGUNDA", "TERCA", "QUARTA", "QUINTA", "SEXTA", "SABADO"],
     editIndice: -1,
     atributo: {
       id: null,
-      label: "",
-      campus: null,
+      horario: {
+        horario1: true,
+        horario2: true,
+        horario3: true,
+        horario4: true,
+        turno: "",
+        diaSemana: "",
+      },
+      disciplina: null,
+      sala: null,
+      codpesoa: null,
+      codDiciplina: null,
       ativo: true,
+      semestre: null,
     },
     atributoPadrao: {
       id: null,
-      label: "",
-      campus: null,
+      horario: {
+        horario1: true,
+        horario2: true,
+        horario3: true,
+        horario4: true,
+        turno: "",
+        diaSemana: "",
+      },
+      disciplina: null,
+      sala: null,
+      codpesoa: null,
+      codDiciplina: null,
       ativo: true,
+      semestre: null,
     },
   }),
 
   computed: {
     tituloForm() {
-      return this.editIndice === -1 ? "Cadastrar Curso" : "Editar Curso";
+      return this.editIndice === -1 ? "Cadastrar oferta" : "Editar oferta";
     },
     mudarStatus() {
       console.log(this.atributo);
@@ -178,18 +264,36 @@ export default {
     },
   },
 
+  props: {
+    horario: {
+      type: Object,
+      default: function () {
+        return {
+          horario1: Boolean,
+          horario2: Boolean,
+          horario3: Boolean,
+          horario4: Boolean,
+          turno: "",
+          diaSemana: "",
+        };
+      },
+    },
+  },
+
   mounted() {
     this.inicializar();
-    this.getCampus();
+    this.getSalas();
+    this.getSemestres();
+    this.getDisciplinas();
   },
 
   methods: {
     //método para preencher o data table
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/curso/search`)
+        .get(`${baseApiUrl}api/oferta/search`)
         .then((res) => {
-          this.oferta = res.data.content.map((c) => {
+          this.ofertas = res.data.content.map((c) => {
             c.ativo = c.ativo ? true : false;
             return c;
           });
@@ -198,13 +302,26 @@ export default {
           console.log(error);
         });
     },
-    //método para buscar campus existentes e preencher no array
-    async getCampus() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
-      this.campusRaw = data;
-      this.arraycampus = data.content;
-      //this.arraycampus = data.filter((d) => d.label);
-      console.log(this.arraycampus + "array de campus aqui");
+
+    async getSalas() {
+      const { data } = await this.axios.get(`${baseApiUrl}api/sala/search`);
+      this.salasRaw = data;
+      this.arraysalas = data.content;
+      console.log(this.arraysalas + "array de sala aqui");
+    },
+
+    async getSemestres() {
+      const { data } = await this.axios.get(`${baseApiUrl}api/semestre/search`);
+      this.arraysemestres = data.content;
+      console.log(this.arraysemestres + "array de semestre aqui");
+    },
+
+    async getDisciplinas() {
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/disciplina/search`
+      );
+      this.arraydisciplinas = data.content;
+      console.log(this.arraydisciplinas + "array de disciplinas aqui");
     },
 
     editItem(item) {
@@ -222,10 +339,10 @@ export default {
     desativeItemConfirm() {
       if (this.atributo.ativo == "Ativo") {
         axios
-          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${false}`)
+          .patch(`${baseApiUrl}api/oferta/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
-            alert("Este curso foi desabilitado com sucesso !");
+            alert("Este oferta foi desabilitada com sucesso !");
             this.reloadPage();
           })
           .catch((error) => {
@@ -233,10 +350,10 @@ export default {
           });
       } else {
         axios
-          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${true}`)
+          .patch(`${baseApiUrl}api/oferta/${this.atributo.id}/${true}`)
           .then((res) => {
             console.log(res.data);
-            alert("Este curso foi habilitado com sucesso !");
+            alert("Este oferta foi habilitada com sucesso !");
             this.reloadPage();
           })
           .catch((error) => {
@@ -266,21 +383,13 @@ export default {
       });
     },
 
-    async findCampus(id) {
-      const { data } = await this.axios.get(`${baseApiUrl}api/campus/${id}`);
-      this.campusRaw = data;
-      this.arraycampus = data.content;
-      //this.arraycampus = data.filter((d) => d.label);
-      console.log(this.arraycampus + "array de campus aqui !!");
-    },
-
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(`${baseApiUrl}api/curso`, {
+          .put(`${baseApiUrl}api/oferta`, {
             id: this.atributo.id,
             label: this.atributo.label,
-            campus: this.atributo.campus.id,
+            sala: this.atributo.sala,
             ativo: this.atributo.ativo === true,
           })
           .then((res) => {
@@ -294,9 +403,21 @@ export default {
         Object.assign(this.ofertas[this.editIndice], this.atributo);
       } else {
         axios
-          .post(`${baseApiUrl}api/curso`, {
-            label: this.atributo.label,
-            campus: this.atributo.campus,
+          .post(`${baseApiUrl}api/oferta`, {
+            horario: {
+              horario1: this.atributo.horario.horario1,
+              horario2: this.atributo.horario.horario2,
+              horario3: this.atributo.horario.horario3,
+              horario4: this.atributo.horario.horario4,
+              turno: this.atributo.horario.turno,
+              diaSemana: this.atributo.horario.diaSemana,
+            },
+            disciplina: this.atributo.disciplina,
+            sala: this.atributo.sala,
+            codpesoa: this.atributo.codpesoa,
+            codDiciplina: this.atributo.codDiciplina,
+            ativo: this.atributo.ativo,
+            semestre: this.atributo.semestre,
           })
           .then((res) => {
             this.ofertas = res.data;

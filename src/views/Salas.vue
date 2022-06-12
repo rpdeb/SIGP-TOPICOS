@@ -74,7 +74,7 @@
                     <v-col cols="8" sm="6" md="5">
                       <v-select
                         v-model="atributo.bloco"
-                        label="Bloco"
+                        label="Bloco/Piso"
                         item-text="label"
                         item-value="id"
                         :items="arrayBlocos"

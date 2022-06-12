@@ -328,16 +328,6 @@ export default {
         default:
           this.tipo = 0;
       }
-      /* if (this.perfilSelecionado === "Admin") {
-         this.tipo = 1;
-      } else if (this.perfilSelecionado === "Coordenador de Curso") {
-        this.tipo = 2;
-      } else if (this.perfilSelecionado === "Gestão Administrativa") {
-        this.tipo = 3;
-      }else{
-         this.tipo = 0;
-      } 
-    */
     },
     reloadPage() {
       window.location.reload();
