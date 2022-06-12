@@ -55,6 +55,11 @@ const routes = [
     name: 'Relatorio',
     component: () => import('../views/Relatorio.vue')
   },
+  {
+    path: '/disciplina',
+    name: 'Disciplina',
+    component: () => import('../views/Disciplina.vue')
+  },
 
 ]
 
