@@ -151,6 +151,7 @@ export default {
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
+    disciplinas:[],
     periodos: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     periodoSelecionado: null,
     editIndice: -1,
@@ -311,7 +312,7 @@ export default {
             codigoMatriz: this.atributo.codigoMatriz,
             codigoDiciplina: this.atributo.codigoDiciplina,
             periodo: this.atributo.periodo,
-            ativo: this.atributo.ativo === "Ativo",
+            ativo: true,
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
@@ -329,6 +330,7 @@ export default {
             codigoMatriz: this.atributo.codigoMatriz,
             codigoDiciplina: this.atributo.codigoDiciplina,
             periodo: this.atributo.periodo,
+            ativo:true,
           })
           .then((res) => {
             this.disciplinas = res.data;
