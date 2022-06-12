@@ -101,7 +101,7 @@
                 small
                 color="warning"
                 dark
-                @click="dialogDesativar = false"
+                @click="fecharDesativar"
               >
                 Não</v-btn
               >
@@ -115,6 +115,9 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
+      <v-icon small class="mr-2" @click="redirecionaOferta" color="blue">
+        mdi-book
+      </v-icon>
       <v-icon small class="mr-2" @click="editItem(item)" color="blue">
         mdi-pencil
       </v-icon>
