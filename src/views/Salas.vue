@@ -157,7 +157,7 @@ export default {
       { text: "Sala", value: "label" },
       { text: "Capacidade", value: "capacidade" },
       { text: "Bloco/Piso", value: "bloco.label" },
-      { text: "Estrutura Física", value: "estruturaFisica" },
+      //{ text: "Estrutura Física", value: "estruturaFisica" },
       { text: "Tipo de Sala", value: "tipo" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
