@@ -151,35 +151,16 @@ export default {
     dialog: false,
     dialogDesativar: false,
     titulos: [
-      {
-        text: "Perfil",
-        value: "tipo",
-        sortable: false,
-      },
-      {
-        text: "Email",
-        value: "email",
-        sortable: false,
-      },
-      {
-        text: "Campus",
-        value: "campus.label",
-        sortable: false,
-      },
-      {
-        text: "Curso",
-        value: "curso.label",
-        sortable: false,
-      },
+      { text: "Perfil", value: "tipo", },
+      { text: "Email", value: "email", },
+      { text: "Campus", value: "campus.label", },
+      { text: "Curso", value: "curso.label", },
       { text: "Status", value: "ativo" },
-      {
-        text: "Ações",
-        value: "acoes",
-        sortable: false,
-      },
+      { text: "Ações", value: "acoes", },
     ],
+
     usuarios: [],
-    perfis: ["Admin", "Gestão Administrativa", "Coordenador de Curso"],
+    perfis: ["Administrador", "Gerente Administrativa", "Coordenador de Curso"],
     perfilSelecionado: null,
     idperfil: null,
     arraycampus: [],
@@ -225,14 +206,15 @@ export default {
   },
 
   mounted() {
-    this.inicializar();
-    this.getCampus();
     this.getCursos();
+    this.getCampus();
+    this.inicializar();
   },
 
   methods: {
     async inicializar() {
       this.axios
+      
         .get(`${baseApiUrl}api/usuario/search`)
         .then((res) => {
           this.usuarios = res.data;
