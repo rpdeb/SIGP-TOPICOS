@@ -14,48 +14,6 @@
           label="Filtro"
         ></vue-select>
 
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="400px">
-          <template v-slot:activator="{ on, attrs }" class="template-add">
-            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
-              <v-icon dark> mdi-plus</v-icon>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">{{ tituloForm }}</span>
-            </v-card-title>
-            <!-- inserir mensagem para a interface -->
-            <v-card-text>
-              <v-form>
-                <v-container>
-                  <v-row>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.label" label="Campus"></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-form>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fechar">Cancelar</v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
-        <v-dialog v-model="dialogDesativar" max-width="400px">
-          <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este Campus ?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fecharDesativar">Não</v-btn>
-              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
