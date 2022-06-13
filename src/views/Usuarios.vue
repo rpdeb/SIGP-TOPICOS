@@ -1,44 +1,24 @@
 <template>
-  <v-data-table
-    :headers="titulos"
-    :items="usuarios"
-    :search="search"
-    class="elevation-2 data-table"
-    :footer-props="{
-      'items-per-page-text': 'Itens por página',
-    }"
-  >
+  <v-data-table :headers="titulos" :items="usuarios" :search="search" class="elevation-2 data-table" :footer-props="{
+    'items-per-page-text': 'Itens por página'
+  }">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Usuários</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Pesquisar"
-          single-line
-          hide-details
-        >
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
         </v-text-field>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              small
-              class="mx-2 add"
-              fab
-              dark
-              color="green"
-              v-bind="attrs"
-              v-on="on"
-            >
+            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
               <v-icon dark> mdi-plus</v-icon>
             </v-btn>
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ tituloForm }}</span>
+              <span class="text-h5">Cadastrar Usuário</span>
             </v-card-title>
 
             <v-card-text>
@@ -56,8 +36,7 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="atributo.tipo"
-                        @input="selecionarPerfil"
+                        v-model="atributo.perfis"
                         :items="perfis"
                         :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Perfil"
@@ -91,30 +70,19 @@
               <v-btn small color="warning" dark @click="fechar">
                 Cancelar
               </v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar"
-                >Salvar</v-btn
-              >
+              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialogDesativar" max-width="400px">
+       <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} este usuário?
-            </v-card-title>
+            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este usuario ?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialogDesativar=false"
-                >Não</v-btn
-              >
-              <v-btn
-                small
-                color="primary"
-                class="mr-4"
-                @click="desativeItemConfirm"
-                >Sim</v-btn
-              >
+              <v-btn small color="warning" dark @click="dialogDesativar = false">
+                Não</v-btn>
+              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -131,6 +99,21 @@
     </template>
   </v-data-table>
 </template>
+
+<style>
+.add {
+  width: 40px;
+  height: 40px;
+}
+
+.template-add {
+  padding-top: 1%;
+}
+
+.data-table {
+  padding: 3%;
+}
+</style>
 
 <!-- 
 <style>
@@ -151,35 +134,16 @@ export default {
     dialog: false,
     dialogDesativar: false,
     titulos: [
-      {
-        text: "Perfil",
-        value: "tipo",
-        sortable: false,
-      },
-      {
-        text: "Email",
-        value: "email",
-        sortable: false,
-      },
-      {
-        text: "Câmpus",
-        value: "campus.label",
-        sortable: false,
-      },
-      {
-        text: "Curso",
-        value: "curso.label",
-        sortable: false,
-      },
+      { text: "Perfil", value: "tipo", },
+      { text: "Email", value: "email", },
+      { text: "Campus", value: "campus.label", },
+      { text: "Curso", value: "curso.label", },
       { text: "Status", value: "ativo" },
-      {
-        text: "Ações",
-        value: "acoes",
-        sortable: false,
-      },
+      { text: "Ações", value: "acoes", },
     ],
+
     usuarios: [],
-    perfis: ["Admin", "Gestão Administrativa", "Coordenador de Curso"],
+    perfis: ["Administrador", "Gerente Administrativa", "Coordenador de Curso"],
     perfilSelecionado: null,
     idperfil: null,
     arraycampus: [],
@@ -225,30 +189,30 @@ export default {
   },
 
   mounted() {
-    this.inicializar();
-    this.getCampus();
     this.getCursos();
+    this.getCampus();
+    this.inicializar();
+
   },
 
   methods: {
     async inicializar() {
-      this.axios
-        .get(`${baseApiUrl}api/usuario/search`)
-        .then((res) => {
-          this.usuarios = res.data;
-          console.log(this.usuarios + "array de usuários !!");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      //await Promise.all([this.getCampus(), this.getCursos()]);
+      axios.get(`${baseApiUrl}api/usuario/search`).then((res) => {
+        this.usuarios = res.data.content.map((b) => {
+            b.ativo = b.ativo ? "Ativo" : "Inativo"
+            return b;
+          });
+
+        console.log(this.usuarios + "Array de Usuario");
+      }).catch(console.warn("erro"));
     },
 
+    //método para buscar campus existentes e preencher no array 
     async getCampus() {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
       this.campusRaw = data;
-      this.arraycampus = data.content;
-      console.log(this.arraycampus + " array de campus aqui !!");
+      this.arraycampus = data.content
+      console.log(this.arraycampus + "array de campus aqui");
     },
 
     async getCursos() {
@@ -258,28 +222,27 @@ export default {
       console.log(this.arraycursos + "array de cursos aqui !!");
     },
 
-    obterItem(item){
+    editItem(item) {
       this.editIndice = this.usuarios.indexOf(item);
       this.atributo = Object.assign({}, item);
-    },
-
-    editItem(item) {
-     this.obterItem();
-     this.dialog = true;
+      this.dialog = true;
     },
 
     desativeItem(item) {
-      this.obterItem();
+      this.editIndice = this.usuarios.indexOf(item);
+      this.atributo = Object.assign({}, item);
       this.dialogDesativar = true;
     },
 
     desativeItemConfirm() {
-      if (this.atributo.ativo) {
-        axios;
-        patch(`${baseApiUrl}api/usuario/${this.atributo.id}/${false}`)
+
+      if (this.atributo.ativo == "Ativo") {
+        axios
+          .patch(`${baseApiUrl}api/usuario/${this.atributo.id}/${false}`)
           .then((res) => {
             console.log(res.data);
-            alert("Usuário desabilitado com sucesso!");
+            alert("Este usuario foi desabilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
@@ -289,7 +252,8 @@ export default {
           .patch(`${baseApiUrl}api/usuario/${this.atributo.id}/${true}`)
           .then((res) => {
             console.log(res.data);
-            alert("Usuário habilitado com sucesso !");
+            alert("Este usuario foi habilitado com sucesso !");
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
@@ -314,22 +278,15 @@ export default {
       });
     },
 
-    selecionarPerfil() {
-      switch (this.perfilSelecionado) {
-        case "Admin":
-          this.tipo = 0;
-          break;
-        case "Coordenador de Curso":
-          this.tipo = 1;
-          break;
-        case "Gestão Administrativa":
-          this.tipo = 2;
-          break;
-        default:
-          this.tipo = 0;
-      }
+    async findCampus(id) {
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/${id}`);
+      this.campusRaw = data;
+      this.arraycampus = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(this.arraycampus + "array de campus aqui !!");
     },
-    reloadPage() {
+
+    reloadPage: async function() {
       window.location.reload();
     },
 
@@ -338,10 +295,10 @@ export default {
         axios
           .put(`${baseApiUrl}api/usuario`, {
             id: this.atributo.id,
+            tipo: this.atributo.perfis,
             email: this.atributo.email,
-            tipo: this.atributo.tipo,
-            campus: this.atributo.campus,
-            curso: this.atributo.curso,
+            campus: this.atributo.campus.id,
+            curso: this.atributo.curso.id,
             ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
@@ -356,10 +313,11 @@ export default {
       } else {
         axios
           .post(`${baseApiUrl}api/usuario`, {
+            tipo: this.atributo.perfis,
             email: this.atributo.email,
-            tipo: this.atributo.tipo,
             campus: this.atributo.campus,
             curso: this.atributo.curso,
+            perfilSelecionado: this.atributo.perfis,
             ativo: true,
           })
           .then((res) => {
@@ -368,6 +326,7 @@ export default {
             console.log(res.data);
             this.reloadPage();
           });
+        console.log(this.atributo);
         this.usuarios.push(this.atributo);
       }
       this.fechar();

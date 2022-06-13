@@ -6,56 +6,14 @@
       <v-toolbar flat>
         <v-toolbar-title>Relatório</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details></v-text-field>
-        <vue-select
-          @input="redefinirTable" 
-          v-model="filtroSelecionado"
-          :options="filtros"
-          label="Filtro"
-        ></vue-select>
 
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        </v-text-field>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="400px">
-          <template v-slot:activator="{ on, attrs }" class="template-add">
-            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
-              <v-icon dark> mdi-plus</v-icon>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">{{ tituloForm }}</span>
-            </v-card-title>
-            <!-- inserir mensagem para a interface -->
-            <v-card-text>
-              <v-form>
-                <v-container>
-                  <v-row>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.label" label="Campus"></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-form>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fechar">Cancelar</v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
 
-        <v-dialog v-model="dialogDesativar" max-width="400px">
-          <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este Campus ?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fecharDesativar">Não</v-btn>
-              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <v-select @input="redefinirTable" v-model="filtroSelecionado" :items="filtros" label="Filtro"></v-select>
+
+
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
@@ -89,15 +47,97 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-      { text: "Câmpus", value: "label" },
-      { text: "Curso", value: "label" },
-      { text: "Turno", value: "label" },
-      { text: "Tipo de Sala", value: "label" },
+      { text: "Câmpus", value: "label", sortable: false },
+      { text: "Curso", value: "label", sortable: false },
+      { text: "Turno", value: "label", sortable: false },
+      { text: "Tipo de Sala", value: "label", sortable: false },
       { text: "Ações", value: "acoes" },
     ],
-    filtros:['Ativados', 'Todos'],
-    filtroSelecionado:"Ativados",
-    campus: [],
+    filtros: ['Todos','Sala', 'Curso', 'Periodo'],
+    filtroSelecionado: "",
+    relatorio: [],
+    desserts: [
+          {
+            name: 'Frozen Yogurt',
+            calories: 159,
+            fat: 6.0,
+            carbs: 24,
+            protein: 4.0,
+            iron: '1%',
+          },
+          {
+            name: 'Ice cream sandwich',
+            calories: 237,
+            fat: 9.0,
+            carbs: 37,
+            protein: 4.3,
+            iron: '1%',
+          },
+          {
+            name: 'Eclair',
+            calories: 262,
+            fat: 16.0,
+            carbs: 23,
+            protein: 6.0,
+            iron: '7%',
+          },
+          {
+            name: 'Cupcake',
+            calories: 305,
+            fat: 3.7,
+            carbs: 67,
+            protein: 4.3,
+            iron: '8%',
+          },
+          {
+            name: 'Gingerbread',
+            calories: 356,
+            fat: 16.0,
+            carbs: 49,
+            protein: 3.9,
+            iron: '16%',
+          },
+          {
+            name: 'Jelly bean',
+            calories: 375,
+            fat: 0.0,
+            carbs: 94,
+            protein: 0.0,
+            iron: '0%',
+          },
+          {
+            name: 'Lollipop',
+            calories: 392,
+            fat: 0.2,
+            carbs: 98,
+            protein: 0,
+            iron: '2%',
+          },
+          {
+            name: 'Honeycomb',
+            calories: 408,
+            fat: 3.2,
+            carbs: 87,
+            protein: 6.5,
+            iron: '45%',
+          },
+          {
+            name: 'Donut',
+            calories: 452,
+            fat: 25.0,
+            carbs: 51,
+            protein: 4.9,
+            iron: '22%',
+          },
+          {
+            name: 'KitKat',
+            calories: 518,
+            fat: 26.0,
+            carbs: 65,
+            protein: 7,
+            iron: '6%',
+          },
+        ],
     editIndice: -1,
     atributo: {
       id: null,
@@ -111,24 +151,6 @@ export default {
     },
   }),
 
-  computed: {
-    tituloForm() {
-      return this.editIndice === -1 ? "Cadastrar Campus" : "Editar Campus";
-    },
-    mudarStatus() {
-      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
-    },
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.fechar();
-    },
-
-    dialogDesativar(val) {
-      val || this.fecharDesativar();
-    },
-  },
 
   mounted() {
     this.inicializar();
@@ -136,121 +158,31 @@ export default {
 
   methods: {
     inicializar() {
-      axios.get(`${baseApiUrl}api/campus/search`).then((res) => {
-        this.campus = res.data.content.map((c) => {
-          c.ativo = c.ativo ? "Ativo" : "Inativo"
-          return c;
-        });
-
-        console.log(this.campus + "Array de campuss");
-        console.log(res.data);
+      axios.get(`${baseApiUrl}api/oferta/search`).then((res) => {
+        this.oferta = res.data.content;
       }).catch((error) => {
-            console.log(error);
-          });
+        console.log(error);
+      });
     },
 
     redefinirTable() {
       if (this.filtroSelecionado === "Todos") {
        this.inicializar();
-      } else {
-        axios.get(url + "/getAll/true", this.relatorio).then((res) => {
-          this.relatorio = res.data.map((p) => {
-            p.ativo = p.ativo ? "Ativado" : "Desativado";
-            return p;
-          });
-          console.log(res.data);
+      } else if(this.filtroSelecionado === "Sala"){
+        axios.get(`${baseApiUrl}api/oferta/search?filter=sala`, this.relatorio).then((res) => {
+          this.relatorio = res.data;
         });
       }
-    },
-
-    editItem(item) {
-      this.editIndice = this.campus.indexOf(item);
-      this.atributo = Object.assign({}, item);
-      this.dialog = true;
-    },
-
-    desativeItem(item) {
-      this.editIndice = this.campus.indexOf(item);
-      this.atributo = Object.assign({}, item);
-      this.dialogDesativar = true;
-    },
-
-    desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
-        axios.patch(`${baseApiUrl}api/campus/${this.atributo.id}/${false}`)
-          .then((res) => {
-            console.log(res.data);
-            alert("Este campus foi desabilitado com sucesso !");
-            console.warn("entrou no desativar");
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        axios
-          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${true}`)
-          .then((res) => {
-            console.log(res.data);
-            alert("Este campus foi habilitado com sucesso !");
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      this.fecharDesativar();
-    },
-
-    fechar() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.atributo = Object.assign({}, this.atributoPadrao);
-        this.editIndice = -1;
-      });
-    },
-
-    fecharDesativar() {
-      this.dialogDesativar = false;
-      this.$nextTick(() => {
-        this.atributo = Object.assign({}, this.atributoPadrao);
-        this.editIndice = -1;
-      });
-    },
-
-    reloadPage() {
-      window.location.reload();
-    },
-
-    salvar() {
-      if (this.editIndice > -1) {
-        axios
-          .put(`${baseApiUrl}api/campus`, {
-            id: this.atributo.id,
-            label: this.atributo.label,
-            ativo: this.atributo.ativo === "Ativo",
-          })
-          .then((res) => {
-            alert("Os dados foram atualizados com sucesso !");
-            console.log(res.data);
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        Object.assign(this.campus[this.editIndice], this.atributo);
-      } else {
-        axios.post(`${baseApiUrl}api/campus`, {
-          label: this.atributo.label,
-        }).then((res) => {
-          this.campus = res.data;
-          alert("Os dados foram adicionados com sucesso !");
-          console.log(res.data);
-          this.reloadPage();
+      else if(this.filtroSelecionado === "Curso"){
+        axios.get(`${baseApiUrl}api/oferta/search?filter=curso`, this.relatorio).then((res) => {
+          this.relatorio = res.data;
         });
-        this.campus.push(this.atributo);
       }
-      this.fechar();
+      else {
+        axios.get(`${baseApiUrl}api/oferta/search?filter=periodo`, this.relatorio).then((res) => {
+          this.relatorio = res.data;
+        });
+      }
     },
   },
 };

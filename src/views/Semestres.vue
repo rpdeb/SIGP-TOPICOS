@@ -208,7 +208,7 @@ export default {
   methods: {
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/semestre/search`)
+        .get(`${baseApiUrl}api/semestre/search?filter=ativo`)
         .then((res) => {
           this.semestres = res.data.content
             .map((c) => {

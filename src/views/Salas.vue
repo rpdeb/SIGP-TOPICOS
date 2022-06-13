@@ -56,7 +56,6 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-
         <v-dialog v-model="dialogDetalhar" max-width="700px">
           <v-simple-table dense>
             <template v-slot:default>
