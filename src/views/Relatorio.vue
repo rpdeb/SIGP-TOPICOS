@@ -47,7 +47,7 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-      { text: "Campus", value: "label" },
+      { text: "Câmpus", value: "label" },
       { text: "Curso", value: "label" },
       { text: "Turno", value: "label" },
       { text: "Tipo de Sala", value: "label" },
