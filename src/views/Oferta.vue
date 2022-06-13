@@ -69,7 +69,7 @@
                       <v-select
                         v-model="atributo.codPessoa"
                         label="Professor"
-                        item-text="label"
+                        item-text="nome"
                         item-value="id"
                         :items="arrayprofessores"
                       ></v-select
@@ -337,7 +337,7 @@ export default {
 
     async getDisciplinas() {
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/disciplina/search`
+        `${baseApiUrl}api/matriz/searchDisciplinaByMatriz`
       );
       this.arraydisciplinas = data.content;
       console.log(this.arraydisciplinas + "array de disciplinas aqui");
@@ -345,7 +345,7 @@ export default {
 
      async getMatrizes() {
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/matriz/getAll`
+        `${baseApiUrl}api/matriz/getAll?porPagina=100&paginaAtual=0`
       );
       this.matrizes = data.content;
       console.log(this.matrizes + "array de disciplinas aqui");
