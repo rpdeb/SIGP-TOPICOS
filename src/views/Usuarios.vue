@@ -22,6 +22,7 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
+        
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
