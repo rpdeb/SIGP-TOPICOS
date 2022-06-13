@@ -162,7 +162,7 @@ export default {
         sortable: false,
       },
       {
-        text: "Campus",
+        text: "Câmpus",
         value: "campus.label",
         sortable: false,
       },

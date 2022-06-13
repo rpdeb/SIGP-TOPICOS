@@ -4,7 +4,7 @@
   }">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Gerenciamento de Campus</v-toolbar-title>
+        <v-toolbar-title>Gerenciamento de Câmpus</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
         </v-text-field>
@@ -83,7 +83,7 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-      { text: "Campus", value: "label" },
+      { text: "Câmpus", value: "label" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
