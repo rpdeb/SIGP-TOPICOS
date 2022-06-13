@@ -123,11 +123,9 @@ export default {
       { text: "Tipo de Sala", value: "tipo" },
       { text: "Bloco/Piso", value: "bloco.label" },
       { text: "Capacidade", value: "capacidade" },
-      //{ text: "Estrutura Física", value: "estruturaFisica" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    //tiposdesala: [{id:"0", label:"Sala"}, {id:"1", label:"Laboratório de Informática"}],
     tiposdesala: [
       "Sala",
       "Laboratório de Informática",
@@ -303,7 +301,7 @@ export default {
             capacidade: this.atributo.capacidade,
             bloco: this.atributo.bloco,
             estruturaFisica: this.atributo.estruturaFisica,
-            tipo: this.atributo.tipo,
+            //tipo: this.atributo.tipo,
             ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
@@ -322,7 +320,7 @@ export default {
             capacidade: this.atributo.capacidade,
             bloco: this.atributo.bloco,
             estruturaFisica: this.atributo.estruturaFisica,
-            tipo: this.atributo.tipo,
+            //tipo: this.atributo.tipo,
             ativo: true,
           })
           .then((res) => {
