@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
     <div class="tab">
         <a href="#" v-if="this.$store.state.loginUser" @click.prevent="logout" class="tablinks">Logout</a>
         <router-link to="/newlogin" class="tablinks">Sign In</router-link>
@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import router from '@/router/index'
+import router from '@/router/router'
 import { removeItem } from '@/config/utils'
 export default {
   name: 'signup_header',
@@ -18,4 +18,4 @@ export default {
     }
   }
 }
-</script> -->
+</script>

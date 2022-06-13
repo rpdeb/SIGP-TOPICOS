@@ -1,33 +1,23 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-
 Vue.use(VueRouter)
 
-let baseRoutes = [
-  {
-    path: '/',
-    redirect: '/login'
-  },
-  {
-    path: '/home',
-    name: 'Home',
-    component: () => import('../views/Home.vue')
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: () => import('../views/Login.vue')
-  },
-  {
-    path: '/signup',
-    name: 'SignUp',
-    component: () => import('../views/SignUp.vue')
-  },
+const routes = [
+  // {
+  //   path: '/newlogin',
+  //   name: 'Newlogin',
+  //   component: () => import('../views/NewLogin.vue')
+  // },
   {
     path: '/semestres',
     name: 'Semestres',
     component: () => import('../views/Semestres.vue')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/Login.vue')
   },
   {
     path: '/salas',
@@ -75,23 +65,43 @@ let baseRoutes = [
 
 const router = new VueRouter({
   mode: 'history',
-  linkExactActiveClass: 'active',
   base: process.env.BASE_URL,
-  routes: baseRoutes
+  routes
 })
 
-router.beforeEach((to, from, next) => {
-  // redirect to login page if not logged in and trying to access a restricted page
-  const publicPages = ['/login', '/signup']
-  const authRequired = !publicPages.includes(to.path)
-  const loggedIn = localStorage.getItem('user')
-  if (authRequired && !loggedIn) {
-    return next('/login')
-  }
-  next()
+// router.beforeEach((to, from, next) => {
+//   if (
+//     to.name !== "login" &&
+//     to.name !== "register" &&
+//     !localStorage.getItem("authUser")
+//   ) {
+//     next({ name: "login" });
+//   } else {
+//     next();
+//   }
 
-  
+//   setTimeout(function () {
+//   window.location.reload();
+//   }, 5000);
 
-})
+
+// });
+
+// router.beforeEach((to, from, next) => {
+//   // redirect to login page if not logged in and trying to access a restricted page
+//   const publicPages = ['/semestres', ]
+//   const authRequired = !publicPages.includes(to.path)
+//   const loggedIn = localStorage.getItem('user')
+//   if (authRequired && !loggedIn) {
+//     return next('/semestres')
+
+//   }
+//   next()
+
+//   // setTimeout(function(){
+//   //   window.location.reload();
+//   // }, 1000);
+
+// })
 
 export default router

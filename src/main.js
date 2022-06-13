@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
-import router from './router/index'
-import store from './store/store'
+import router from './router'
+import store from './store'
 import vuetify from './plugins/vuetify'
 import './assets/css/style.css'
 import './registerServiceWorker'
@@ -23,6 +23,7 @@ const gauthOption = {
   prompt: 'select_account'
 }
 Vue.use(GoogleAuth, gauthOption)
+
 Vue.config.productionTip = false
 
 new Vue({
