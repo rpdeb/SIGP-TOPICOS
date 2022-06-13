@@ -143,7 +143,7 @@ export default {
     ],
 
     usuarios: [],
-    perfis: ["Administrador", "Gerente Administrativa", "Coordenador de Curso"],
+    perfis: ["Administrador", "Gestão Administrativa", "Coordenador de Curso"],
     perfilSelecionado: null,
     idperfil: null,
     arraycampus: [],
@@ -295,10 +295,10 @@ export default {
         axios
           .put(`${baseApiUrl}api/usuario`, {
             id: this.atributo.id,
-            tipo: this.atributo.perfis,
             email: this.atributo.email,
-            campus: this.atributo.campus.id,
-            curso: this.atributo.curso.id,
+            tipo: this.atributo.perfis,
+            campus: this.atributo.campus,
+            curso: this.atributo.curso,
             ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
@@ -313,11 +313,9 @@ export default {
       } else {
         axios
           .post(`${baseApiUrl}api/usuario`, {
-            tipo: this.atributo.perfis,
             email: this.atributo.email,
             campus: this.atributo.campus,
             curso: this.atributo.curso,
-            perfilSelecionado: this.atributo.perfis,
             ativo: true,
           })
           .then((res) => {

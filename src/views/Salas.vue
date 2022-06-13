@@ -123,16 +123,16 @@ export default {
       { text: "Tipo de Sala", value: "tipo" },
       { text: "Bloco/Piso", value: "bloco.label" },
       { text: "Capacidade", value: "capacidade" },
-      //{ text: "Estrutura Física", value: "estruturaFisica" },
+      { text: "Estrutura Física", value: "estruturaFisica" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    //tiposdesala: [{id:"0", label:"Sala"}, {id:"1", label:"Laboratório de Informática"}],
-    tiposdesala: [
-      "Sala",
-      "Laboratório de Informática",
-      "Laboratório de Ciências",
-    ],
+    tiposdesala: [{id:"1", label:"Sala"}, {id:"2", label:"Laboratório de Informática"}],
+    //tiposdesala: [
+      //"Sala",
+      //"Laboratório de Informática",
+      //"Laboratório de Ciências",
+    //],
     tipodesalaselecionado: null,
     salas: [],
     blocos: [],
@@ -145,7 +145,7 @@ export default {
       capacidade: null,
       bloco: null,
       estruturaFisica: null,
-      tipo: null,
+      tipo: 1,
       ativo: true,
     },
     atributoPadrao: {
@@ -154,7 +154,7 @@ export default {
       capacidade: null,
       bloco: null,
       estruturaFisica: null,
-      tipo: null,
+      tipo: 1,
       ativo: true,
     },
   }),
@@ -181,14 +181,15 @@ export default {
 
   methods: {
     async inicializar() {
+     
       axios
-        .get(`${baseApiUrl}api/sala/search`)
+        .get(`${baseApiUrl}api/sala/search?size=1000`)
         .then((res) => {
           this.salas = res.data.content.map((s) => {
             s.ativo = s.ativo ? "Ativo" : "Inativo";
             return s;
           });
-          console.log(this.blocos + "Array de Sala");
+          console.log(this.salas + "Array de salas aqui")
         })
         .catch(console.warn("erro"));
     },
@@ -303,7 +304,7 @@ export default {
             capacidade: this.atributo.capacidade,
             bloco: this.atributo.bloco,
             estruturaFisica: this.atributo.estruturaFisica,
-            tipo: this.atributo.tipo,
+            tipo: Number(this.atributo.tipo),
             ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
@@ -322,7 +323,7 @@ export default {
             capacidade: this.atributo.capacidade,
             bloco: this.atributo.bloco,
             estruturaFisica: this.atributo.estruturaFisica,
-            tipo: this.atributo.tipo,
+            tipo:Number( this.atributo.tipo),
             ativo: true,
           })
           .then((res) => {
