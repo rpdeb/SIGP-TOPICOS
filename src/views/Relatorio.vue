@@ -6,11 +6,13 @@
       <v-toolbar flat>
         <v-toolbar-title>Relatório</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
+
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
         </v-text-field>
         <v-spacer></v-spacer>
 
         <v-select @input="redefinirTable" v-model="filtroSelecionado" :items="filtros" label="Filtro"></v-select>
+
 
       </v-toolbar>
     </template>
@@ -148,6 +150,7 @@ export default {
       ativo: true,
     },
   }),
+
 
   mounted() {
     this.inicializar();
