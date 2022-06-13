@@ -7,12 +7,7 @@
         <v-toolbar-title>Relatório</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details></v-text-field>
-        <vue-select
-          @input="redefinirTable" 
-          v-model="filtroSelecionado"
-          :options="filtros"
-          label="Filtro"
-        ></vue-select>
+        
 
       </v-toolbar>
     </template>
@@ -53,9 +48,8 @@ export default {
       { text: "Tipo de Sala", value: "label" },
       { text: "Ações", value: "acoes" },
     ],
-    filtros:['Ativados', 'Todos'],
-    filtroSelecionado:"Ativados",
-    campus: [],
+    filtros:['Sala', 'Curso', 'Periodo'],
+    relatorio: [],
     editIndice: -1,
     atributo: {
       id: null,
@@ -69,146 +63,17 @@ export default {
     },
   }),
 
-  computed: {
-    tituloForm() {
-      return this.editIndice === -1 ? "Cadastrar Campus" : "Editar Campus";
-    },
-    mudarStatus() {
-      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
-    },
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.fechar();
-    },
-
-    dialogDesativar(val) {
-      val || this.fecharDesativar();
-    },
-  },
-
   mounted() {
     this.inicializar();
   },
 
   methods: {
     inicializar() {
-      axios.get(`${baseApiUrl}api/campus/search`).then((res) => {
-        this.campus = res.data.content.map((c) => {
-          c.ativo = c.ativo ? "Ativo" : "Inativo"
-          return c;
-        });
-
-        console.log(this.campus + "Array de campuss");
-        console.log(res.data);
+      axios.get(`${baseApiUrl}api/oferta/search`).then((res) => {
+        this.oferta = res.data.content;
       }).catch((error) => {
             console.log(error);
           });
-    },
-
-    redefinirTable() {
-      if (this.filtroSelecionado === "Todos") {
-       this.inicializar();
-      } else {
-        axios.get(url + "/getAll/true", this.relatorio).then((res) => {
-          this.relatorio = res.data.map((p) => {
-            p.ativo = p.ativo ? "Ativado" : "Desativado";
-            return p;
-          });
-          console.log(res.data);
-        });
-      }
-    },
-
-    editItem(item) {
-      this.editIndice = this.campus.indexOf(item);
-      this.atributo = Object.assign({}, item);
-      this.dialog = true;
-    },
-
-    desativeItem(item) {
-      this.editIndice = this.campus.indexOf(item);
-      this.atributo = Object.assign({}, item);
-      this.dialogDesativar = true;
-    },
-
-    desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
-        axios.patch(`${baseApiUrl}api/campus/${this.atributo.id}/${false}`)
-          .then((res) => {
-            console.log(res.data);
-            alert("Este campus foi desabilitado com sucesso !");
-            console.warn("entrou no desativar");
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        axios
-          .patch(`${baseApiUrl}api/curso/${this.atributo.id}/${true}`)
-          .then((res) => {
-            console.log(res.data);
-            alert("Este campus foi habilitado com sucesso !");
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      this.fecharDesativar();
-    },
-
-    fechar() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.atributo = Object.assign({}, this.atributoPadrao);
-        this.editIndice = -1;
-      });
-    },
-
-    fecharDesativar() {
-      this.dialogDesativar = false;
-      this.$nextTick(() => {
-        this.atributo = Object.assign({}, this.atributoPadrao);
-        this.editIndice = -1;
-      });
-    },
-
-    reloadPage() {
-      window.location.reload();
-    },
-
-    salvar() {
-      if (this.editIndice > -1) {
-        axios
-          .put(`${baseApiUrl}api/campus`, {
-            id: this.atributo.id,
-            label: this.atributo.label,
-            ativo: this.atributo.ativo === "Ativo",
-          })
-          .then((res) => {
-            alert("Os dados foram atualizados com sucesso !");
-            console.log(res.data);
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        Object.assign(this.campus[this.editIndice], this.atributo);
-      } else {
-        axios.post(`${baseApiUrl}api/campus`, {
-          label: this.atributo.label,
-        }).then((res) => {
-          this.campus = res.data;
-          alert("Os dados foram adicionados com sucesso !");
-          console.log(res.data);
-          this.reloadPage();
-        });
-        this.campus.push(this.atributo);
-      }
-      this.fechar();
     },
   },
 };
