@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="titulos" :items="relatorio" :search="search" class="elevation-2 data-table" :footer-props="{
+  <v-data-table :headers="titulos" :items="desserts" :search="search" class="elevation-2 data-table" :footer-props="{
     'items-per-page-text': 'Itens por página'
   }">
     <template v-slot:top>
@@ -47,7 +47,7 @@ export default {
     dialogDesativar: false,
     dialogDetalhar: false,
     titulos: [
-      { text: "Câmpus", value: "label", sortable: false },
+      { text: "Carbs", value: "name", sortable: false },
       { text: "Curso", value: "label", sortable: false },
       { text: "Turno", value: "label", sortable: false },
       { text: "Tipo de Sala", value: "label", sortable: false },

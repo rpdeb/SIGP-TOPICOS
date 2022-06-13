@@ -67,20 +67,20 @@
                   <v-row>
                     <v-col cols="8" sm="5" md="5">
                       <v-select
-                        v-model="atributo.disciplina"
-                        label="Disciplina"
-                        item-text="label"
+                        v-model="atributo.codPessoa"
+                        label="Professor"
+                        item-text="nome"
                         item-value="id"
-                        :items="arraydisciplinas"
+                        :items="arrayprofessores"
                       ></v-select
                     ></v-col>
-                    <v-col cols="8" sm="5" md="5">
+                  <v-col cols="8" sm="5" md="5">
                       <v-select
-                        v-model="atributo.codDisciplina"
+                        v-model="atributo.matriz"
                         label="Código de Disciplina"
-                        item-text="disciplina.codDisciplina"
-                        item-value="id"
-                        :items="arraydisciplinas"
+                        item-text="matriz"
+                        item-value="matriz"
+                        :items="matrizes"
                       ></v-select
                     ></v-col>
                   </v-row>
@@ -93,6 +93,15 @@
                     item-value="id"
                     :items="diasDaSemana"
                   />
+
+                  <v-select
+                    v-model="turno"
+                    label="Turno"
+                    item-text="turno"
+                    item-value="turno"
+                    :items="turnos"
+                  />
+
                 </v-col>
                 <v-col cols="8" sm="5" md="5">
                   <v-container fluid>
@@ -198,14 +207,17 @@ export default {
       { text: "Sala", value: "sala.label" },
       { text: "Turno", value: "horario.turno" },
       { text: "Semestre", value: "semestre.label" },
+      { text: "Professor", value: "professor.nome" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
     ofertas: [],
+    matrizes: [],
     salasRaw: [],
     arraysalas: [],
     arraysemestres: [],
     arraydisciplinas: [],
+    arrayprofessores:[],
     turnos: ["MANHA", "TARDE", "NOITE"],
     diasDaSemana: ["SEGUNDA", "TERCA", "QUARTA", "QUINTA", "SEXTA", "SABADO"],
     editIndice: -1,
@@ -284,6 +296,7 @@ export default {
     this.inicializar();
     this.getSalas();
     this.getSemestres();
+    this.getProfessores();
     this.getDisciplinas();
   },
 
@@ -294,7 +307,7 @@ export default {
         .get(`${baseApiUrl}api/oferta/search`)
         .then((res) => {
           this.ofertas = res.data.content.map((c) => {
-            c.ativo = c.ativo ? true : false;
+            c.ativo = c.ativo ? "Ativo" : "Inativo";
             return c;
           });
         })
@@ -316,12 +329,26 @@ export default {
       console.log(this.arraysemestres + "array de semestre aqui");
     },
 
+    async getProfessores() {
+      const { data } = await this.axios.get(`${baseApiUrl}api/professor/getAll?porPagina=100&paginaAtual=0`);
+      this.arrayprofessores = data.content;
+      console.log(this.arrayprofessores + "array de semestre aqui");
+    },
+
     async getDisciplinas() {
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/disciplina/search`
+        `${baseApiUrl}api/matriz/searchDisciplinaByMatriz`
       );
       this.arraydisciplinas = data.content;
       console.log(this.arraydisciplinas + "array de disciplinas aqui");
+    },
+
+     async getMatrizes() {
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/matriz/getAll?porPagina=100&paginaAtual=0`
+      );
+      this.matrizes = data.content;
+      console.log(this.matrizes + "array de disciplinas aqui");
     },
 
     editItem(item) {
