@@ -84,6 +84,8 @@ export default {
     
       { title: "Usuários", to: "/usuarios" },
       { title: "Relatórios", to: "/relatorio" },
+      { title: "Relatórios Horarios", to: "/relatoriohorario" },
+      { title: "Relatórios Labins", to: "/relatoriolabins" },
     ],
   }),
 

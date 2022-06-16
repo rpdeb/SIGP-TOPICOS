@@ -4,7 +4,7 @@
   }">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Relatório</v-toolbar-title>
+        <v-toolbar-title>Relatório de Salas</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
