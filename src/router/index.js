@@ -52,8 +52,18 @@ const routes = [
   },
   {
     path: '/relatorio',
-    name: 'Relatorio',
-    component: () => import('../views/Relatorio.vue')
+    name: 'Relatorio_Salas',
+    component: () => import('../views/Relatorio_Salas.vue')
+  },
+  {
+    path: '/relatoriohorarios',
+    name: 'Relatorio_Horarios',
+    component: () => import('../views/Relatorio_Horarios.vue')
+  },
+  {
+    path: '/relatoriolabins',
+    name: 'Relatorio_Labins',
+    component: () => import('../views/Relatorio_Labins.vue')
   },
   {
     path: '/disciplina',
