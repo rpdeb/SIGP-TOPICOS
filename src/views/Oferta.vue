@@ -43,82 +43,93 @@
             <!-- inserir mensagem para a interface -->
             <v-card-text>
               <v-form>
-                <v-container>
+                
                   <v-row>
-
-
-
                     <v-col cols="8" sm="5" md="5">
-                      <v-select
-                        v-model="atributo.sala"
-                        label="Sala"
+                      <v-text-field
+                        v-model="atributo.disciplina"
+                        label="Disciplina"
                         item-text="label"
                         item-value="id"
-                        :items="arraysalas"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="8" sm="5" md="5">
+                      <v-select
+                        v-model="atributo.codpesoa"
+                        label="Professor"
+                        item-text="label"
+                        item-value="id"
+                        :items="arrayprofessores"
                       ></v-select>
                     </v-col>
-                    <v-col cols="8" sm="5" md="5"> 
-                      <v-select
-                        v-model="atributo.semestre"
-                        label="Semestre"
-                        item-text="label"
-                        item-value="id"
-                        :items="arraysemestres"
-                      ></v-select></v-col></v-row>
-                </v-container>
-                  
+                  </v-row>
+               
+                  <row>
                     <v-col cols="8" sm="5" md="5">
-                      <!-- <v-select
+                      <v-select
+                        v-model="diaSemana"
+                        label="Dia da Semana"
+                        item-text="diasDaSemana"
+                        item-value="id"
+                        :items="diasDaSemana"
+                      />
+                    </v-col>
+                  </row>
+                  <row>
+                    <v-col cols="8" sm="5" md="5">
+                      <v-select
+                        v-model="horarios"
+                        label="Horário"
+                        item-text="diasDaSemana"
+                        item-value="id"
+                        :items="arrayoptionshora"
+                      />
+                      <v-btn
+                        small
+                        class="mx-2 add"
+                        fab
+                        dark
+                        color="green"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon dark> mdi-plus</v-icon>
+                      </v-btn>
+                    </v-col>
+                  </row>
+          
+
+                  <v-col cols="8" sm="5" md="5">
+                    <v-select
+                      v-model="atributo.sala"
+                      label="Sala"
+                      item-text="label"
+                      item-value="id"
+                      :items="arraysalas"
+                    ></v-select>
+                  </v-col>
+
+                <v-col cols="8" sm="5" md="5">
+                  <!-- <v-select
                         v-model="atributo.disciplina"
                         label="Disciplina"
                         item-text="label"
                         item-value="id"
                         :items="arraydisciplinas"
                       ></v-select> -->
-                    </v-col>
-                    
-                <v-col cols="8" sm="5" md="5">
-                  <v-select
-                    v-model="diaSemana"
-                    label="Dia da Semana"
-                    item-text="diasDaSemana"
-                    item-value="id"
-                    :items="diasDaSemana"
-                  />
                 </v-col>
-                <v-col cols="8" sm="5" md="5">
-                  <v-container fluid>
-                    <v-row>
-                      <v-checkbox
-                        v-model="horario1"
-                        label="horario1"
-                        value="horario1"
-                        hide-details
-                      ></v-checkbox>
 
-                      <v-checkbox
-                        v-model="horario2"
-                        label="horario2"
-                        value="horario2"
-                        hide-details
-                      ></v-checkbox>
-
-                      <v-checkbox
-                        v-model="horario3"
-                        label="horario3"
-                        value="horario3"
-                        hide-details
-                      ></v-checkbox>
-
-                      <v-checkbox
-                        v-model="horario4"
-                        label="horario4"
-                        value="horario4"
-                        hide-details
-                      ></v-checkbox>
-                    </v-row>
-                  </v-container>
-                </v-col>
+                <v-row>
+                  <v-col cols="8" sm="5" md="5">
+                    <v-select
+                      v-model="atributo.semestre"
+                      label="Semestre"
+                      item-text="label"
+                      item-value="id"
+                      :items="arraysemestres"
+                    ></v-select
+                  ></v-col>
+                </v-row>
               </v-form>
             </v-card-text>
             <v-card-actions>
@@ -197,18 +208,20 @@ export default {
     salasRaw: [],
     arraysalas: [],
     horarios: [],
+    arrayoptionshora: ["horario1", "horario2", "horario3", "horario4"],
     arraysemestres: [],
     arraydisciplinas: [],
+    arrayprofessores: [],
     turnos: ["MANHA", "TARDE", "NOITE"],
     diasDaSemana: ["SEGUNDA", "TERCA", "QUARTA", "QUINTA", "SEXTA", "SABADO"],
     editIndice: -1,
     atributo: {
       id: null,
       horario: {
-        horario1: true,
-        horario2: true,
-        horario3: true,
-        horario4: true,
+        horario1: false,
+        horario2: false,
+        horario3: false,
+        horario4: false,
         turno: "",
         diaSemana: "",
       },
@@ -262,10 +275,10 @@ export default {
       type: Object,
       default: function () {
         return {
-          horario1: Boolean,
-          horario2: Boolean,
-          horario3: Boolean,
-          horario4: Boolean,
+          horario1: false,
+          horario2: false,
+          horario3: false,
+          horario4: false,
           turno: "",
           diaSemana: "",
         };
@@ -277,6 +290,7 @@ export default {
     this.inicializar();
     this.getSalas();
     this.getSemestres();
+    this.getProfessores();
     this.getDisciplinas();
   },
 
@@ -307,6 +321,14 @@ export default {
       const { data } = await this.axios.get(`${baseApiUrl}api/semestre/search`);
       this.arraysemestres = data.content;
       console.log(this.arraysemestres + "array de semestre aqui");
+    },
+
+    async getProfessores() {
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/professor/getAll?porPagina=100?paginaAtual?=0`
+      );
+      this.arrayprofessores = data.content;
+      console.log(this.arrayprofessores + "array de professores aqui");
     },
 
     async getDisciplinas() {
