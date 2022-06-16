@@ -10,6 +10,12 @@
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
         </v-text-field>
         <v-spacer></v-spacer>
+        <v-select
+          @input="filtrarPorAtivos" 
+          v-model="filtroSelecionado"
+          :options="filtros"
+          label="Filtro"
+        ></v-select>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
@@ -43,7 +49,7 @@
                     </v-col>
 
                     <v-col cols="8" sm="30" md="40">
-                      <v-text-field v-model="atributo.estruturaFisica" label="Estrutura Física"></v-text-field>
+                      <v-textarea v-model="atributo.estruturaFisica" label="Estrutura Física" hint="Observações..." name="input-7-1"></v-textarea>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -123,7 +129,8 @@ export default {
       { text: "Tipo de Sala", value: "tipo" },
       { text: "Bloco/Piso", value: "bloco.label" },
       { text: "Capacidade", value: "capacidade" },
-      { text: "Estrutura Física", value: "estruturaFisica" },
+      // essa coluna será exibida através do detalhar 
+      // { text: "Estrutura Física", value: "estruturaFisica" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
@@ -133,6 +140,8 @@ export default {
       //"Laboratório de Informática",
       //"Laboratório de Ciências",
     //],
+    filtros: ["Ativos", "Todos"],
+    filtroSelecionado: "Ativos",
     tipodesalaselecionado: null,
     salas: [],
     blocos: [],
@@ -181,7 +190,6 @@ export default {
 
   methods: {
     async inicializar() {
-     
       axios
         .get(`${baseApiUrl}api/sala/search?size=1000`)
         .then((res) => {
@@ -192,6 +200,21 @@ export default {
           console.log(this.salas + "Array de salas aqui")
         })
         .catch(console.warn("erro"));
+    },
+
+    filtrarPorAtivos() {
+      if (this.filtroSelecionado === "Todos") {
+        this.inicializar();
+      } else {
+        axios.get(`${baseApiUrl}api/sala/search`, this.salas).then((res) => {
+          this.salas = res.data.map((s) => {
+            s.ativo = s.ativo ? "Ativo" : "Inativo";
+            return s;
+          });
+          console.log("filtro de ativos aqui!!!!!!!!!!")
+          console.log(res.data);
+        });
+      }
     },
 
     detalharItem(item) {
@@ -210,6 +233,14 @@ export default {
       this.blocosRaw = data;
       this.arrayBlocos = data.content;
       console.log(this.arrayBlocos + "array de blocos aqui");
+    },
+
+    async findBloco(id) {
+      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/${id}`);
+      this.blocosRaw = data;
+      this.arrayBlocos = data.content;
+      //this.arraycampus = data.filter((d) => d.label);
+      console.log(this.arrayBlocos + "array de blocos aqui !!");
     },
 
     editItem(item) {
@@ -285,14 +316,6 @@ export default {
         default:
           this.tipo = 0;
       }
-    },
-
-    async findBloco(id) {
-      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/${id}`);
-      this.blocosRaw = data;
-      this.arrayBlocos = data.content;
-      //this.arraycampus = data.filter((d) => d.label);
-      console.log(this.arrayBlocos + "array de blocos aqui !!");
     },
 
     salvar() {
