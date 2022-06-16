@@ -22,7 +22,7 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="400px">
+        <v-dialog v-model="dialog" max-width="600px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn
               small
@@ -45,6 +45,9 @@
               <v-form>
                 <v-container>
                   <v-row>
+
+
+
                     <v-col cols="8" sm="5" md="5">
                       <v-select
                         v-model="atributo.sala"
@@ -53,38 +56,27 @@
                         item-value="id"
                         :items="arraysalas"
                       ></v-select>
+                    </v-col>
+                    <v-col cols="8" sm="5" md="5"> 
                       <v-select
                         v-model="atributo.semestre"
                         label="Semestre"
                         item-text="label"
                         item-value="id"
                         :items="arraysemestres"
-                      ></v-select></v-col
-                  ></v-row>
+                      ></v-select></v-col></v-row>
                 </v-container>
-
-                <v-container>
-                  <v-row>
+                  
                     <v-col cols="8" sm="5" md="5">
-                      <v-select
+                      <!-- <v-select
                         v-model="atributo.disciplina"
                         label="Disciplina"
                         item-text="label"
                         item-value="id"
                         :items="arraydisciplinas"
-                      ></v-select
-                    ></v-col>
-                    <v-col cols="8" sm="5" md="5">
-                      <v-select
-                        v-model="atributo.codDisciplina"
-                        label="Código de Disciplina"
-                        item-text="disciplina.codDisciplina"
-                        item-value="id"
-                        :items="arraydisciplinas"
-                      ></v-select
-                    ></v-col>
-                  </v-row>
-                </v-container>
+                      ></v-select> -->
+                    </v-col>
+                    
                 <v-col cols="8" sm="5" md="5">
                   <v-select
                     v-model="diaSemana"
@@ -204,6 +196,7 @@ export default {
     ofertas: [],
     salasRaw: [],
     arraysalas: [],
+    horarios: [],
     arraysemestres: [],
     arraydisciplinas: [],
     turnos: ["MANHA", "TARDE", "NOITE"],
@@ -294,7 +287,7 @@ export default {
         .get(`${baseApiUrl}api/oferta/search`)
         .then((res) => {
           this.ofertas = res.data.content.map((c) => {
-            c.ativo = c.ativo ? true : false;
+            c.ativo = c.ativo ? "Ativo" : "Inativo";
             return c;
           });
         })
