@@ -65,12 +65,6 @@ const routes = [
     name: 'Relatorio_Labins',
     component: () => import('../views/Relatorio_Labins.vue')
   },
-  {
-    path: '/disciplina',
-    name: 'Disciplina',
-    component: () => import('../views/Disciplina.vue')
-  },
-
 ]
 
 const router = new VueRouter({
