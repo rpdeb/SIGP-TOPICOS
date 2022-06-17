@@ -21,6 +21,12 @@
           hide-details
         >
         </v-text-field>
+         <v-spacer></v-spacer>
+        <v-select
+          @change="filtrarPorAtivos"
+          v-model="filtroSelecionado"
+          :items="filtros"
+        ></v-select>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
@@ -60,8 +66,7 @@
                         item-value="id"
                         :items="arraycampus"
                       >
-                        </v-select
-                      >
+                      </v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -140,6 +145,8 @@ export default {
     cursos: [],
     campusRaw: [],
     arraycampus: [],
+    filtros: ["Ativos", "Todos"],
+    filtroSelecionado: "Ativos",
     editIndice: -1,
     atributo: {
       id: null,
@@ -161,7 +168,6 @@ export default {
     },
     mudarStatus() {
       return this.atributo.ativo == "Ativo" ? "desativar " : "ativar";
-      
     },
   },
 
@@ -186,7 +192,7 @@ export default {
         .get(`${baseApiUrl}api/curso/search`)
         .then((res) => {
           this.cursos = res.data.content.map((c) => {
-            c.ativo = c.ativo ? "Ativo" : "Inativo"
+            c.ativo = c.ativo ? "Ativo" : "Inativo";
             return c;
           });
         })
@@ -194,6 +200,31 @@ export default {
           console.log(error);
         });
     },
+
+    filtrarPorAtivos() {
+      if (this.filtroSelecionado === "Todos") {
+        // const json = localStorage.getItem(userKey);
+        // const jwt = JSON.parse(json);
+        // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
+        axios
+          .get(`${baseApiUrl}api/curso/search`)
+          .then((res) => {
+            this.cursos = res.data.content.map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
+            console.log("todos !!");
+            console.log(res.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        console.log("ativos !!");
+        this.inicializar();
+      }
+    },
+
     //método para buscar campus existentes e preencher no array
     async getCampus() {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
@@ -242,7 +273,7 @@ export default {
       this.fecharDesativar();
     },
 
-    reloadPage: async function() {
+    reloadPage: async function () {
       window.location.reload();
     },
 

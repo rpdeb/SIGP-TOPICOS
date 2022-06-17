@@ -1,18 +1,46 @@
 <template>
-  <v-data-table :headers="titulos" :items="blocos" :search="search" class="elevation-2 data-table" :footer-props="{
-    'items-per-page-text': 'Itens por página'
-  }">
+  <v-data-table
+    :headers="titulos"
+    :items="blocos"
+    :search="search"
+    class="elevation-2 data-table"
+    :footer-props="{
+      'items-per-page-text': 'Itens por página',
+    }"
+  >
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Bloco</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Pesquisar"
+          single-line
+          hide-details
+        >
         </v-text-field>
+        <v-spacer></v-spacer>
+        <v-select
+          @change="filtrarPorAtivos"
+          v-model="filtroSelecionado"
+          :items="filtros"
+          item-text="Filtro"
+          item-value="label"
+        ></v-select>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+            <v-btn
+              small
+              class="mx-2 add"
+              fab
+              dark
+              color="green"
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon dark> mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -26,13 +54,22 @@
                 <v-container>
                   <v-row>
                     <v-col cols="8" sm="6" md="7">
-                      <v-select v-model="atributo.campus" label="Campus" item-text="label" item-value="id"
-                        :items="arraycampus">
+                      <v-select
+                        v-model="atributo.campus"
+                        label="Campus"
+                        item-text="label"
+                        item-value="id"
+                        :items="arraycampus"
+                      >
                       </v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
-                      <v-text-field v-model="atributo.label" :rules="[v => !!v || 'Item obrigatório!']"
-                        label="Bloco/Piso" required></v-text-field>
+                      <v-text-field
+                        v-model="atributo.label"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Bloco/Piso"
+                        required
+                      ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -43,18 +80,30 @@
               <v-btn small color="warning" dark @click="fechar">
                 Cancelar
               </v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar"
+                >Salvar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este bloco ?</v-card-title>
+            <v-card-title class="text-h5"
+              >Deseja {{ mudarStatus }} este bloco ?</v-card-title
+            >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialogDesativar = false">
-                Não</v-btn>
-              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
+              <v-btn
+                small
+                color="warning"
+                dark
+                @click="dialogDesativar = false"
+              >
+                Não</v-btn
+              >
+              <v-btn small color="primary" dark @click="desativeItemConfirm"
+                >Sim</v-btn
+              >
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -93,8 +142,9 @@
 import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
+
 Vue.use(VueAxios, axios);
-import { baseApiUrl } from '@/global';
+import { baseApiUrl } from "@/global";
 //Inserir importações
 export default {
   data: () => ({
@@ -112,11 +162,7 @@ export default {
         value: "label",
         sortable: false,
       },
-      {
-        text: "Ações",
-        value: "ativo",
-        sortable: false,
-      },
+      { text: "Status", value: "ativo", sortable: false },
       {
         text: "Ações",
         value: "acoes",
@@ -126,6 +172,8 @@ export default {
     blocos: [],
     blocosRaw: [],
     arraycampus: [],
+    filtros: ["Ativos", "Todos"],
+    filtroSelecionado: "Ativos",
     editIndice: -1,
     atributo: {
       id: null,
@@ -146,7 +194,6 @@ export default {
     },
     mudarStatus() {
       return this.atributo.ativo == "Ativo" ? "desativar " : "ativar";
-
     },
   },
   watch: {
@@ -165,21 +212,47 @@ export default {
   },
   methods: {
     async inicializar() {
-      axios.get(`${baseApiUrl}api/bloco/search`).then((res) => {
-        this.blocos = res.data.content.map((b) => {
-            b.ativo = b.ativo ? "Ativo" : "Inativo"
+      axios
+        .get(`${baseApiUrl}api/bloco/search?filter=ativo`)
+        .then((res) => {
+          this.blocos = res.data.content.map((b) => {
+            b.ativo = b.ativo ? "Ativo" : "Inativo";
             return b;
           });
 
-        console.log(this.blocos + "Array de Blocos");
-      }).catch(console.warn("erro"));
+          console.log(this.blocos + "Array de Blocos");
+        })
+        .catch(console.warn("erro"));
     },
-    //método para buscar campus existentes e preencher no array 
+    //método para buscar campus existentes e preencher no array
     async getCampus() {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
       this.campusRaw = data;
-      this.arraycampus = data.content
+      this.arraycampus = data.content;
       console.log(this.arraycampus + "array de campus aqui");
+    },
+
+    filtrarPorAtivos() {
+      if (this.filtroSelecionado === "Todos") {
+        // const json = localStorage.getItem(userKey);
+        // const jwt = JSON.parse(json);
+        // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
+        axios
+          .get(`${baseApiUrl}api/bloco/search`)
+          .then((res) => {
+            this.blocos = res.data.content.map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
+            console.log(res.data + "Todos !!");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        console.log("Ativos !!");
+        this.inicializar();
+      }
     },
 
     editItem(item) {
@@ -195,7 +268,6 @@ export default {
     },
 
     desativeItemConfirm() {
-
       if (this.atributo.ativo == "Ativo") {
         axios
           .patch(`${baseApiUrl}api/bloco/${this.atributo.id}/${false}`)
@@ -246,7 +318,7 @@ export default {
       console.log(this.arraycampus + "array de campus aqui !!");
     },
 
-    reloadPage: async function() {
+    reloadPage: async function () {
       window.location.reload();
     },
 

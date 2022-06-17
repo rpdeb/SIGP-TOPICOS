@@ -21,6 +21,12 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
+        <v-select
+          @change="filtrarPorAtivos"
+          v-model="filtroSelecionado"
+          :items="filtros"
+        ></v-select>
+        <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -97,12 +103,7 @@
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn
-                small
-                color="warning"
-                dark
-                @click="fecharDesativar"
-              >
+              <v-btn small color="warning" dark @click="fecharDesativar">
                 Não</v-btn
               >
               <v-btn small color="primary" dark @click="desativeItemConfirm"
@@ -122,7 +123,7 @@
         mdi-pencil
       </v-icon>
       <v-icon small class="mr-2" @click="desativeItem(item)" color="red">
-         mdi-power-standby
+        mdi-power-standby
       </v-icon>
     </template>
   </v-data-table>
@@ -167,6 +168,8 @@ export default {
     semestres: [],
     arraycursos: [],
     cursosRaw: [],
+    filtros: ["Ativos", "Todos"],
+    filtroSelecionado: "Ativos",
     editIndice: -1,
     atributo: {
       id: null,
@@ -210,16 +213,39 @@ export default {
       axios
         .get(`${baseApiUrl}api/semestre/search?filter=ativo`)
         .then((res) => {
-          this.semestres = res.data.content
-            .map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Inativo";
-              return c;
-            });
+          this.semestres = res.data.content.map((c) => {
+            c.ativo = c.ativo ? "Ativo" : "Inativo";
+            return c;
+          });
           console.log(this.semestres + "Array de Semestre");
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+
+    filtrarPorAtivos() {
+      if (this.filtroSelecionado === "Todos") {
+         // const json = localStorage.getItem(userKey);
+        // const jwt = JSON.parse(json);
+        // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
+        axios
+          .get(`${baseApiUrl}api/semestre/search`)
+          .then((res) => {
+            this.semestres = res.data.content
+             .map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
+            console.log("todos !!")
+            console.log(res.data);
+          }).catch((error) => {
+          console.log(error);
+        });
+      } else {
+       console.log("ativos !!")
+       this.inicializar();
+      }
     },
 
     async getCursos() {
@@ -243,7 +269,7 @@ export default {
 
     fechar() {
       this.dialog = false;
-       this.$nextTick(() => {
+      this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });
@@ -251,7 +277,7 @@ export default {
 
     fecharDesativar() {
       this.dialogDesativar = false;
-       this.$nextTick(() => {
+      this.$nextTick(() => {
         this.atributo = Object.assign({}, this.atributoPadrao);
         this.editIndice = -1;
       });

@@ -19,8 +19,15 @@
           label="Pesquisar"
           single-line
           hide-details
-        >
-        </v-text-field>
+        ></v-text-field>
+        <v-spacer></v-spacer>
+        <v-select
+          @change="filtrarPorAtivos"
+          v-model="filtroSelecionado"
+          :items="filtros"
+          item-text="Filtro"
+          item-value="label"
+        ></v-select>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="600px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
@@ -43,71 +50,69 @@
             <!-- inserir mensagem para a interface -->
             <v-card-text>
               <v-form>
-                
-                  <v-row>
-                    <v-col cols="8" sm="5" md="5">
-                      <v-text-field
-                        v-model="atributo.disciplina"
-                        label="Disciplina"
-                        item-text="label"
-                        item-value="id"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="8" sm="5" md="5">
-                      <v-select
-                        v-model="atributo.codpesoa"
-                        label="Professor"
-                        item-text="label"
-                        item-value="id"
-                        :items="arrayprofessores"
-                      ></v-select>
-                    </v-col>
-                  </v-row>
-               
-                  <row>
-                    <v-col cols="8" sm="5" md="5">
-                      <v-select
-                        v-model="diaSemana"
-                        label="Dia da Semana"
-                        item-text="diasDaSemana"
-                        item-value="id"
-                        :items="diasDaSemana"
-                      />
-                    </v-col>
-                  </row>
-                  <row>
-                    <v-col cols="8" sm="5" md="5">
-                      <v-select
-                        v-model="horarios"
-                        label="Horário"
-                        item-text="diasDaSemana"
-                        item-value="id"
-                        :items="arrayoptionshora"
-                      />
-                      <v-btn
-                        small
-                        class="mx-2 add"
-                        fab
-                        dark
-                        color="green"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <v-icon dark> mdi-plus</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </row>
-          
-
+                <v-row>
                   <v-col cols="8" sm="5" md="5">
-                    <v-select
-                      v-model="atributo.sala"
-                      label="Sala"
+                    <v-text-field
+                      v-model="atributo.disciplina"
+                      label="Disciplina"
                       item-text="label"
                       item-value="id"
-                      :items="arraysalas"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="8" sm="5" md="5">
+                    <v-select
+                      v-model="atributo.codpesoa"
+                      label="Professor"
+                      item-text="nome"
+                      item-value="id"
+                      :options="arrayprofessores"
                     ></v-select>
                   </v-col>
+                </v-row>
+
+                <row>
+                  <v-col cols="8" sm="5" md="5">
+                    <v-select
+                      v-model="diaSemana"
+                      label="Dia da Semana"
+                      item-text="diasDaSemana"
+                      item-value="id"
+                      :items="diasDaSemana"
+                    />
+                  </v-col>
+                </row>
+                <row>
+                  <v-col cols="8" sm="5" md="5">
+                    <v-select
+                      v-model="horarios"
+                      label="Horário"
+                      item-text="diasDaSemana"
+                      item-value="id"
+                      :items="arrayoptionshora"
+                    />
+                    <v-btn
+                      small
+                      class="mx-2 add"
+                      fab
+                      dark
+                      color="green"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      <v-icon dark> mdi-plus</v-icon>
+                    </v-btn>
+                  </v-col>
+                </row>
+
+                <v-col cols="8" sm="5" md="5">
+                  <v-select
+                    v-model="atributo.sala"
+                    label="Sala"
+                    item-text="label"
+                    item-value="id"
+                    :items="arraysalas"
+                  ></v-select>
+                </v-col>
 
                 <v-col cols="8" sm="5" md="5">
                   <!-- <v-select
@@ -201,7 +206,7 @@ export default {
       { text: "Sala", value: "sala.label" },
       { text: "Turno", value: "horario.turno" },
       { text: "Semestre", value: "semestre.label" },
-      { text: "Status", value: "ativo" },
+      //{ text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
     ofertas: [],
@@ -214,6 +219,8 @@ export default {
     arrayprofessores: [],
     turnos: ["MANHA", "TARDE", "NOITE"],
     diasDaSemana: ["SEGUNDA", "TERCA", "QUARTA", "QUINTA", "SEXTA", "SABADO"],
+    filtros: ["Ativos", "Todos"],
+    filtroSelecionado: "Ativos",
     editIndice: -1,
     atributo: {
       id: null,
@@ -298,7 +305,7 @@ export default {
     //método para preencher o data table
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/oferta/search`)
+        .get(`${baseApiUrl}api/oferta/search?ativo=true`)
         .then((res) => {
           this.ofertas = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
@@ -325,7 +332,7 @@ export default {
 
     async getProfessores() {
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/professor/getAll?porPagina=100?paginaAtual?=0`
+        `${baseApiUrl}api/professor/getAll?porPagina=50&paginaAtual=0`
       );
       this.arrayprofessores = data.content;
       console.log(this.arrayprofessores + "array de professores aqui");
@@ -337,6 +344,30 @@ export default {
       );
       this.arraydisciplinas = data.content;
       console.log(this.arraydisciplinas + "array de disciplinas aqui");
+    },
+
+    filtrarPorAtivos() {
+      if (this.filtroSelecionado === "Todos") {
+         // const json = localStorage.getItem(userKey);
+        // const jwt = JSON.parse(json);
+        // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
+        axios
+          .get(`${baseApiUrl}api/oferta/search`)
+          .then((res) => {
+            this.ofertas = res.data.content
+             .map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
+            console.log("todos !!")
+            console.log(res.data);
+          }).catch((error) => {
+          console.log(error);
+        });
+      } else {
+       console.log("ativos !!")
+       this.inicializar();
+      }
     },
 
     editItem(item) {

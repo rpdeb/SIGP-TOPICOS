@@ -1,18 +1,44 @@
 <template>
-  <v-data-table :headers="titulos" :items="usuarios" :search="search" class="elevation-2 data-table" :footer-props="{
-    'items-per-page-text': 'Itens por página'
-  }">
+  <v-data-table
+    :headers="titulos"
+    :items="usuarios"
+    :search="search"
+    class="elevation-2 data-table"
+    :footer-props="{
+      'items-per-page-text': 'Itens por página',
+    }"
+  >
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Usuários</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Pesquisar"
+          single-line
+          hide-details
+        >
         </v-text-field>
+        <v-spacer></v-spacer>
+        <v-select
+          @change="filtrarPorAtivos"
+          v-model="filtroSelecionado"
+          :items="filtros"
+        ></v-select>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+            <v-btn
+              small
+              class="mx-2 add"
+              fab
+              dark
+              color="green"
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon dark> mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -70,19 +96,31 @@
               <v-btn small color="warning" dark @click="fechar">
                 Cancelar
               </v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar"
+                >Salvar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
 
-       <v-dialog v-model="dialogDesativar" max-width="400px">
+        <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este usuario ?</v-card-title>
+            <v-card-title class="text-h5"
+              >Deseja {{ mudarStatus }} este usuario ?</v-card-title
+            >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialogDesativar = false">
-                Não</v-btn>
-              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
+              <v-btn
+                small
+                color="warning"
+                dark
+                @click="dialogDesativar = false"
+              >
+                Não</v-btn
+              >
+              <v-btn small color="primary" dark @click="desativeItemConfirm"
+                >Sim</v-btn
+              >
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -134,14 +172,15 @@ export default {
     dialog: false,
     dialogDesativar: false,
     titulos: [
-      { text: "Perfil", value: "tipo", },
-      { text: "Email", value: "email", },
-      { text: "Campus", value: "campus.label", },
-      { text: "Curso", value: "curso.label", },
+      { text: "Perfil", value: "tipo" },
+      { text: "Email", value: "email" },
+      { text: "Campus", value: "campus.label" },
+      { text: "Curso", value: "curso.label" },
       { text: "Status", value: "ativo" },
-      { text: "Ações", value: "acoes", },
+      { text: "Ações", value: "acoes" },
     ],
-
+    filtros: ["Ativos", "Todos"],
+    filtroSelecionado: "Ativos",
     usuarios: [],
     perfis: ["Administrador", "Gestão Administrativa", "Coordenador de Curso"],
     perfilSelecionado: null,
@@ -192,26 +231,51 @@ export default {
     this.getCursos();
     this.getCampus();
     this.inicializar();
-
   },
 
   methods: {
     async inicializar() {
-      axios.get(`${baseApiUrl}api/usuario/search`).then((res) => {
-        this.usuarios = res.data.content.map((b) => {
-            b.ativo = b.ativo ? "Ativo" : "Inativo"
+      axios
+        .get(`${baseApiUrl}api/usuario/search`)
+        .then((res) => {
+          this.usuarios = res.data.content.map((b) => {
+            b.ativo = b.ativo ? "Ativo" : "Inativo";
             return b;
           });
 
-        console.log(this.usuarios + "Array de Usuario");
-      }).catch(console.warn("erro"));
+          console.log(this.usuarios + "Array de Usuario");
+        })
+        .catch(console.warn("erro"));
     },
 
-    //método para buscar campus existentes e preencher no array 
+    filtrarPorAtivos() {
+      if (this.filtroSelecionado === "Todos") {
+        // const json = localStorage.getItem(userKey);
+        // const jwt = JSON.parse(json);
+        // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
+        axios
+          .get(`${baseApiUrl}api/usuario/search`)
+          .then((res) => {
+            this.usuarios = res.data.content.map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
+            console.log("todos !!");
+            console.log(res.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        console.log("ativos !!");
+        this.inicializar();
+      }
+    },
+    //método para buscar campus existentes e preencher no array
     async getCampus() {
       const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
       this.campusRaw = data;
-      this.arraycampus = data.content
+      this.arraycampus = data.content;
       console.log(this.arraycampus + "array de campus aqui");
     },
 
@@ -235,7 +299,6 @@ export default {
     },
 
     desativeItemConfirm() {
-
       if (this.atributo.ativo == "Ativo") {
         axios
           .patch(`${baseApiUrl}api/usuario/${this.atributo.id}/${false}`)
@@ -286,7 +349,7 @@ export default {
       console.log(this.arraycampus + "array de campus aqui !!");
     },
 
-    reloadPage: async function() {
+    reloadPage: async function () {
       window.location.reload();
     },
 

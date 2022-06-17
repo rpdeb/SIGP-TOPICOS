@@ -11,11 +11,11 @@
         </v-text-field>
         <v-spacer></v-spacer>
         <v-select
-          @input="filtrarPorAtivos" 
+          @change="filtrarPorAtivos" 
           v-model="filtroSelecionado"
-          :options="filtros"
-          label="Filtro"
+          :items="filtros"
         ></v-select>
+        <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
@@ -191,7 +191,7 @@ export default {
   methods: {
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/sala/search?size=1000`)
+        .get(`${baseApiUrl}api/sala/search?filter=ativo`)
         .then((res) => {
           this.salas = res.data.content.map((s) => {
             s.ativo = s.ativo ? "Ativo" : "Inativo";
@@ -204,16 +204,24 @@ export default {
 
     filtrarPorAtivos() {
       if (this.filtroSelecionado === "Todos") {
-        this.inicializar();
-      } else {
-        axios.get(`${baseApiUrl}api/sala/search`, this.salas).then((res) => {
-          this.salas = res.data.map((s) => {
-            s.ativo = s.ativo ? "Ativo" : "Inativo";
-            return s;
-          });
-          console.log("filtro de ativos aqui!!!!!!!!!!")
+        // const json = localStorage.getItem(userKey);
+        // const jwt = JSON.parse(json);
+        // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
+        axios.get(`${baseApiUrl}api/sala/search`).then((res) => {
+          this.salas = res.data.content
+          .map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
+          console.log("todos !!")
           console.log(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
         });
+      } else {
+        console.log("ativos !!")
+        this.inicializar();
       }
     },
 
