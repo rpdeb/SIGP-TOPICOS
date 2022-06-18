@@ -51,26 +51,38 @@
             <v-card-text>
               <v-form>
                 <v-row>
+
                   <v-col cols="8" sm="5" md="5">
-                    <v-text-field
+                    <v-select
+                      v-model="atributo.matriz"
+                      label="Matriz"
+                      item-text="matriz"
+                      item-value="codMatriz"
+                      onchange="getMatriz(nome)"
+                      :items="arraymatriz"
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="8" sm="5" md="5">
+                    <v-select
                       v-model="atributo.disciplina"
                       label="Disciplina"
                       item-text="label"
-                      item-value="id"
-                    ></v-text-field>
+                      item-value="codigoMatriz"
+                      :items="arraydisciplinas"
+                    ></v-select>
                   </v-col>
                   <v-col cols="8" sm="5" md="5">
                     <v-select
                       v-model="atributo.codpesoa"
                       label="Professor"
                       item-text="nome"
-                      item-value="id"
-                      :options="arrayprofessores"
+                      item-value="codPessoa"
+                      :items="arrayprofessores"
                     ></v-select>
                   </v-col>
                 </v-row>
 
-                <row>
+                <v-row>
                   <v-col cols="8" sm="5" md="5">
                     <v-select
                       v-model="diaSemana"
@@ -80,8 +92,8 @@
                       :items="diasDaSemana"
                     />
                   </v-col>
-                </row>
-                <row>
+                
+                
                   <v-col cols="8" sm="5" md="5">
                     <v-select
                       v-model="horarios"
@@ -89,7 +101,9 @@
                       item-text="diasDaSemana"
                       item-value="id"
                       :items="arrayoptionshora"
+                      multiple
                     />
+                    
                     <v-btn
                       small
                       class="mx-2 add"
@@ -102,8 +116,9 @@
                       <v-icon dark> mdi-plus</v-icon>
                     </v-btn>
                   </v-col>
-                </row>
+                </v-row>
 
+              <v-row>
                 <v-col cols="8" sm="5" md="5">
                   <v-select
                     v-model="atributo.sala"
@@ -114,17 +129,17 @@
                   ></v-select>
                 </v-col>
 
-                <v-col cols="8" sm="5" md="5">
-                  <!-- <v-select
+                 <!--<v-col cols="8" sm="5" md="5">
+                   <v-select
                         v-model="atributo.disciplina"
                         label="Disciplina"
                         item-text="label"
                         item-value="id"
                         :items="arraydisciplinas"
-                      ></v-select> -->
-                </v-col>
+                      ></v-select> 
+                </v-col>-->
 
-                <v-row>
+                
                   <v-col cols="8" sm="5" md="5">
                     <v-select
                       v-model="atributo.semestre"
@@ -197,6 +212,7 @@ Vue.use(VueAxios, axios);
 
 export default {
   data: () => ({
+    nome: "Direito",
     search: "",
     dialog: false,
     dialogDesativar: false,
@@ -216,6 +232,7 @@ export default {
     arrayoptionshora: ["horario1", "horario2", "horario3", "horario4"],
     arraysemestres: [],
     arraydisciplinas: [],
+    arraymatriz: [],
     arrayprofessores: [],
     turnos: ["MANHA", "TARDE", "NOITE"],
     diasDaSemana: ["SEGUNDA", "TERCA", "QUARTA", "QUINTA", "SEXTA", "SABADO"],
@@ -232,6 +249,7 @@ export default {
         turno: "",
         diaSemana: "",
       },
+      matriz: null,
       disciplina: null,
       sala: null,
       codpesoa: null,
@@ -299,6 +317,7 @@ export default {
     this.getSemestres();
     this.getProfessores();
     this.getDisciplinas();
+    this.getMatriz();
   },
 
   methods: {
@@ -329,12 +348,11 @@ export default {
       this.arraysemestres = data.content;
       console.log(this.arraysemestres + "array de semestre aqui");
     },
-
     async getProfessores() {
       const { data } = await this.axios.get(
         `${baseApiUrl}api/professor/getAll?porPagina=50&paginaAtual=0`
       );
-      this.arrayprofessores = data.content;
+      this.arrayprofessores = data;
       console.log(this.arrayprofessores + "array de professores aqui");
     },
 
@@ -342,8 +360,16 @@ export default {
       const { data } = await this.axios.get(
         `${baseApiUrl}api/disciplina/search`
       );
-      this.arraydisciplinas = data.content;
+      this.arraydisciplinas = data;
       console.log(this.arraydisciplinas + "array de disciplinas aqui");
+    },
+
+      async getMatriz(curso) {
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/matriz/searchMatrizByCurso?curso=${curso}&porPagina=50&paginaAtual=0`
+      );
+      this.arraymatriz = data;
+      console.log(this.arraymatriz + "array de matriz aqui");
     },
 
     filtrarPorAtivos() {
