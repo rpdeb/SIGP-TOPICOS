@@ -53,6 +53,7 @@
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field
+                        id="email"
                         v-model="atributo.email"
                         :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Email"
