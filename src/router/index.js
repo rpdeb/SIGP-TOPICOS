@@ -10,9 +10,9 @@ const routes = [
   //   component: () => import('../views/NewLogin.vue')
   // },
   {
-    path: '/semestres',
-    name: 'Semestres',
-    component: () => import('../views/Semestres.vue')
+    path: '/semestre',
+    name: 'Semestre',
+    component: () => import('../views/Semestre.vue')
   },
   {
     path: '/login',

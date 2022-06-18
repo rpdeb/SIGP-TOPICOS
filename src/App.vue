@@ -73,7 +73,7 @@ export default {
   data: () => ({
     drawer: null,
     items: [
-      { title: "Semestres", to: "/semestres"},
+      { title: "Semestre", to: "/semestre"},
       { title: "Câmpus", to: "/campus" },
          { title: "Curso", to: "/curso" },
             { title: "Bloco", to: "/bloco" },

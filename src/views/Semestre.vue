@@ -10,7 +10,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Gerenciamento de Semestres</v-toolbar-title>
+        <v-toolbar-title>Gerenciamento de Semestre</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-text-field
           v-model="search"
@@ -28,7 +28,7 @@
         ></v-select>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn
               small
               class="mx-2 add"
@@ -45,22 +45,12 @@
             <v-card-title>
               <span class="text-h5">{{ tituloForm }}</span>
             </v-card-title>
-            <!-- <p v-if="errors.length">
-              <ul>
-                <li v-for="error in errors" :key="error">{{ error }}</li>
-             </ul>
-            </p> -->
+            <!-- inserir mensagem para a interface -->
             <v-card-text>
               <v-form>
                 <v-container>
-                  <v-row>
-                    <!--   <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.ano"
-                        label="Ano"
-                        required
-                      ></v-select>
-                    </v-col> -->
+                  
+                   <v-row>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field
                         v-model="atributo.label"
@@ -81,14 +71,13 @@
                       >
                     </v-col>
                   </v-row>
+
                 </v-container>
               </v-form>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fechar">
-                Cancelar
-              </v-btn>
+              <v-btn small color="warning" dark @click="fechar">Cancelar</v-btn>
               <v-btn small color="primary" class="mr-4" @click="salvar"
                 >Salvar</v-btn
               >
@@ -96,15 +85,15 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialogDesativar" max-width="410px">
+        <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
             <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} este semestre ?</v-card-title
+              >Deseja {{ mudarStatus }} este Semestre ?</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fecharDesativar">
-                Não</v-btn
+              <v-btn small color="warning" dark @click="fecharDesativar"
+                >Não</v-btn
               >
               <v-btn small color="primary" dark @click="desativeItemConfirm"
                 >Sim</v-btn
@@ -116,13 +105,10 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
-      <v-icon small class="mr-2" @click="redirecionaOferta" color="blue">
-        mdi-book
-      </v-icon>
       <v-icon small class="mr-2" @click="editItem(item)" color="blue">
         mdi-pencil
       </v-icon>
-      <v-icon small class="mr-2" @click="desativeItem(item)" color="red">
+      <v-icon small @click="desativeItem(item)" color="red">
         mdi-power-standby
       </v-icon>
     </template>
@@ -147,6 +133,7 @@ export default {
     search: "",
     dialog: false,
     dialogDesativar: false,
+    dialogDetalhar: false,
     titulos: [
       {
         text: "Semestre",
@@ -166,8 +153,7 @@ export default {
       },
     ],
     semestres: [],
-    arraycursos: [],
-    cursosRaw: [],
+    arraycursos:[],
     filtros: ["Ativos", "Todos"],
     filtroSelecionado: "Ativos",
     editIndice: -1,
@@ -198,6 +184,7 @@ export default {
     dialog(val) {
       val || this.fechar();
     },
+
     dialogDesativar(val) {
       val || this.fecharDesativar();
     },
@@ -209,7 +196,7 @@ export default {
   },
 
   methods: {
-    async inicializar() {
+    inicializar() {
       axios
         .get(`${baseApiUrl}api/semestre/search?filter=ativo`)
         .then((res) => {
@@ -217,11 +204,19 @@ export default {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
             return c;
           });
+
           console.log(this.semestres + "Array de Semestre");
+          console.log(res.data);
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+
+     async getCursos() {
+      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search`);
+      this.arraycursos = data.content;
+      console.log(this.arraycursos + "array de cursos aqui !!");
     },
 
     filtrarPorAtivos() {
@@ -248,13 +243,6 @@ export default {
       }
     },
 
-    async getCursos() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search`);
-      this.cursosRaw = data;
-      this.arraycursos = data.content;
-      console.log(this.arraycursos + "array de cursos aqui !!");
-    },
-
     editItem(item) {
       this.editIndice = this.semestres.indexOf(item);
       this.atributo = Object.assign({}, item);
@@ -265,6 +253,34 @@ export default {
       this.editIndice = this.semestres.indexOf(item);
       this.atributo = Object.assign({}, item);
       this.dialogDesativar = true;
+    },
+
+    desativeItemConfirm() {
+      if (this.atributo.ativo == "Ativo") {
+        axios
+          .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${false}`)
+          .then((res) => {
+            console.log(res.data);
+            alert("Este semestre foi desabilitado com sucesso !");
+            console.warn("entrou no desativar");
+            this.reloadPage();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${true}`)
+          .then((res) => {
+            console.log(res.data);
+            alert("Este semestre foi habilitado com sucesso !");
+            this.reloadPage();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      this.fecharDesativar();
     },
 
     fechar() {
@@ -287,38 +303,11 @@ export default {
       window.location.reload();
     },
 
-    desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
-        axios
-          .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${false}`)
-          .then((res) => {
-            console.log(res.data);
-            alert("Este semestre foi desabilitado com sucesso !");
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        axios
-          .patch(`${baseApiUrl}api/semestre/${this.atributo.id}/${true}`)
-          .then((res) => {
-            console.log(res.data);
-            alert("Esta semestre foi habilitado com sucesso !");
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      this.fecharDesativar();
-    },
-
     salvar() {
       if (this.editIndice > -1) {
         axios
           .put(`${baseApiUrl}api/semestre`, {
-            id: this.atributo.id,
+             id: this.atributo.id,
             label: this.atributo.label,
             curso: this.atributo.curso,
             ativo: this.atributo.ativo === "Ativo",

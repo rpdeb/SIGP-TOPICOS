@@ -8,11 +8,6 @@ let baseRoutes = [
     path: '/',
     redirect: '/login'
   },
-  {
-    path: '/semestres',
-    name: 'Semestres',
-    component: () => import('../views/Semestres.vue')
-  },
 ]
 
 const router = new Router({
