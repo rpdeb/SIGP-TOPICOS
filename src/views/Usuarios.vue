@@ -172,19 +172,18 @@ export default {
     dialog: false,
     dialogDesativar: false,
     titulos: [
-      { text: "Perfil", value: "tipo" },
       { text: "Email", value: "email" },
+      { text: "Perfil", value: "tipo" },
       { text: "Campus", value: "campus.label" },
       { text: "Curso", value: "curso.label" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
+    perfis: [{id:"1", label:"Administrador", id:"2", label:"Gestão Administrativa", id:"3", label:"Coordenador de Curso"}],
     filtros: ["Ativos", "Todos"],
     filtroSelecionado: "Ativos",
     usuarios: [],
-    perfis: ["Administrador", "Gestão Administrativa", "Coordenador de Curso"],
     perfilSelecionado: null,
-    idperfil: null,
     arraycampus: [],
     arraycursos: [],
     cursosRaw: [],
@@ -192,8 +191,8 @@ export default {
     editIndice: -1,
     atributo: {
       id: null,
-      tipo: null,
       email: "",
+      tipo: 1,
       campus: null,
       curso: null,
       ativo: true,
@@ -201,8 +200,8 @@ export default {
 
     atributoPadrao: {
       id: null,
-      tipo: null,
       email: "",
+      tipo: 1,
       campus: null,
       curso: null,
       ativo: true,
@@ -233,17 +232,16 @@ export default {
     this.inicializar();
   },
 
-  methods: {
+   methods: {
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/usuario/search`)
+        .get(`${baseApiUrl}api/usuario/search?filter=ativo`)
         .then((res) => {
-          this.usuarios = res.data.content.map((b) => {
-            b.ativo = b.ativo ? "Ativo" : "Inativo";
-            return b;
+          this.usuarios = res.data.content.map((s) => {
+            s.ativo = s.ativo ? "Ativo" : "Inativo";
+            return s;
           });
-
-          console.log(this.usuarios + "Array de Usuario");
+          console.log(this.usuarios + "Array de usuarios aqui")
         })
         .catch(console.warn("erro"));
     },
@@ -359,7 +357,7 @@ export default {
           .put(`${baseApiUrl}api/usuario`, {
             id: this.atributo.id,
             email: this.atributo.email,
-            tipo: this.atributo.perfis,
+            tipo: Number(this.atributo.tipo),
             campus: this.atributo.campus,
             curso: this.atributo.curso,
             ativo: this.atributo.ativo === "Ativo",
@@ -377,6 +375,7 @@ export default {
         axios
           .post(`${baseApiUrl}api/usuario`, {
             email: this.atributo.email,
+            tipo: Number(this.atributo.tipo),
             campus: this.atributo.campus,
             curso: this.atributo.curso,
             ativo: true,
