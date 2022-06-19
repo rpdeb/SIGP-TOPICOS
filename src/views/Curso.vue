@@ -189,7 +189,7 @@ export default {
     //método para preencher o data table
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/curso/search`)
+        .get(`${baseApiUrl}api/curso/search?sort=asc&orderBy=label`)
         .then((res) => {
           this.cursos = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
