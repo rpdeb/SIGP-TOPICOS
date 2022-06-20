@@ -29,7 +29,7 @@
           item-value="label"
         ></v-select>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="600px">
+        <v-dialog v-model="dialog" max-width="800px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn
               small
@@ -94,7 +94,7 @@
                   </v-col>
                 
                 
-                  <v-col cols="8" sm="5" md="5">
+                  <v-col cols="8" sm="5" md="5" class="horario-style">
                     <v-select
                       v-model="horarios"
                       label="Horário"
@@ -129,15 +129,15 @@
                   ></v-select>
                 </v-col>
 
-                 <!--<v-col cols="8" sm="5" md="5">
+                 <v-col cols="8" sm="5" md="5">
                    <v-select
-                        v-model="atributo.disciplina"
-                        label="Disciplina"
-                        item-text="label"
-                        item-value="id"
-                        :items="arraydisciplinas"
+                        v-model="atributo.turno"
+                        label="Turno"
+                        item-text="turno"
+                        item-value="turno"
+                        :items="turnos"
                       ></v-select> 
-                </v-col>-->
+                </v-col>
 
                 
                   <v-col cols="8" sm="5" md="5">
