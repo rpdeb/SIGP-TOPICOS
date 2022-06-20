@@ -191,7 +191,7 @@ export default {
   methods: {
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/sala/search?size=1000`)
+        .get(`${baseApiUrl}api/sala/search?sort=asc&orderBy=label`)
         .then((res) => {
           this.salas = res.data.content.map((s) => {
             s.ativo = s.ativo ? "Ativo" : "Inativo";

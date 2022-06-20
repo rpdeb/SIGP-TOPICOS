@@ -166,7 +166,7 @@ export default {
   methods: {
     inicializar() {
       axios
-        .get(`${baseApiUrl}api/campus/search`)
+        .get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`)
         .then((res) => {
           this.campus = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
