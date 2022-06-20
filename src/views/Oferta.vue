@@ -13,7 +13,7 @@
         <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros" item-text="Filtro"
           item-value="label"></v-select>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="600px">
+        <v-dialog v-model="dialog" max-width="800px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
               <v-icon dark> mdi-plus</v-icon>
@@ -53,7 +53,28 @@
                     <v-select v-model="horarios" label="Horário" item-text="diasDaSemana" item-value="id"
                       :items="arrayoptionshora" multiple />
 
-                    <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+                    <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on"/>
+                  </v-col>
+                
+                  <v-col cols="8" sm="5" md="5" class="horario-style">
+                    <v-select
+                      v-model="horarios"
+                      label="Horário"
+                      item-text="diasDaSemana"
+                      item-value="id"
+                      :items="arrayoptionshora"
+                      multiple
+                    />
+                    
+                    <v-btn
+                      small
+                      class="mx-2 add"
+                      fab
+                      dark
+                      color="green"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
                       <v-icon dark> mdi-plus</v-icon>
                     </v-btn>
                   </v-col>
@@ -65,15 +86,15 @@
                       :items="arraysalas"></v-select>
                   </v-col>
 
-                  <!--<v-col cols="8" sm="5" md="5">
+                 <v-col cols="8" sm="5" md="5">
                    <v-select
-                        v-model="atributo.disciplina"
-                        label="Disciplina"
-                        item-text="label"
-                        item-value="id"
-                        :items="arraydisciplinas"
+                        v-model="atributo.turno"
+                        label="Turno"
+                        item-text="turno"
+                        item-value="turno"
+                        :items="turnos"
                       ></v-select> 
-                </v-col>-->
+                </v-col>
 
                   <v-col cols="8" sm="5" md="5">
                     <v-select v-model="atributo.bloco" label="Bloco" item-text="label" item-value="id"
