@@ -179,7 +179,7 @@ export default {
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    perfis: [{id:"1", label:"Administrador", id:"2", label:"Gestão Administrativa", id:"3", label:"Coordenador de Curso"}],
+    perfis: ["Administrador", "Gestão Administrativa", "Coordenador de Curso"],
     filtros: ["Ativos", "Todos"],
     filtroSelecionado: "Ativos",
     usuarios: [],

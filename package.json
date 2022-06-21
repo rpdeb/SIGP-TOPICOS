@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
+    "jspdf": "^2.5.1",
     "query": "^0.2.0",
     "register-service-worker": "^1.7.2",
     "v-mask": "^2.3.0",
