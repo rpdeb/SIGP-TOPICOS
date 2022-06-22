@@ -105,10 +105,13 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)" color="blue">
+       <v-btn small class="mr-2" @click="criarOferta()" color="brown">
+        Oferta
+      </v-btn>
+       <v-icon small class="mr-2" @click="editItem(item)" color="blue">
         mdi-pencil
       </v-icon>
-      <v-icon small @click="desativeItem(item)" color="red">
+      <v-icon small class="mr-2" @click="desativeItem(item)" color="red">
         mdi-power-standby
       </v-icon>
     </template>
@@ -281,6 +284,11 @@ export default {
           });
       }
       this.fecharDesativar();
+    },
+
+    criarOferta(){
+      this.$router.push('/oferta')
+      console.log("sucessu")
     },
 
     fechar() {
