@@ -8,13 +8,12 @@ import './assets/css/style.css'
 import './registerServiceWorker'
 import VueMask from 'v-mask'
 import vSelect from 'vue-select'
-import 'vue-select/dist/vue-select.css';
-import Vuelidate from "vuelidate";
 
-Vue.use(VueMask);
-Vue.use(Vuelidate);
 Vue.component('v-select', vSelect)
-Vue.use(vSelect);
+Vue.use(VueMask);
+
+import Vuelidate from "vuelidate";
+Vue.use(Vuelidate);
 
 import axios from "axios";
 import { Model } from "vue-api-query";
