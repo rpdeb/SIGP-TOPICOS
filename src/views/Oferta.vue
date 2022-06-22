@@ -48,14 +48,6 @@
                       :items="diasDaSemana" />
                   </v-col>
 
-
-                  <v-col cols="8" sm="5" md="5">
-                    <v-select v-model="horarios" label="Horário" item-text="diasDaSemana" item-value="id"
-                      :items="arrayoptionshora" multiple />
-
-                    <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on"/>
-                  </v-col>
-                
                   <v-col cols="8" sm="5" md="5" class="horario-style">
                     <v-select
                       v-model="horarios"
@@ -134,7 +126,7 @@
     <template v-slot:[`item.acoes`]="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)" color="blue">
         mdi-pencil
-      </v-icon>
+      </v-icon> 
       <v-icon small @click="desativeItem(item)" color="red">
         mdi-power-standby
       </v-icon>
@@ -157,7 +149,6 @@ Vue.use(VueAxios, axios);
 
 export default {
   data: () => ({
-    nome: "Direito",
     search: "",
     dialog: false,
     dialogDesativar: false,
@@ -412,13 +403,25 @@ export default {
 
     salvar() {
       if (this.editIndice > -1) {
-        axios
-          .put(`${baseApiUrl}api/oferta`, {
-            id: this.atributo.id,
-            label: this.atributo.label,
+        const request = {
+           horario: {
+              horario1: this.atributo.horario.horario1,
+              horario2: this.atributo.horario.horario2,
+              horario3: this.atributo.horario.horario3,
+              horario4: this.atributo.horario.horario4,
+              turno: this.atributo.horario.turno,
+              diaSemana: this.atributo.horario.diaSemana,
+            },
+            disciplina: this.atributo.disciplina,
             sala: this.atributo.sala,
-            ativo: this.atributo.ativo === true,
-          })
+            bloco: this.atributo.bloco,
+            codpesoa: this.atributo.codpesoa,
+            codDiciplina: this.atributo.codDiciplina,
+            ativo: this.atributo.ativo,
+            semestre: this.atributo.semestre,
+        };
+        axios
+          .put(`${baseApiUrl}api/oferta`,request)
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
             console.log(res.data);
