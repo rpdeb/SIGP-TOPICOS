@@ -105,7 +105,7 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
-       <v-btn small class="mr-2" @click="criarOferta()" color="brown">
+       <v-btn small class="mr-2" @click="criarOferta(item)" color="brown">
         Oferta
       </v-btn>
        <v-icon small class="mr-2" @click="editItem(item)" color="blue">
@@ -286,9 +286,13 @@ export default {
       this.fecharDesativar();
     },
 
-    criarOferta(){
-      this.$router.push('/oferta')
-      console.log("sucessu")
+    criarOferta(item){
+      this.editIndice = this.semestres.indexOf(item);
+      this.atributo = Object.assign({}, item);
+      var obj = this.atributo.label;
+      console.log(obj,"aquiii");
+      this.$router.push('/oferta');
+      console.log("sucessu");
     },
 
     fechar() {
