@@ -217,7 +217,7 @@ export default {
     },
 
      async getCursos() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search?sort=asc&orderBy=label`);
       this.arraycursos = data.content;
       console.log(this.arraycursos + "array de cursos aqui !!");
     },

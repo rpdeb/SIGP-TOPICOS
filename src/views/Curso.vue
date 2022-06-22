@@ -227,7 +227,7 @@ export default {
 
     //método para buscar campus existentes e preencher no array
     async getCampus() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`);
       this.campusRaw = data;
       this.arraycampus = data.content;
       //this.arraycampus = data.filter((d) => d.label);

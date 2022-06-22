@@ -237,7 +237,7 @@ export default {
     },
 
     async getBlocos() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search?sort=asc&orderBy=label`);
       this.blocosRaw = data;
       this.arrayBlocos = data.content;
       console.log(this.arrayBlocos + "array de blocos aqui");

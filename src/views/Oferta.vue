@@ -343,35 +343,33 @@ export default {
     },
 
     async getSalas() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/sala/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/sala/search?sort=asc&orderBy=label`);
       this.salasRaw = data;
       this.arraysalas = data.content;
       console.log(this.arraysalas + "array de sala aqui");
     },
 
     async getBloco() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search?sort=asc&orderBy=label`);
       this.arraybloco = data.content;
       console.log(this.arraybloco + "array de bloco aqui");
     },
 
     async getSemestres() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/semestre/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/semestre/search?sort=asc&orderBy=label`);
       this.arraysemestres = data.content;
       console.log(this.arraysemestres + "array de semestre aqui");
     },
     async getProfessores() {
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/professor/getAll?porPagina=50&paginaAtual=0`
-      );
+        `${baseApiUrl}api/professor/getAll?porPagina=50&paginaAtual=0`);
       this.arrayprofessores = data;
       console.log(this.arrayprofessores + "array de professores aqui");
     },
 
     async getDisciplinas() {
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/disciplina/search`
-      );
+        `${baseApiUrl}api/disciplina/search`);
       this.arraydisciplinas = data;
       console.log(this.arraydisciplinas + "array de disciplinas aqui");
     },

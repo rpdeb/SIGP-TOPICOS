@@ -271,14 +271,14 @@ export default {
     },
     //método para buscar campus existentes e preencher no array
     async getCampus() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`);
       this.campusRaw = data;
       this.arraycampus = data.content;
       console.log(this.arraycampus + "array de campus aqui");
     },
 
     async getCursos() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search?sort=asc&orderBy=label`);
       this.cursosRaw = data;
       this.arraycursos = data.content;
       console.log(this.arraycursos + "array de cursos aqui !!");
