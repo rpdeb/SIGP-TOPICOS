@@ -1,21 +1,46 @@
 <template>
-  <v-data-table :headers="titulos" :items="ofertas" :search="search" class="elevation-2 data-table" :footer-props="{
-    'items-per-page-text': 'Itens por página',
-  }">
+  <v-data-table
+    :headers="titulos"
+    :items="ofertas"
+    :search="search"
+    class="elevation-2 data-table"
+    :footer-props="{
+      'items-per-page-text': 'Itens por página',
+    }"
+  >
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Oferta de Disciplina</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
 
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Pesquisar"
+          single-line
+          hide-details
+        >
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros" item-text="Filtro"
-          item-value="label"></v-select>
+        <v-select
+          @change="filtrarPorAtivos"
+          v-model="filtroSelecionado"
+          :items="filtros"
+          item-text="Filtro"
+          item-value="label"
+        ></v-select>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="800px">
+        <v-dialog v-model="dialog" max-width="1000px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
-            <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
+            <v-btn
+              small
+              class="mx-2 add"
+              fab
+              dark
+              color="green"
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon dark> mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -27,25 +52,55 @@
             <v-card-text>
               <v-form>
                 <v-row>
-
-                  <v-col cols="8" sm="5" md="5">
-                    <v-select v-model="atributo.matriz" label="Matriz" item-text="matriz" item-value="codMatriz"
-                      onchange="getMatriz(nome)" :items="arraymatriz"></v-select>
+                  <v-col cols="6" sm="5" md="5">
+                    <v-select
+                      v-model="atributo.matriz"
+                      label="Matriz"
+                      item-text="matriz"
+                      item-value="codMatriz"
+                      onchange="getMatriz(nome)"
+                      :items="arraymatriz"
+                    ></v-select>
                   </v-col>
-                  <v-col cols="8" sm="5" md="5">
-                    <v-select v-model="atributo.disciplina" label="Disciplina" item-text="label"
-                      item-value="codigoMatriz" :items="arraydisciplinas"></v-select>
+                  <v-col cols="6" sm="5" md="5">
+                    <v-select
+                      v-model="atributo.disciplina"
+                      label="Disciplina"
+                      item-text="label"
+                      item-value="codigoMatriz"
+                      :items="arraydisciplinas"
+                    ></v-select>
                   </v-col>
-                  <v-col cols="8" sm="5" md="5">
-                    <v-select v-model="atributo.codpesoa" label="Professor" item-text="nome" item-value="codPessoa"
-                      :items="arrayprofessores"></v-select>
+                  <v-col cols="6" sm="5" md="5">
+                    <v-select
+                      v-model="atributo.codpesoa"
+                      label="Professor"
+                      item-text="nome"
+                      item-value="codPessoa"
+                      :items="arrayprofessores"
+                    ></v-select>
                   </v-col>
                 </v-row>
 
                 <v-row>
                   <v-col cols="8" sm="5" md="5">
-                    <v-select v-model="diaSemana" label="Dia da Semana" item-text="diasDaSemana" item-value="id"
-                      :items="diasDaSemana" />
+                    <v-select
+                      v-model="diaSemana"
+                      label="Dia da Semana"
+                      item-text="diasDaSemana"
+                      item-value="id"
+                      :items="diasDaSemana"
+                    />
+                  </v-col>
+
+                  <v-col cols="8" sm="5" md="5">
+                    <v-select
+                      v-model="atributo.turno"
+                      label="Turno"
+                      item-text="turno"
+                      item-value="turno"
+                      :items="turnos"
+                    ></v-select>
                   </v-col>
 
                   <v-col cols="8" sm="5" md="5" class="horario-style">
@@ -53,70 +108,79 @@
                       v-model="horarios"
                       label="Horário"
                       item-text="diasDaSemana"
-                      item-value="id"
+                      item-value="label"
                       :items="arrayoptionshora"
                       multiple
                     />
-                    
-                    <v-btn
-                      small
-                      class="mx-2 add"
-                      fab
-                      dark
-                      color="green"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      <v-icon dark> mdi-plus</v-icon>
+
+                    <v-btn color="black">
+                      <v-icon small color="#FFFFFF"> mdi-plus </v-icon>
                     </v-btn>
                   </v-col>
                 </v-row>
 
+               
                 <v-row>
-                  <v-col cols="8" sm="5" md="5">
-                    <v-select v-model="atributo.sala" label="Sala" item-text="label" item-value="id"
-                      :items="arraysalas"></v-select>
-                  </v-col>
-
-                 <v-col cols="8" sm="5" md="5">
-                   <v-select
-                        v-model="atributo.turno"
-                        label="Turno"
-                        item-text="turno"
-                        item-value="turno"
-                        :items="turnos"
-                      ></v-select> 
+                   <v-col cols="8" sm="5" md="5">
+                  <v-select
+                    v-model="atributo.bloco"
+                    label="Bloco"
+                    item-text="label"
+                    item-value="id"
+                    :items="arraybloco"
+                  ></v-select>
                 </v-col>
 
                   <v-col cols="8" sm="5" md="5">
-                    <v-select v-model="atributo.bloco" label="Bloco" item-text="label" item-value="id"
-                      :items="arraybloco"></v-select>
+                    <v-select
+                      v-model="atributo.sala"
+                      label="Sala"
+                      item-text="label"
+                      item-value="id"
+                      :items="arraysalas"
+                    ></v-select>
                   </v-col>
 
-
-                  <v-col cols="8" sm="5" md="5">
-                    <v-select v-model="atributo.semestre" label="Semestre" item-text="label" item-value="id"
-                      :items="arraysemestres"></v-select>
-                  </v-col>
                 </v-row>
+                 <v-col cols="8" sm="5" md="5">
+                    <v-select
+                      v-model="atributo.semestre"
+                      label="Semestre"
+                      item-text="label"
+                      item-value="id"
+                      :items="arraysemestres"
+                    ></v-select>
+                  </v-col>
               </v-form>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn small color="warning" dark @click="fechar">Cancelar</v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
+              <v-btn small color="primary" class="mr-4" @click="salvar"
+                >Salvar</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5">Deseja {{ mudarStatus }} este oferta ?</v-card-title>
+            <v-card-title class="text-h5"
+              >Deseja {{ mudarStatus }} este oferta ?</v-card-title
+            >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="dialogDesativar = false">
-                Não</v-btn>
-              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
+              <v-btn
+                small
+                color="warning"
+                dark
+                @click="dialogDesativar = false"
+              >
+                Não</v-btn
+              >
+              <v-btn small color="primary" dark @click="desativeItemConfirm"
+                >Sim</v-btn
+              >
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -126,7 +190,7 @@
     <template v-slot:[`item.acoes`]="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)" color="blue">
         mdi-pencil
-      </v-icon> 
+      </v-icon>
       <v-icon small @click="desativeItem(item)" color="red">
         mdi-power-standby
       </v-icon>
@@ -134,11 +198,13 @@
   </v-data-table>
 </template>
 
-<!-- 
-<style>
 
+<style>
+.horario-style{
+  display: inline;
+}
 </style>
--->
+
 
 <script>
 import Vue from "vue";
@@ -326,18 +392,18 @@ export default {
         axios
           .get(`${baseApiUrl}api/oferta/search`)
           .then((res) => {
-            this.ofertas = res.data.content
-              .map((c) => {
-                c.ativo = c.ativo ? "Ativo" : "Inativo";
-                return c;
-              });
-            console.log("todos !!")
+            this.ofertas = res.data.content.map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
+            console.log("todos !!");
             console.log(res.data);
-          }).catch((error) => {
+          })
+          .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("ativos !!")
+        console.log("ativos !!");
         this.inicializar();
       }
     },
@@ -404,24 +470,24 @@ export default {
     salvar() {
       if (this.editIndice > -1) {
         const request = {
-           horario: {
-              horario1: this.atributo.horario.horario1,
-              horario2: this.atributo.horario.horario2,
-              horario3: this.atributo.horario.horario3,
-              horario4: this.atributo.horario.horario4,
-              turno: this.atributo.horario.turno,
-              diaSemana: this.atributo.horario.diaSemana,
-            },
-            disciplina: this.atributo.disciplina,
-            sala: this.atributo.sala,
-            bloco: this.atributo.bloco,
-            codpesoa: this.atributo.codpesoa,
-            codDiciplina: this.atributo.codDiciplina,
-            ativo: this.atributo.ativo,
-            semestre: this.atributo.semestre,
+          horario: {
+            horario1: this.atributo.horario.horario1,
+            horario2: this.atributo.horario.horario2,
+            horario3: this.atributo.horario.horario3,
+            horario4: this.atributo.horario.horario4,
+            turno: this.atributo.horario.turno,
+            diaSemana: this.atributo.horario.diaSemana,
+          },
+          disciplina: this.atributo.disciplina,
+          sala: this.atributo.sala,
+          bloco: this.atributo.bloco,
+          codpesoa: this.atributo.codpesoa,
+          codDiciplina: this.atributo.codDiciplina,
+          ativo: this.atributo.ativo,
+          semestre: this.atributo.semestre,
         };
         axios
-          .put(`${baseApiUrl}api/oferta`,request)
+          .put(`${baseApiUrl}api/oferta`, request)
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
             console.log(res.data);
