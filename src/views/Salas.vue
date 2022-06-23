@@ -10,11 +10,11 @@
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-select
+        <vue-select
           @change="filtrarPorAtivos" 
           v-model="filtroSelecionado"
           :items="filtros"
-        ></v-select>
+        ></vue-select>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
@@ -35,14 +35,16 @@
                       <v-text-field v-model="atributo.label" label="Sala" required></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="5" md="5">
-                      <v-select v-model="atributo.tipo" label="Tipo de Sala" :items="tiposdesala" item-text="label"
+                      <label > Tipo de Sala</label>
+                      <vue-select v-model="atributo.tipo"  :options="tiposdesala" item-text="label"
                         item-value="id" @input="selecionarTipoSala">
-                        ></v-select>
+                        ></vue-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="5">
-                      <v-select v-model="atributo.bloco" label="Bloco/Piso" item-text="label" item-value="id"
-                        :items="arrayBlocos">
-                        ></v-select>
+                      <label> Bloco/Piso</label>
+                      <vue-select v-model="atributo.bloco"  item-text="label" item-value="id"
+                        :options="arrayBlocos">
+                        ></vue-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="5">
                       <v-text-field v-model="atributo.capacidade" label="Capacidade" type="number"></v-text-field>
