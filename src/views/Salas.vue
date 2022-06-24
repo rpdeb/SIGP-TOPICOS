@@ -129,7 +129,7 @@ export default {
     titulos: [
       { text: "Sala", value: "label" },
       { text: "Tipo de Sala", value: "tipo" },
-      { text: "Bloco/Piso", value: "bloco.label" },
+      { text: "Bloco/Piso", value: "blocoId.label" },
       { text: "Capacidade", value: "capacidade" },
       // essa coluna será exibida através do detalhar 
       // { text: "Estrutura Física", value: "estruturaFisica" },
@@ -154,19 +154,19 @@ export default {
       id: null,
       label: "",
       capacidade: null,
-      bloco: null,
       estruturaFisica: null,
       tipo: 1,
       ativo: true,
+      blocoId: null,
     },
     atributoPadrao: {
       id: null,
       label: "",
       capacidade: null,
-      bloco: null,
       estruturaFisica: null,
       tipo: 1,
       ativo: true,
+      blocoId: null,
     },
   }),
 
@@ -193,7 +193,7 @@ export default {
   methods: {
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/sala/search?sort=asc&orderBy=label`)
+        .get(`${baseApiUrl}api/sala/search?size=10000`)
         .then((res) => {
           this.salas = res.data.content.map((s) => {
             s.ativo = s.ativo ? "Ativo" : "Inativo";
@@ -335,10 +335,12 @@ export default {
             id: this.atributo.id,
             label: this.atributo.label,
             capacidade: this.atributo.capacidade,
-            bloco: this.atributo.bloco,
             estruturaFisica: this.atributo.estruturaFisica,
             tipo: Number(this.atributo.tipo),
             ativo: this.atributo.ativo === "Ativo",
+            blocoId: this.atributo.bloco,
+
+
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");

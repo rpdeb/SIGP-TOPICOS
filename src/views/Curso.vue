@@ -301,14 +301,19 @@ export default {
       console.log(this.arraycampus + "array de campus aqui !!");
     },
 
+    reloadPage: async function () {
+      window.location.reload();
+    },
+
     salvar() {
       if (this.editIndice > -1) {
         axios
           .put(`${baseApiUrl}api/curso`, {
             id: this.atributo.id,
             label: this.atributo.label,
-            campus: this.atributo.campus,
             ativo: this.atributo.ativo === "Ativo",
+            campus: this.atributo.campus,
+
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");

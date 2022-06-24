@@ -62,10 +62,13 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="atributo.perfis"
+                        v-model="atributo.tipo"
                         :items="perfis"
                         :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Perfil"
+                        item-text="label"
+                        item-value="id"
+                        @input="perfilSelecionado"
                         required
                       ></v-select>
                     </v-col>
@@ -179,7 +182,7 @@ export default {
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    perfis: ["Administrador", "Gestão Administrativa", "Coordenador de Curso"],
+    perfis: [{id:"1", label:"Administrador"}, {id:"2", label:"Gestão Administrativa"}, {id:"3", label:"Coordenador de Curso"}],
     filtros: ["Ativos", "Todos"],
     filtroSelecionado: "Ativos",
     usuarios: [],
