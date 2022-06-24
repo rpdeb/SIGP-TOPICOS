@@ -35,14 +35,14 @@
                       <v-text-field v-model="atributo.label" label="Sala" required></v-text-field>
                     </v-col>
                     <v-col cols="8" sm="5" md="5">
-                      <label > Tipo de Sala</label>
-                      <v-select v-model="atributo.tipo"  :items="tiposdesala" item-text="label"
+                    <!--  <label > Tipo de Sala</label> -->
+                      <v-select v-model="atributo.tipo" label="Tipo de Sala" :items="tiposdesala" item-text="label"
                         item-value="id" @input="selecionarTipoSala">
                         ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="5">
-                      <label> Bloco/Piso</label>
-                      <v-select v-model="atributo.bloco"  item-text="label" item-value="id"
+                      <!-- <label> Bloco/Piso</label> -->
+                      <v-select v-model="atributo.bloco" label="Bloco/Piso" item-text="label" item-value="id"
                         :items="arrayBlocos">
                         ></v-select>
                     </v-col>
