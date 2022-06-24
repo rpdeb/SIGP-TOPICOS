@@ -233,7 +233,7 @@ export default {
     },
 
     filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Todos") {
+      if (this.filtroSelecionado === "Ativo") {
         // const json = localStorage.getItem(userKey);
         // const jwt = JSON.parse(json);
         // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
@@ -241,16 +241,16 @@ export default {
           .get(`${baseApiUrl}api/bloco/search`)
           .then((res) => {
             this.blocos = res.data.content.map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              c.ativo = c.ativo ? "Ativo" : "Ativo";
               return c;
             });
-            console.log(res.data + "Todos !!");
+            console.log(res.data + "Ativo !!");
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("Ativos !!");
+        console.log("Todos !!");
         this.inicializar();
       }
     },
