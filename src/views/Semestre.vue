@@ -223,26 +223,26 @@ export default {
     },
 
     filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Todos") {
-         // const json = localStorage.getItem(userKey);
+      if (this.filtroSelecionado === "Ativos") {
+        // const json = localStorage.getItem(userKey);
         // const jwt = JSON.parse(json);
         // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
         axios
           .get(`${baseApiUrl}api/semestre/search`)
           .then((res) => {
-            this.semestres = res.data.content
-             .map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Inativo";
+            this.cursos = res.data.content.map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Ativo";
               return c;
             });
-            console.log("todos !!")
+            console.log("ativo !!");
             console.log(res.data);
-          }).catch((error) => {
-          console.log(error);
-        });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
-       console.log("ativos !!")
-       this.inicializar();
+        console.log("todos !!");
+        this.inicializar();
       }
     },
 

@@ -250,25 +250,25 @@ export default {
     },
 
     filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Todos") {
+      if (this.filtroSelecionado === "Ativos") {
         // const json = localStorage.getItem(userKey);
         // const jwt = JSON.parse(json);
         // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
         axios
           .get(`${baseApiUrl}api/usuario/search`)
           .then((res) => {
-            this.usuarios = res.data.content.map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Inativo";
+            this.cursos = res.data.content.map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Ativo";
               return c;
             });
-            console.log("todos !!");
+            console.log("ativo !!");
             console.log(res.data);
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("ativos !!");
+        console.log("todos !!");
         this.inicializar();
       }
     },
