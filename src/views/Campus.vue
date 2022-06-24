@@ -189,7 +189,7 @@ export default {
         axios
           .get(`${baseApiUrl}api/campus/search`)
           .then((res) => {
-            this.cursos = res.data.content.map((c) => {
+            this.campus = res.data.content.map((c) => {
               c.ativo = c.ativo ? "Ativo" : "Ativo";
               return c;
             });

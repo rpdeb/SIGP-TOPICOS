@@ -212,7 +212,7 @@ export default {
         axios
           .get(`${baseApiUrl}api/sala/search`)
           .then((res) => {
-            this.cursos = res.data.content.map((c) => {
+            this.salas = res.data.content.map((c) => {
               c.ativo = c.ativo ? "Ativo" : "Ativo";
               return c;
             });

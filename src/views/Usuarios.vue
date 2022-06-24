@@ -257,7 +257,7 @@ export default {
         axios
           .get(`${baseApiUrl}api/usuario/search`)
           .then((res) => {
-            this.cursos = res.data.content.map((c) => {
+            this.usuarios = res.data.content.map((c) => {
               c.ativo = c.ativo ? "Ativo" : "Ativo";
               return c;
             });
