@@ -201,7 +201,10 @@ export default {
       axios
         .get(`${baseApiUrl}api/semestre/search?filter=ativo`)
         .then((res) => {
-          this.semestres = res.data.content;
+          this.semestres = res.data.content.map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
           console.log(this.semestres + "Array de Semestre");
           console.log(res.data);
         })
@@ -224,7 +227,10 @@ export default {
         axios
           .get(`${baseApiUrl}api/semestre/search`)
           .then((res) => {
-            this.semestres = res.data.content;
+            this.semestres = res.data.content.map((c) => {
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
             console.log(res.data);
           })
           .catch((error) => {

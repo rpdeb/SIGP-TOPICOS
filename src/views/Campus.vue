@@ -164,7 +164,7 @@ export default {
   methods: {
     inicializar() {
       axios
-        .get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`)
+        .get(`${baseApiUrl}api/campus/search?filter=ativo&sort=asc&orderBy=label`)
         .then((res) => {
           this.campus = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
@@ -180,25 +180,23 @@ export default {
     },
 
     filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Ativos") {
+      if (this.filtroSelecionado === "Todos") {
         // const json = localStorage.getItem(userKey);
         // const jwt = JSON.parse(json);
         // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
         axios
-          .get(`${baseApiUrl}api/campus/search`)
+          .get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`)
           .then((res) => {
             this.campus = res.data.content.map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Ativo";
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-            console.log("ativo !!");
             console.log(res.data);
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("todos !!");
         this.inicializar();
       }
     },
