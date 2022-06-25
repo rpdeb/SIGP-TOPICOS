@@ -203,11 +203,7 @@ export default {
       axios
         .get(`${baseApiUrl}api/semestre/search?filter=ativo`)
         .then((res) => {
-          this.semestres = res.data.content.map((c) => {
-            c.ativo = c.ativo ? "Ativo" : "Inativo";
-            return c;
-          });
-
+          this.semestres = res.data.content;
           console.log(this.semestres + "Array de Semestre");
           console.log(res.data);
         })
@@ -223,25 +219,20 @@ export default {
     },
 
     filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Ativos") {
+      if (this.filtroSelecionado === "Todos") {
         // const json = localStorage.getItem(userKey);
         // const jwt = JSON.parse(json);
         // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
         axios
           .get(`${baseApiUrl}api/semestre/search`)
           .then((res) => {
-            this.semestres = res.data.content.map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Ativo";
-              return c;
-            });
-            console.log("ativo !!");
+            this.semestres = res.data.content;
             console.log(res.data);
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("todos !!");
         this.inicializar();
       }
     },
@@ -319,7 +310,7 @@ export default {
       if (this.editIndice > -1) {
         axios
           .put(`${baseApiUrl}api/semestre`, {
-             id: this.atributo.id,
+            id: this.atributo.id,
             label: this.atributo.label,
             curso: this.atributo.curso,
             ativo: this.atributo.ativo === "Ativo",
