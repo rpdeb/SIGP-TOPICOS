@@ -224,7 +224,7 @@ export default {
       { text: "Sala", value: "sala.label" },
       { text: "Turno", value: "horario.turno" },
       { text: "Semestre", value: "semestre.label" },
-      //{ text: "Status", value: "ativo" },
+      { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
     ofertas: [],
@@ -330,7 +330,7 @@ export default {
     //método para preencher o data table
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/oferta/search?ativo=true`)
+        .get(`${baseApiUrl}api/oferta/search?filter=ativo`)
         .then((res) => {
           this.ofertas = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
@@ -383,7 +383,7 @@ export default {
     },
 
     filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Ativos") {
+      if (this.filtroSelecionado === "Todos") {
         // const json = localStorage.getItem(userKey);
         // const jwt = JSON.parse(json);
         // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
@@ -391,17 +391,15 @@ export default {
           .get(`${baseApiUrl}api/oferta/search`)
           .then((res) => {
             this.ofertas = res.data.content.map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Ativo";
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-            console.log("ativo !!");
             console.log(res.data);
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("todos !!");
         this.inicializar();
       }
     },
