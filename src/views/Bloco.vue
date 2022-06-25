@@ -229,7 +229,7 @@ export default {
     },
 
     filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Ativos") {
+      if (this.filtroSelecionado === "Ativo") {
         // const json = localStorage.getItem(userKey);
         // const jwt = JSON.parse(json);
         // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
@@ -240,17 +240,17 @@ export default {
               c.ativo = c.ativo ? "Ativo" : "Ativo";
               return c;
             });
-            console.log("ativo !!");
-            console.log(res.data);
+            console.log(res.data + "Ativo !!");
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("todos !!");
+        console.log("Todos !!");
         this.inicializar();
       }
     },
+
     editItem(item) {
       this.editIndice = this.blocos.indexOf(item);
       this.atributo = Object.assign({}, item);
