@@ -134,7 +134,7 @@ export default {
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    tiposdesala: [{ id: "1", label: "Sala" }, { id: "2", label: "Laboratório de Informática" }, { id: "3", label: "Laboratório de Ciências" }],
+    tiposdesala: [{ id: "0", label: "Sala" }, { id: "1", label: "Laboratório de Informática" }, { id: "2", label: "Laboratório de Ciências" }],
     //tiposdesala: [
     //"Sala",
     //"Laboratório de Informática",
@@ -191,7 +191,7 @@ export default {
   methods: {
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/sala/search?size=10000`)
+        .get(`${baseApiUrl}api/sala/search?size=10000&filter=ativo`)
         .then((res) => {
           this.salas = res.data.content.map((s) => {
             s.ativo = s.ativo ? "Ativo" : "Inativo";
@@ -203,22 +203,20 @@ export default {
     },
 
     filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Ativos") {
+      if (this.filtroSelecionado === "Todos") {
         axios
           .get(`${baseApiUrl}api/sala/search`)
           .then((res) => {
             this.salas = res.data.content.map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Ativo";
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-            console.log("ativo !!");
             console.log(res.data);
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("todos !!");
         this.inicializar();
       }
     },

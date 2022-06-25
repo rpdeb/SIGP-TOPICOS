@@ -187,7 +187,7 @@ export default {
     //método para preencher o data table
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/curso/search?sort=asc&orderBy=label`)
+        .get(`${baseApiUrl}api/curso/search?filter=ativo&sort=asc&orderBy=label`)
         .then((res) => {
           this.cursos = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
@@ -200,7 +200,7 @@ export default {
     },
 
     filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Ativos") {
+      if (this.filtroSelecionado === "Todos") {
         // const json = localStorage.getItem(userKey);
         // const jwt = JSON.parse(json);
         // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
@@ -208,17 +208,15 @@ export default {
           .get(`${baseApiUrl}api/curso/search`)
           .then((res) => {
             this.cursos = res.data.content.map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Ativo";
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-            console.log("ativo !!");
             console.log(res.data);
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("todos !!");
         this.inicializar();
       }
     },
