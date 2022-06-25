@@ -120,26 +120,35 @@
                 </v-row>
 
                
-                <v-row>
-                   <v-col cols="8" sm="5" md="5">
-                  <v-select
-                    v-model="atributo.bloco"
-                    label="Bloco"
-                    item-text="label"
-                    item-value="id"
-                    :items="arraybloco"
-                  ></v-select>
-                </v-col>
+             <v-row>
+                      <v-col cols="8" sm="6" md="4">
+                        <v-label>Bloco-Sala</v-label>
+                        <v-select
+                          v-model="atributo.sala"
+                          :getOptionLabel="
+                            (sala) =>
+                              atributo.sala.label +
+                              ' ( ' +
+                              atributo.bloco +
+                              ')'
+                          "
+                          :items="arraysalas"
+                          item-label="Bloco-Sala"
+                          item-text="label"
+                          :rules="[(v) => !!v || 'Campo Obrigatório']"
+                          required
+                        ></v-select>
+                      </v-col>
 
-                  <v-col cols="8" sm="5" md="5">
-                    <v-select
+                     <!-- <v-col cols="8" sm="5" md="5">
+                      <v-select
                       v-model="atributo.sala"
                       label="Sala"
                       item-text="label"
                       item-value="id"
                       :items="arraysalas"
-                    ></v-select>
-                  </v-col>
+                      ></v-select>
+                     </v-col> -->
 
                 </v-row>
                  <v-col cols="8" sm="5" md="5">
