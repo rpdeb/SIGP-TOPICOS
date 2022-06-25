@@ -10,7 +10,7 @@ import VueMask from 'v-mask'
 import vSelect from "vue-select"
 import "vue-select/dist/vue-select.css"
 
-Vue.component("vue-select", vSelect);
+Vue.use("vue-select", vSelect);
 Vue.use(VueMask);
 
 import Vuelidate from "vuelidate";

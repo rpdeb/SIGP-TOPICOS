@@ -6,15 +6,12 @@
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Sala</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
-
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
         </v-text-field>
         <v-spacer></v-spacer>
-        <vue-select
-          @change="filtrarPorAtivos" 
-          v-model="filtroSelecionado"
-          :options="filtros"
-        ></vue-select>
+        <v-col sm="2">
+          <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros"></v-select>
+        </v-col>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
@@ -34,8 +31,8 @@
                     <v-col cols="8" sm="6" md="5">
                       <v-text-field v-model="atributo.label" label="Sala" required></v-text-field>
                     </v-col>
-                    <v-col cols="8" sm="5" md="5">
-                    <!--  <label > Tipo de Sala</label> -->
+                    <v-col cols="8" sm="5" md="10">
+                      <!--  <label > Tipo de Sala</label> -->
                       <v-select v-model="atributo.tipo" label="Tipo de Sala" :items="tiposdesala" item-text="label"
                         item-value="id" @input="selecionarTipoSala">
                         ></v-select>
@@ -51,7 +48,8 @@
                     </v-col>
 
                     <v-col cols="8" sm="30" md="40">
-                      <v-textarea v-model="atributo.estruturaFisica" label="Estrutura Física" hint="Observações..." name="input-7-1"></v-textarea>
+                      <v-textarea v-model="atributo.estruturaFisica" label="Estrutura Física" hint="Observações..."
+                        name="input-7-1"></v-textarea>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -129,18 +127,18 @@ export default {
     titulos: [
       { text: "Sala", value: "label" },
       { text: "Tipo de Sala", value: "tipo" },
-      { text: "Bloco/Piso", value: "blocoId.label" },
+      { text: "Bloco/Piso", value: "bloco.label" },
       { text: "Capacidade", value: "capacidade" },
       // essa coluna será exibida através do detalhar 
       // { text: "Estrutura Física", value: "estruturaFisica" },
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    tiposdesala: [{id:"1", label:"Sala"}, {id:"2", label:"Laboratório de Informática"}],
+    tiposdesala: [{ id: "1", label: "Sala" }, { id: "2", label: "Laboratório de Informática" }, { id: "3", label: "Laboratório de Ciências" }],
     //tiposdesala: [
-      //"Sala",
-      //"Laboratório de Informática",
-      //"Laboratório de Ciências",
+    //"Sala",
+    //"Laboratório de Informática",
+    //"Laboratório de Ciências",
     //],
     filtros: ["Ativos", "Todos"],
     filtroSelecionado: "Ativos",
@@ -157,7 +155,7 @@ export default {
       estruturaFisica: null,
       tipo: 1,
       ativo: true,
-      blocoId: null,
+      bloco: null,
     },
     atributoPadrao: {
       id: null,
@@ -166,7 +164,7 @@ export default {
       estruturaFisica: null,
       tipo: 1,
       ativo: true,
-      blocoId: null,
+      bloco: null,
     },
   }),
 
@@ -206,9 +204,6 @@ export default {
 
     filtrarPorAtivos() {
       if (this.filtroSelecionado === "Ativos") {
-        // const json = localStorage.getItem(userKey);
-        // const jwt = JSON.parse(json);
-        // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
         axios
           .get(`${baseApiUrl}api/sala/search`)
           .then((res) => {
@@ -339,7 +334,7 @@ export default {
             estruturaFisica: this.atributo.estruturaFisica,
             tipo: Number(this.atributo.tipo),
             ativo: this.atributo.ativo === "Ativo",
-            blocoId: this.atributo.bloco,
+            bloco: this.atributo.bloco,
 
 
           })
@@ -359,7 +354,7 @@ export default {
             capacidade: this.atributo.capacidade,
             bloco: this.atributo.bloco,
             estruturaFisica: this.atributo.estruturaFisica,
-            tipo:Number( this.atributo.tipo),
+            tipo: Number(this.atributo.tipo),
             ativo: true,
           })
           .then((res) => {
