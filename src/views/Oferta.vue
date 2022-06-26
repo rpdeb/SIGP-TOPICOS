@@ -22,13 +22,15 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-select
-          @change="filtrarPorAtivos"
-          v-model="filtroSelecionado"
-          :items="filtros"
-          item-text="Filtro"
-          item-value="label"
-        ></v-select>
+        <v-col sm="2">
+          <v-select
+            @change="filtrarPorAtivos"
+            v-model="filtroSelecionado"
+            :items="filtros"
+            item-text="Filtro"
+            item-value="label"
+          ></v-select>
+        </v-col>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="1000px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
@@ -52,7 +54,7 @@
             <v-card-text>
               <v-form>
                 <v-row>
-                  <v-col cols="6" sm="5" md="5">
+                  <v-col sm="4">
                     <v-select
                       v-model="atributo.matriz"
                       label="Matriz"
@@ -62,7 +64,7 @@
                       :items="arraymatriz"
                     ></v-select>
                   </v-col>
-                  <v-col cols="6" sm="5" md="5">
+                  <v-col sm="4">
                     <v-select
                       v-model="atributo.disciplina"
                       label="Disciplina"
@@ -71,7 +73,7 @@
                       :items="arraydisciplinas"
                     ></v-select>
                   </v-col>
-                  <v-col cols="6" sm="5" md="5">
+                  <v-col sm="4">
                     <v-select
                       v-model="atributo.codpesoa"
                       label="Professor"
@@ -83,7 +85,7 @@
                 </v-row>
 
                 <v-row>
-                  <v-col cols="8" sm="5" md="5">
+                  <v-col sm="4">
                     <v-select
                       v-model="diaSemana"
                       label="Dia da Semana"
@@ -93,7 +95,7 @@
                     />
                   </v-col>
 
-                  <v-col cols="8" sm="5" md="5">
+                  <v-col sm="4">
                     <v-select
                       v-model="atributo.turno"
                       label="Turno"
@@ -103,7 +105,7 @@
                     ></v-select>
                   </v-col>
 
-                  <v-col cols="8" sm="5" md="5" class="horario-style">
+                  <v-col sm="3" id="horario-style">
                     <v-select
                       v-model="horarios"
                       label="Horário"
@@ -112,35 +114,33 @@
                       :items="arrayoptionshora"
                       multiple
                     />
-
-                    <v-btn color="black">
-                      <v-icon small color="#FFFFFF"> mdi-plus </v-icon>
-                    </v-btn>
+                    <v-btn small>
+                      <v-icon
+                        small
+                        class="mr-2"
+                        @click="adicionarHorarios()"
+                        color="blue"
+                      >
+                        mdi-plus
+                      </v-icon></v-btn
+                    >
                   </v-col>
                 </v-row>
 
-               
-             <v-row>
-                      <v-col cols="8" sm="6" md="4">
-                        <v-label>Bloco-Sala</v-label>
-                        <v-select
-                          v-model="atributo.sala"
-                          :getOptionLabel="
-                            (sala) =>
-                              atributo.sala.label +
-                              ' ( ' +
-                              atributo.bloco +
-                              ')'
-                          "
-                          :items="arraysalas"
-                          item-label="Bloco-Sala"
-                          item-text="label"
-                          :rules="[(v) => !!v || 'Campo Obrigatório']"
-                          required
-                        ></v-select>
-                      </v-col>
+                <v-row>
+                  <v-col sm="4">
+                    <v-label>Bloco-Sala</v-label>
+                    <v-select
+                      v-model="atributo.sala"
+                      :items="arraysalas"
+                      item-label="Bloco-Sala"
+                      item-text="label"
+                      :rules="[(v) => !!v || 'Campo Obrigatório']"
+                      required
+                    ></v-select>
+                  </v-col>
 
-                     <!-- <v-col cols="8" sm="5" md="5">
+                  <!-- <v-col cols="8" sm="5" md="5">
                       <v-select
                       v-model="atributo.sala"
                       label="Sala"
@@ -149,17 +149,16 @@
                       :items="arraysalas"
                       ></v-select>
                      </v-col> -->
-
                 </v-row>
-                 <v-col cols="8" sm="5" md="5">
-                    <v-select
-                      v-model="atributo.semestre"
-                      label="Semestre"
-                      item-text="label"
-                      item-value="id"
-                      :items="arraysemestres"
-                    ></v-select>
-                  </v-col>
+                <v-col sm="4">
+                  <v-select
+                    v-model="atributo.semestre"
+                    label="Semestre"
+                    item-text="label"
+                    item-value="id"
+                    :items="arraysemestres"
+                  ></v-select>
+                </v-col>
               </v-form>
             </v-card-text>
             <v-card-actions>
@@ -209,7 +208,7 @@
 
 
 <style>
-.horario-style{
+#horario-style {
   display: inline;
 }
 </style>
@@ -313,11 +312,11 @@ export default {
     horario: {
       type: Object,
       default: function () {
-        return {
-          horario1: false,
-          horario2: false,
-          horario3: false,
-          horario4: false,
+         return {
+          horario1: Boolean,
+          horario2: Boolean,
+          horario3: Boolean,
+          horario4: Boolean,
           turno: "",
           diaSemana: "",
         };
@@ -339,7 +338,9 @@ export default {
     //método para preencher o data table
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/oferta/search?filter=ativo`)
+        .get(
+          `${baseApiUrl}api/oferta/search?filter=ativo&sort=asc&orderBy=disciplina`
+        )
         .then((res) => {
           this.ofertas = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
@@ -352,44 +353,53 @@ export default {
     },
 
     async getSalas() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/sala/search?sort=asc&orderBy=label`);
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/sala/search?sort=asc&orderBy=label`
+      );
       this.salasRaw = data;
       this.arraysalas = data.content;
       console.log(this.arraysalas + "array de sala aqui");
     },
 
     async getBloco() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search?sort=asc&orderBy=label`);
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/bloco/search?sort=asc&orderBy=label`
+      );
       this.arraybloco = data.content;
       console.log(this.arraybloco + "array de bloco aqui");
     },
 
     async getSemestres() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/semestre/search?sort=asc&orderBy=label`);
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/semestre/search?sort=asc&orderBy=label`
+      );
       this.arraysemestres = data.content;
       console.log(this.arraysemestres + "array de semestre aqui");
     },
+
     async getProfessores() {
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/professor/getAll?porPagina=1000&paginaAtual=0`);
+        `${baseApiUrl}api/professor/getAll?porPagina=1000&paginaAtual=0`
+      );
       this.arrayprofessores = data;
       console.log(this.arrayprofessores + "array de professores aqui");
     },
 
     async getDisciplinas() {
-      var campus = 'Palmas';
-      var codhabilitacao = '011001';
-      
+      var campus = "Palmas";
+      var codmatriz = "011001";
+
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/matriz/searchDisciplinaByMatriz?campus=${campus}&codHabilitacao=${codhabilitacao}&porPagina=100&paginaAtual=0`);
+        `${baseApiUrl}api/matriz/searchDisciplinaByMatriz?campus=${campus}&codHabilitacao=${codmatriz}&porPagina=100&paginaAtual=0`
+      );
       this.arraydisciplinas = data;
       console.log(this.arraydisciplinas + "array de disciplinas aqui");
     },
 
     async getMatriz(curso) {
-      var curso = 'Sistemas%20de%20Informacao';
+      var curso = "Sistemas%20de%20Informacao";
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/matriz/searchMatrizByCurso?curso=${curso}&porPagina=50&paginaAtual=0`
+        `${baseApiUrl}api/matriz/searchMatrizByCurso?curso=${curso}&porPagina=100&paginaAtual=0`
       );
       this.arraymatriz = data;
       console.log(this.arraymatriz + "array de matriz aqui");
@@ -415,6 +425,19 @@ export default {
       } else {
         this.inicializar();
       }
+    },
+
+    adicionarHorarios() {
+      const listahorarios = [];
+      listahorarios.push(
+        this.atributo.horario1,
+        this.atributo.horario2,
+        this.atributo.horario3,
+        this.atributo.horario4,
+        this.atributo.turno,
+        this.atributo.diaSemana
+      );
+      console.log("lista de horarios :", listahorarios);
     },
 
     editItem(item) {
@@ -479,14 +502,16 @@ export default {
     salvar() {
       if (this.editIndice > -1) {
         const request = {
-          horario: {
-            horario1: this.atributo.horario.horario1,
-            horario2: this.atributo.horario.horario2,
-            horario3: this.atributo.horario.horario3,
-            horario4: this.atributo.horario.horario4,
-            turno: this.atributo.horario.turno,
-            diaSemana: this.atributo.horario.diaSemana,
-          },
+          horario: [
+            {
+              horario1: this.atributo.horario.horario1,
+              horario2: this.atributo.horario.horario2,
+              horario3: this.atributo.horario.horario3,
+              horario4: this.atributo.horario.horario4,
+              turno: this.atributo.horario.turno,
+              diaSemana: this.atributo.horario.diaSemana,
+            },
+          ],
           disciplina: this.atributo.disciplina,
           sala: this.atributo.sala,
           bloco: this.atributo.bloco,
