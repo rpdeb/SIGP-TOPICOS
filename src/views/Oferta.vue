@@ -371,19 +371,23 @@ export default {
     },
     async getProfessores() {
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/professor/getAll?porPagina=50&paginaAtual=0`);
+        `${baseApiUrl}api/professor/getAll?porPagina=1000&paginaAtual=0`);
       this.arrayprofessores = data;
       console.log(this.arrayprofessores + "array de professores aqui");
     },
 
     async getDisciplinas() {
+      var campus = 'Palmas';
+      var codhabilitacao = '011001';
+      
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/disciplina/search`);
+        `${baseApiUrl}api/matriz/searchDisciplinaByMatriz?campus=${campus}&codHabilitacao=${codhabilitacao}&porPagina=100&paginaAtual=0`);
       this.arraydisciplinas = data;
       console.log(this.arraydisciplinas + "array de disciplinas aqui");
     },
 
     async getMatriz(curso) {
+      var curso = 'Sistemas%20de%20Informacao';
       const { data } = await this.axios.get(
         `${baseApiUrl}api/matriz/searchMatrizByCurso?curso=${curso}&porPagina=50&paginaAtual=0`
       );
