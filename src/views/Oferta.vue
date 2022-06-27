@@ -128,7 +128,7 @@
                 </v-row>
 
                 <v-row>
-                  <v-col sm="4">
+                  <!-- <v-col sm="4">
                     <v-label>Bloco-Sala</v-label>
                     <v-select
                       v-model="atributo.sala"
@@ -138,27 +138,47 @@
                       :rules="[(v) => !!v || 'Campo Obrigatório']"
                       required
                     ></v-select>
-                  </v-col>
+                  </v-col> -->
 
-                  <!-- <v-col cols="8" sm="5" md="5">
-                      <v-select
+                  <v-col sm="4">
+                    <v-select
+                      label="Salas"
+                      v-bind:items="arraysalas"
                       v-model="atributo.sala"
-                      label="Sala"
+                      item-text="`${label}, ${bloco.label}`"
+                      item-value="id"
+                      max-height="auto"
+                      autocomplete
+                    >
+                      <template slot="selection" slot-scope="data">
+                        {{ data.label }}, {{ data.bloco.label }}
+                      </template>
+                      <template slot="item" slot-scope="data">
+                        <v-list-tile-content>
+                          <v-list-tile-title
+                            v-html="
+                              `${data.item.label}, ${data.item.bloco.label}`
+                            "
+                          >
+                          </v-list-tile-title>
+                          <v-list-tile-sub-title
+                            v-html="data.item.group"
+                          ></v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </template>
+                    </v-select>
+                  </v-col>
+                  
+                  <v-col sm="4">
+                    <v-select
+                      v-model="atributo.semestre"
+                      label="Semestre"
                       item-text="label"
                       item-value="id"
-                      :items="arraysalas"
-                      ></v-select>
-                     </v-col> -->
+                      :items="arraysemestres"
+                    ></v-select>
+                  </v-col>
                 </v-row>
-                <v-col sm="4">
-                  <v-select
-                    v-model="atributo.semestre"
-                    label="Semestre"
-                    item-text="label"
-                    item-value="id"
-                    :items="arraysemestres"
-                  ></v-select>
-                </v-col>
               </v-form>
             </v-card-text>
             <v-card-actions>
@@ -312,7 +332,7 @@ export default {
     horario: {
       type: Object,
       default: function () {
-         return {
+        return {
           horario1: Boolean,
           horario2: Boolean,
           horario3: Boolean,
