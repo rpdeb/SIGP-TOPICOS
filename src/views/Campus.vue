@@ -21,12 +21,9 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-select
-          @change="filtrarPorAtivos"
-          v-model="filtroSelecionado"
-          :items="filtros"
-        ></v-select>
-        <v-spacer></v-spacer>
+        <v-col sm="2">
+          <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros"></v-select>
+        </v-col>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn
@@ -166,7 +163,7 @@ export default {
   methods: {
     inicializar() {
       axios
-        .get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`)
+        .get(`${baseApiUrl}api/campus/search?filter=ativo&sort=asc&orderBy=label`)
         .then((res) => {
           this.campus = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
@@ -183,25 +180,23 @@ export default {
 
     filtrarPorAtivos() {
       if (this.filtroSelecionado === "Todos") {
-         // const json = localStorage.getItem(userKey);
+        // const json = localStorage.getItem(userKey);
         // const jwt = JSON.parse(json);
         // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
         axios
-          .get(`${baseApiUrl}api/campus/search`)
+          .get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`)
           .then((res) => {
-            this.campus = res.data.content
-             .map((c) => {
+            this.campus = res.data.content.map((c) => {
               c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-            console.log("todos !!")
             console.log(res.data);
-          }).catch((error) => {
-          console.log(error);
-        });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
-       console.log("ativos !!")
-       this.inicializar();
+        this.inicializar();
       }
     },
 

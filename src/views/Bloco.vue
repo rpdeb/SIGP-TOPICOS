@@ -22,14 +22,9 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-select
-          @change="filtrarPorAtivos"
-          v-model="filtroSelecionado"
-          :items="filtros"
-          item-text="Filtro"
-          item-value="label"
-        ></v-select>
-        <v-spacer></v-spacer>
+        <v-col sm="2">
+          <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros"></v-select>
+        </v-col>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -226,7 +221,7 @@ export default {
     },
     //método para buscar campus existentes e preencher no array
     async getCampus() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`);
       this.campusRaw = data;
       this.arraycampus = data.content;
       console.log(this.arraycampus + "array de campus aqui");
@@ -244,13 +239,12 @@ export default {
               c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-            console.log(res.data + "Todos !!");
+            console.log(res.data + "Todos");
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("Ativos !!");
         this.inicializar();
       }
     },

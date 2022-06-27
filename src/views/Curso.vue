@@ -22,12 +22,9 @@
         >
         </v-text-field>
          <v-spacer></v-spacer>
-        <v-select
-          @change="filtrarPorAtivos"
-          v-model="filtroSelecionado"
-          :items="filtros"
-        ></v-select>
-        <v-spacer></v-spacer>
+        <v-col sm="2">
+          <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros"></v-select>
+        </v-col>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn
@@ -189,7 +186,7 @@ export default {
     //método para preencher o data table
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/curso/search?sort=asc&orderBy=label`)
+        .get(`${baseApiUrl}api/curso/search?filter=ativo&sort=asc&orderBy=label`)
         .then((res) => {
           this.cursos = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
@@ -213,21 +210,19 @@ export default {
               c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-            console.log("todos !!");
             console.log(res.data);
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("ativos !!");
         this.inicializar();
       }
     },
 
     //método para buscar campus existentes e preencher no array
     async getCampus() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`);
       this.campusRaw = data;
       this.arraycampus = data.content;
       //this.arraycampus = data.filter((d) => d.label);
@@ -301,14 +296,19 @@ export default {
       console.log(this.arraycampus + "array de campus aqui !!");
     },
 
+    reloadPage: async function () {
+      window.location.reload();
+    },
+
     salvar() {
       if (this.editIndice > -1) {
         axios
           .put(`${baseApiUrl}api/curso`, {
             id: this.atributo.id,
             label: this.atributo.label,
-            campus: this.atributo.campus,
             ativo: this.atributo.ativo === "Ativo",
+            campus: this.atributo.campus,
+
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");

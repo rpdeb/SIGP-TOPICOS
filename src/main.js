@@ -7,9 +7,10 @@ import vuetify from './plugins/vuetify'
 import './assets/css/style.css'
 import './registerServiceWorker'
 import VueMask from 'v-mask'
-import vSelect from 'vue-select'
+import vSelect from "vue-select"
+import "vue-select/dist/vue-select.css"
 
-Vue.component('v-select', vSelect)
+Vue.use("vue-select", vSelect);
 Vue.use(VueMask);
 
 import Vuelidate from "vuelidate";

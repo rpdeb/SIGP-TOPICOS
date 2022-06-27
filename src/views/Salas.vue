@@ -6,16 +6,12 @@
       <v-toolbar flat>
         <v-toolbar-title>Gerenciamento de Sala</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
-
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Pesquisar" single-line hide-details>
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-select
-          @change="filtrarPorAtivos" 
-          v-model="filtroSelecionado"
-          :items="filtros"
-        ></v-select>
-        <v-spacer></v-spacer>
+        <v-col sm="2">
+          <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros"></v-select>
+        </v-col>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn small class="mx-2 add" fab dark color="green" v-bind="attrs" v-on="on">
@@ -34,12 +30,14 @@
                     <v-col cols="8" sm="6" md="5">
                       <v-text-field v-model="atributo.label" label="Sala" required></v-text-field>
                     </v-col>
-                    <v-col cols="8" sm="5" md="5">
+                    <v-col cols="8" sm="5" md="10">
+                      <!--  <label > Tipo de Sala</label> -->
                       <v-select v-model="atributo.tipo" label="Tipo de Sala" :items="tiposdesala" item-text="label"
                         item-value="id" @input="selecionarTipoSala">
                         ></v-select>
                     </v-col>
                     <v-col cols="8" sm="6" md="5">
+                      <!-- <label> Bloco/Piso</label> -->
                       <v-select v-model="atributo.bloco" label="Bloco/Piso" item-text="label" item-value="id"
                         :items="arrayBlocos">
                         ></v-select>
@@ -49,7 +47,8 @@
                     </v-col>
 
                     <v-col cols="8" sm="30" md="40">
-                      <v-textarea v-model="atributo.estruturaFisica" label="Estrutura Física" hint="Observações..." name="input-7-1"></v-textarea>
+                      <v-textarea v-model="atributo.estruturaFisica" label="Estrutura Física" hint="Observações..."
+                        name="input-7-1"></v-textarea>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -134,11 +133,11 @@ export default {
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    tiposdesala: [{id:"1", label:"Sala"}, {id:"2", label:"Laboratório de Informática"}],
+    tiposdesala: [{ id: "0", label: "Sala" }, { id: "1", label: "Laboratório de Informática" }, { id: "2", label: "Laboratório de Ciências" }],
     //tiposdesala: [
-      //"Sala",
-      //"Laboratório de Informática",
-      //"Laboratório de Ciências",
+    //"Sala",
+    //"Laboratório de Informática",
+    //"Laboratório de Ciências",
     //],
     filtros: ["Ativos", "Todos"],
     filtroSelecionado: "Ativos",
@@ -152,19 +151,19 @@ export default {
       id: null,
       label: "",
       capacidade: null,
-      bloco: null,
       estruturaFisica: null,
       tipo: 1,
       ativo: true,
+      bloco: null,
     },
     atributoPadrao: {
       id: null,
       label: "",
       capacidade: null,
-      bloco: null,
       estruturaFisica: null,
       tipo: 1,
       ativo: true,
+      bloco: null,
     },
   }),
 
@@ -191,7 +190,7 @@ export default {
   methods: {
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/sala/search?sort=asc&orderBy=label`)
+        .get(`${baseApiUrl}api/sala/search?size=10000&filter=ativo`)
         .then((res) => {
           this.salas = res.data.content.map((s) => {
             s.ativo = s.ativo ? "Ativo" : "Inativo";
@@ -204,23 +203,19 @@ export default {
 
     filtrarPorAtivos() {
       if (this.filtroSelecionado === "Todos") {
-        // const json = localStorage.getItem(userKey);
-        // const jwt = JSON.parse(json);
-        // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
-        axios.get(`${baseApiUrl}api/sala/search`).then((res) => {
-          this.salas = res.data.content
-          .map((c) => {
+        axios
+          .get(`${baseApiUrl}api/sala/search`)
+          .then((res) => {
+            this.salas = res.data.content.map((c) => {
               c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-          console.log("todos !!")
-          console.log(res.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+            console.log(res.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
-        console.log("ativos !!")
         this.inicializar();
       }
     },
@@ -237,7 +232,7 @@ export default {
     },
 
     async getBlocos() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search?sort=asc&orderBy=label`);
       this.blocosRaw = data;
       this.arrayBlocos = data.content;
       console.log(this.arrayBlocos + "array de blocos aqui");
@@ -333,10 +328,12 @@ export default {
             id: this.atributo.id,
             label: this.atributo.label,
             capacidade: this.atributo.capacidade,
-            bloco: this.atributo.bloco,
             estruturaFisica: this.atributo.estruturaFisica,
             tipo: Number(this.atributo.tipo),
             ativo: this.atributo.ativo === "Ativo",
+            bloco: this.atributo.bloco,
+
+
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
@@ -354,7 +351,7 @@ export default {
             capacidade: this.atributo.capacidade,
             bloco: this.atributo.bloco,
             estruturaFisica: this.atributo.estruturaFisica,
-            tipo:Number( this.atributo.tipo),
+            tipo: Number(this.atributo.tipo),
             ativo: true,
           })
           .then((res) => {

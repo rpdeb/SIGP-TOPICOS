@@ -22,15 +22,16 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-select
-          @change="filtrarPorAtivos"
-          v-model="filtroSelecionado"
-          :items="filtros"
-          item-text="Filtro"
-          item-value="label"
-        ></v-select>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="800px">
+        <v-col sm="2">
+          <v-select
+            @change="filtrarPorAtivos"
+            v-model="filtroSelecionado"
+            :items="filtros"
+            item-text="Filtro"
+            item-value="label"
+          ></v-select>
+        </v-col>
+        <v-dialog v-model="dialog" max-width="1000px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn
               small
@@ -52,7 +53,7 @@
             <v-card-text>
               <v-form>
                 <v-row>
-                  <v-col cols="8" sm="5" md="5">
+                  <v-col sm="4">
                     <v-select
                       v-model="atributo.matriz"
                       label="Matriz"
@@ -62,7 +63,7 @@
                       :items="arraymatriz"
                     ></v-select>
                   </v-col>
-                  <v-col cols="8" sm="5" md="5">
+                  <v-col sm="4">
                     <v-select
                       v-model="atributo.disciplina"
                       label="Disciplina"
@@ -71,22 +72,13 @@
                       :items="arraydisciplinas"
                     ></v-select>
                   </v-col>
-                  <v-col cols="8" sm="5" md="5">
+                  <v-col sm="4">
                     <v-select
                       v-model="atributo.codpesoa"
                       label="Professor"
                       item-text="nome"
+                      item-value="codPessoa"
                       :items="arrayprofessores"
-                    ></v-select>
-                  </v-col>
-
-                  <v-col cols="8" sm="5" md="5">
-                    <v-select
-                      v-model="atributo.sala"
-                      label="Sala"
-                      item-text="label"
-                      item-value="id"
-                      :items="arraysalas"
                     ></v-select>
                   </v-col>
                 </v-row>
@@ -111,12 +103,9 @@
                     ></v-select>
                   </v-col>
                 </v-row>
-                <br />
-                <br />
-                <h3>Cadastrar horario</h3>
-                <br />
                 <v-row>
-                  <v-col cols="8" sm="5" md="5">
+
+                  <v-col sm="4">
                     <v-select
                       v-model="atributo.horario.diaSemana"
                       label="Dia da Semana"
@@ -125,7 +114,8 @@
                       :items="diasDaSemana"
                     />
                   </v-col>
-                  <v-col cols="4" sm="5" md="5">
+
+                  <v-col sm="4">
                     <v-select
                       v-model="atributo.horario.turno"
                       label="Turno"
@@ -134,52 +124,82 @@
                       :items="turnos"
                     ></v-select>
                   </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="8" sm="5" md="10" class="horario-style">
+
+                  <v-col sm="3" id="horario-style">
+
                     <v-select
-                      v-model="desserts"
-                      label="Horário"
+                      v-model="horarios"
+                      label="horarios"
                       item-text="text"
-                      item-value="text"
+                      item-value="value"
                       :items="arrayoptionshora"
                       multiple
                     />
-                  </v-col>
-                  <v-col>
-                    <v-btn
-                      small
-                      class="mx-2 add"
-                      fab
-                      dark
-                      color="green"
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="add"
+                    <v-btn small>
+                      <v-icon
+                        small
+                        class="mr-2"
+                        @click="adicionarHorarios()"
+                        color="blue"
+                      >
+                        mdi-plus
+                      </v-icon></v-btn
                     >
-                      <v-icon dark> mdi-plus</v-icon>
-                    </v-btn>
                   </v-col>
                 </v-row>
 
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="text-left">Dia da semana</th>
-                        <th class="text-left">Horario</th>
-                        <th class="text-left">Turno</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>{{ atributo.horario.diaSemana }}</td>
-                        <td>{{ desserts }}</td>
-                        <td>{{ atributo.horario.turno }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
+                <v-row>
+                  <!-- <v-col sm="4">
+                    <v-label>Bloco-Sala</v-label>
+                    <v-select
+                      v-model="atributo.sala"
+                      :items="arraysalas"
+                      item-label="Bloco-Sala"
+                      item-text="label"
+                      :rules="[(v) => !!v || 'Campo Obrigatório']"
+                      required
+                    ></v-select>
+                  </v-col> -->
+
+                  <v-col sm="4">
+                    <v-select
+                      label="Salas"
+                      v-bind:items="arraysalas"
+                      v-model="atributo.sala"
+                      item-text="`${label}, ${bloco.label}`"
+                      item-value="id"
+                      max-height="auto"
+                      autocomplete
+                    >
+                      <template slot="selection" slot-scope="data">
+                        {{ data.label }}, {{ data.bloco.label }}
+                      </template>
+                      <template slot="item" slot-scope="data">
+                        <v-list-tile-content>
+                          <v-list-tile-title
+                            v-html="
+                              `${data.item.label}, ${data.item.bloco.label}`
+                            "
+                          >
+                          </v-list-tile-title>
+                          <v-list-tile-sub-title
+                            v-html="data.item.group"
+                          ></v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </template>
+                    </v-select>
+                  </v-col>
+                  
+                  <v-col sm="4">
+                     <v-select
+                      v-model="atributo.semestre"
+                      label="Semestre"
+                      item-value="id"
+                      :items="semestreselecionado"
+                    ></v-select>
+
+                  </v-col>
+                </v-row>
               </v-form>
             </v-card-text>
             <v-card-actions>
@@ -227,22 +247,23 @@
   </v-data-table>
 </template>
 
-<!-- 
-<style>
 
+<style>
+#horario-style {
+  display: inline;
+}
 </style>
--->
+
 
 <script>
 import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import { baseApiUrl } from "@/global";
+import { baseApiUrl, semestreKey } from "@/global";
 Vue.use(VueAxios, axios);
 
 export default {
   data: () => ({
-    nome: "Direito",
     search: "",
     dialog: false,
     dialogDesativar: false,
@@ -252,7 +273,7 @@ export default {
       { text: "Sala", value: "sala.label" },
       { text: "Turno", value: "horario.turno" },
       { text: "Semestre", value: "semestre.label" },
-      //{ text: "Status", value: "ativo" },
+      { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
     desserts: [],
@@ -272,6 +293,7 @@ export default {
       { text: "horario 4", value: 4 },
     ],
     arraysemestres: [],
+    semestreselecionado:'',
     arraydisciplinas: [],
     arraymatriz: [],
     arrayprofessores: [],
@@ -345,10 +367,10 @@ export default {
       type: Object,
       default: function () {
         return {
-          horario1: false,
-          horario2: false,
-          horario3: false,
-          horario4: false,
+          horario1: Boolean,
+          horario2: Boolean,
+          horario3: Boolean,
+          horario4: Boolean,
           turno: "",
           diaSemana: "",
         };
@@ -370,7 +392,9 @@ export default {
     //método para preencher o data table
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/oferta/search?ativo=true`)
+        .get(
+          `${baseApiUrl}api/oferta/search?filter=ativo&sort=asc&orderBy=disciplina`
+        )
         .then((res) => {
           this.ofertas = res.data.content.map((c) => {
             c.ativo = c.ativo ? "Ativo" : "Inativo";
@@ -383,42 +407,55 @@ export default {
     },
 
     async getSalas() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/sala/search`);
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/sala/search?sort=asc&orderBy=label`
+      );
       this.salasRaw = data;
       this.arraysalas = data.content;
       console.log(this.arraysalas + "array de sala aqui");
     },
 
     async getBloco() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/bloco/search`);
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/bloco/search?sort=asc&orderBy=label`
+      );
       this.arraybloco = data.content;
       console.log(this.arraybloco + "array de bloco aqui");
     },
 
     async getSemestres() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/semestre/search`);
-      this.arraysemestres = data.content;
-      console.log(this.arraysemestres + "array de semestre aqui");
+      this.semestreselecionado = localStorage.getItem(semestreKey);
+      console.log('valor de key: ',semestreKey);
+      // const { data } = await this.axios.get(
+      //   `${baseApiUrl}api/semestre/search?sort=asc&orderBy=label`
+      // );
+      // this.arraysemestres = data.content;
+      // console.log(this.arraysemestres + "array de semestre aqui");
     },
+
     async getProfessores() {
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/professor/getAll?porPagina=50&paginaAtual=0`
+        `${baseApiUrl}api/professor/getAll?porPagina=1000&paginaAtual=0`
       );
       this.arrayprofessores = data;
       console.log(this.arrayprofessores + "array de professores aqui");
     },
 
     async getDisciplinas() {
+      var campus = "Palmas";
+      var codmatriz = "011001";
+
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/disciplina/search`
+        `${baseApiUrl}api/matriz/searchDisciplinaByMatriz?campus=${campus}&codHabilitacao=${codmatriz}&porPagina=100&paginaAtual=0`
       );
       this.arraydisciplinas = data.content;
       console.log(this.arraydisciplinas + "array de disciplinas aqui");
     },
 
     async getMatriz(curso) {
+      var curso = "Sistemas%20de%20Informacao";
       const { data } = await this.axios.get(
-        `${baseApiUrl}api/matriz/searchMatrizByCurso?curso=${curso}&porPagina=50&paginaAtual=0`
+        `${baseApiUrl}api/matriz/searchMatrizByCurso?curso=${curso}&porPagina=100&paginaAtual=0`
       );
       this.arraymatriz = data;
       console.log(this.arraymatriz + "array de matriz aqui");
@@ -438,16 +475,34 @@ export default {
               c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-            console.log("todos !!");
             console.log(res.data);
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("ativos !!");
         this.inicializar();
       }
+    },
+
+    adicionarHorarios() {
+      const listahorarios = [];
+        this.horarios.forEach(element => {
+        element == 1 ? this.atributo.horario.horario1 = true : false;
+         element == 2 ? this.atributo.horario.horario2 = true : false;
+         element == 3 ?this.atributo.horario.horario3 = true : false
+         element == 4 ? this.atributo.horario.horario4= true : false
+        })
+            console.log("lista de horarios :", this.horarios);
+      listahorarios.push(
+        this.atributo.horario.horario1,
+        this.atributo.horario.horario2,
+        this.atributo.horario.horario3,
+        this.atributo.horario.horario4,
+        this.atributo.horario.turno,
+        this.atributo.horario.diaSemana
+      );
+      console.log("lista de horarios :", listahorarios);
     },
 
     editItem(item) {
@@ -513,13 +568,27 @@ export default {
 
     salvar() {
       if (this.editIndice > -1) {
+        const request = {
+          horario: [
+            {
+              horario1: this.atributo.horario.horario1,
+              horario2: this.atributo.horario.horario2,
+              horario3: this.atributo.horario.horario3,
+              horario4: this.atributo.horario.horario4,
+              turno: this.atributo.horario.turno,
+              diaSemana: this.atributo.horario.diaSemana,
+            },
+          ],
+          disciplina: this.atributo.disciplina,
+          sala: this.atributo.sala,
+          bloco: this.atributo.bloco,
+          codpesoa: this.atributo.codpesoa,
+          codDiciplina: this.atributo.codDiciplina,
+          ativo: this.atributo.ativo,
+          semestre: this.atributo.semestre,
+        };
         axios
-          .put(`${baseApiUrl}api/oferta`, {
-            id: this.atributo.id,
-            label: this.atributo.label,
-            sala: this.atributo.sala,
-            ativo: this.atributo.ativo === true,
-          })
+          .put(`${baseApiUrl}api/oferta`, request)
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
             console.log(res.data);

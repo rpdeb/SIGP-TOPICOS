@@ -22,12 +22,9 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-select
-          @change="filtrarPorAtivos"
-          v-model="filtroSelecionado"
-          :items="filtros"
-        ></v-select>
-        <v-spacer></v-spacer>
+        <v-col sm="2">
+          <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros"></v-select>
+        </v-col>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -62,10 +59,13 @@
                     </v-col>
                     <v-col cols="8" sm="6" md="4">
                       <v-select
-                        v-model="atributo.perfis"
+                        v-model="atributo.tipo"
                         :items="perfis"
                         :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Perfil"
+                        item-text="label"
+                        item-value="id"
+                        @input="perfilSelecionado"
                         required
                       ></v-select>
                     </v-col>
@@ -179,7 +179,7 @@ export default {
       { text: "Status", value: "ativo" },
       { text: "Ações", value: "acoes" },
     ],
-    perfis: ["Administrador", "Gestão Administrativa", "Coordenador de Curso"],
+    perfis: [{id:"1", label:"Administrador"}, {id:"2", label:"Gestão Administrativa"}, {id:"3", label:"Coordenador de Curso"}],
     filtros: ["Ativos", "Todos"],
     filtroSelecionado: "Ativos",
     usuarios: [],
@@ -258,27 +258,25 @@ export default {
               c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-            console.log("todos !!");
             console.log(res.data);
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        console.log("ativos !!");
         this.inicializar();
       }
     },
     //método para buscar campus existentes e preencher no array
     async getCampus() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`);
       this.campusRaw = data;
       this.arraycampus = data.content;
       console.log(this.arraycampus + "array de campus aqui");
     },
 
     async getCursos() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search?sort=asc&orderBy=label`);
       this.cursosRaw = data;
       this.arraycursos = data.content;
       console.log(this.arraycursos + "array de cursos aqui !!");

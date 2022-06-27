@@ -21,12 +21,9 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-select
-          @change="filtrarPorAtivos"
-          v-model="filtroSelecionado"
-          :items="filtros"
-        ></v-select>
-        <v-spacer></v-spacer>
+        <v-col sm="2">
+          <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros"></v-select>
+        </v-col>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn
@@ -105,10 +102,13 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.acoes`]="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)" color="blue">
+       <v-btn small class="mr-2" @click="criarOferta(item)" color="brown">
+        Oferta
+      </v-btn>
+       <v-icon small class="mr-2" @click="editItem(item)" color="blue">
         mdi-pencil
       </v-icon>
-      <v-icon small @click="desativeItem(item)" color="red">
+      <v-icon small class="mr-2" @click="desativeItem(item)" color="red">
         mdi-power-standby
       </v-icon>
     </template>
@@ -126,7 +126,7 @@ import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
 Vue.use(VueAxios, axios);
-import { baseApiUrl } from "@/global";
+import { baseApiUrl, semestreKey } from "@/global";
 
 export default {
   data: () => ({
@@ -201,10 +201,9 @@ export default {
         .get(`${baseApiUrl}api/semestre/search?filter=ativo`)
         .then((res) => {
           this.semestres = res.data.content.map((c) => {
-            c.ativo = c.ativo ? "Ativo" : "Inativo";
-            return c;
-          });
-
+              c.ativo = c.ativo ? "Ativo" : "Inativo";
+              return c;
+            });
           console.log(this.semestres + "Array de Semestre");
           console.log(res.data);
         })
@@ -214,32 +213,30 @@ export default {
     },
 
      async getCursos() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search`);
+      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search?sort=asc&orderBy=label`);
       this.arraycursos = data.content;
       console.log(this.arraycursos + "array de cursos aqui !!");
     },
 
     filtrarPorAtivos() {
       if (this.filtroSelecionado === "Todos") {
-         // const json = localStorage.getItem(userKey);
+        // const json = localStorage.getItem(userKey);
         // const jwt = JSON.parse(json);
         // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
         axios
           .get(`${baseApiUrl}api/semestre/search`)
           .then((res) => {
-            this.semestres = res.data.content
-             .map((c) => {
+            this.semestres = res.data.content.map((c) => {
               c.ativo = c.ativo ? "Ativo" : "Inativo";
               return c;
             });
-            console.log("todos !!")
             console.log(res.data);
-          }).catch((error) => {
-          console.log(error);
-        });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
-       console.log("ativos !!")
-       this.inicializar();
+        this.inicializar();
       }
     },
 
@@ -283,6 +280,15 @@ export default {
       this.fecharDesativar();
     },
 
+    criarOferta(item){
+      this.editIndice = this.semestres.indexOf(item);
+      this.atributo = Object.assign({}, item);
+      var obj = this.atributo.label;
+      localStorage.setItem(semestreKey, obj);
+      this.$router.push('/oferta');
+      console.log("sucessu");
+    },
+
     fechar() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -307,7 +313,7 @@ export default {
       if (this.editIndice > -1) {
         axios
           .put(`${baseApiUrl}api/semestre`, {
-             id: this.atributo.id,
+            id: this.atributo.id,
             label: this.atributo.label,
             curso: this.atributo.curso,
             ativo: this.atributo.ativo === "Ativo",
