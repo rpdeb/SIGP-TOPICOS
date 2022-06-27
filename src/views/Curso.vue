@@ -25,7 +25,6 @@
         <v-col sm="2">
           <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros"></v-select>
         </v-col>
-        <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="400px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn

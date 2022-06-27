@@ -31,7 +31,6 @@
             item-value="label"
           ></v-select>
         </v-col>
-        <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="1000px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn
