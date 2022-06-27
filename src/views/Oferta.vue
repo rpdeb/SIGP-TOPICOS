@@ -170,13 +170,13 @@
                   </v-col>
                   
                   <v-col sm="4">
-                    <v-select
+                     <v-select
                       v-model="atributo.semestre"
                       label="Semestre"
-                      item-text="label"
                       item-value="id"
-                      :items="arraysemestres"
+                      :items="semestreselecionado"
                     ></v-select>
+
                   </v-col>
                 </v-row>
               </v-form>
@@ -238,7 +238,7 @@
 import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import { baseApiUrl } from "@/global";
+import { baseApiUrl, semestreKey } from "@/global";
 Vue.use(VueAxios, axios);
 
 export default {
@@ -262,6 +262,7 @@ export default {
     horarios: [],
     arrayoptionshora: ["horario1", "horario2", "horario3", "horario4"],
     arraysemestres: [],
+    semestreselecionado:'',
     arraydisciplinas: [],
     arraymatriz: [],
     arrayprofessores: [],
@@ -390,11 +391,13 @@ export default {
     },
 
     async getSemestres() {
-      const { data } = await this.axios.get(
-        `${baseApiUrl}api/semestre/search?sort=asc&orderBy=label`
-      );
-      this.arraysemestres = data.content;
-      console.log(this.arraysemestres + "array de semestre aqui");
+      this.semestreselecionado = localStorage.getItem(semestreKey);
+      console.log('valor de key: ',semestreKey);
+      // const { data } = await this.axios.get(
+      //   `${baseApiUrl}api/semestre/search?sort=asc&orderBy=label`
+      // );
+      // this.arraysemestres = data.content;
+      // console.log(this.arraysemestres + "array de semestre aqui");
     },
 
     async getProfessores() {

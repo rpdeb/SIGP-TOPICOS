@@ -127,7 +127,7 @@ import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
 Vue.use(VueAxios, axios);
-import { baseApiUrl } from "@/global";
+import { baseApiUrl, semestreKey } from "@/global";
 
 export default {
   data: () => ({
@@ -285,7 +285,7 @@ export default {
       this.editIndice = this.semestres.indexOf(item);
       this.atributo = Object.assign({}, item);
       var obj = this.atributo.label;
-      console.log(obj,"aquiii");
+      localStorage.setItem(semestreKey, obj);
       this.$router.push('/oferta');
       console.log("sucessu");
     },
