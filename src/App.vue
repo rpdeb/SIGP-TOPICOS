@@ -1,8 +1,12 @@
 <template>
   <v-app id="inspire">
     <v-app-bar app color="#e7e7e7" flat v-if="notIsLoginPage">
-
-      <img src="../src/assets/images/logo-unitins.png" width="70px" height="50x" alt="">
+      <img
+        src="../src/assets/images/logo-unitins.png"
+        width="70px"
+        height="50x"
+        alt=""
+      />
 
       <v-tabs centered class="ml-n9" color="#104ADF">
         <v-tab v-for="item in items" :key="item.title" :to="item.to" link>
@@ -14,7 +18,6 @@
         Sair
         <i class="fas fa-sign-out-alt"></i>
       </v-btn>
-
     </v-app-bar>
 
     <v-main>
@@ -25,11 +28,10 @@
       <v-row justify="center" no-gutters>
         <v-col class="py-4 text-center white--text" cols="12">
           {{ new Date().getFullYear() }} —
-          <strong>SIGHA - Sistema de Gerenciamento de Horários Acadêmicos</strong>
+          <strong>SIGP - Sistema de Gerenciamento de Pessoas</strong>
         </v-col>
       </v-row>
     </v-footer>
-
   </v-app>
 </template>
 
@@ -58,29 +60,22 @@ export default {
   data: () => ({
     drawer: null,
     items: [
-      { title: "Semestre", to: "/semestre" },
-      { title: "Câmpus", to: "/campus" },
-      { title: "Curso", to: "/curso" },
-      { title: "Bloco", to: "/bloco" },
-      { title: "Salas", to: "/salas" },
+      { title: "Funcionário", to: "/funcionario" },
       { title: "Usuários", to: "/usuarios" },
-      // { title: "Relatórios", to: "/relatorio" },
-      // { title: "Relatórios Horarios", to: "/relatoriohorario" },
-      // { title: "Relatórios Labins", to: "/relatoriolabins" },
     ],
   }),
 
   methods: {
     logout() {
-      localStorage.removeItem('authUser');
+      localStorage.removeItem("authUser");
       this.$router.push({ name: "login" });
-    }
+    },
   },
 
   computed: {
     notIsLoginPage() {
       return this.$route.name !== "login";
-    }
+    },
   },
 };
 </script>
