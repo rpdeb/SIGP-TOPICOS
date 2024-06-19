@@ -46,6 +46,10 @@
                   <v-row>
                     <v-col cols="8" sm="6" md="4">
                       <v-text-field
+                        v-model="atributo.id"
+                        label="Id"
+                      ></v-text-field>
+                      <v-text-field
                         v-model="atributo.nome"
                         label="Nome"
                       ></v-text-field>
@@ -56,6 +60,10 @@
                       <v-text-field
                         v-model="atributo.departamento"
                         label="Departamento"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="atributo.turno"
+                        label="Turno"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -190,25 +198,6 @@ export default {
         });
     },
 
-    filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Todos") {
-        axios
-          .get(`${baseApiUrl}Funcionario`)
-          .then((res) => {
-            this.funcionarios = res.data.content.map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Inativo";
-              return c;
-            });
-            console.log(res.data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        this.inicializar();
-      }
-    },
-
     editItem(item) {
       this.editIndice = this.funcionarios.indexOf(item);
       this.atributo = Object.assign({}, item);
@@ -222,7 +211,7 @@ export default {
     },
 
     desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
+      if (this.atributo.ativo == true) {
         axios
           .patch(`${baseApiUrl}Funcionario/inativaFuncionario`)
           .then((res) => {
@@ -273,8 +262,11 @@ export default {
         axios
           .put(`${baseApiUrl}Funcionario`, {
             id: this.atributo.id,
-            label: this.atributo.label,
-            ativo: this.atributo.ativo === "Ativo",
+            nome: this.atributo.nome,
+            sobrenome: this.atributo.sobrenome,
+            departamento: this.atributo.departamento,
+            turno: this.atributo.turno,
+            ativo: true
           })
           .then((res) => {
             alert("Os dados foram atualizados com sucesso !");
@@ -288,7 +280,11 @@ export default {
       } else {
         axios
           .post(`${baseApiUrl}Funcionario`, {
-            label: this.atributo.label,
+            nome: this.atributo.nome,
+            sobrenome: this.atributo.sobrenome,
+            departamento: this.atributo.departamento,
+            turno: this.atributo.turno,
+            ativo: true
           })
           .then((res) => {
             this.funcionarios = res.data;
