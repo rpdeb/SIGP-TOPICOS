@@ -22,10 +22,7 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-col sm="2">
-          <v-select @change="filtrarPorAtivos" v-model="filtroSelecionado" :items="filtros"></v-select>
-        </v-col>
-        <v-dialog v-model="dialog" max-width="400px">
+        <v-dialog v-model="dialog" max-width="800px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               small
@@ -41,51 +38,194 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">Cadastrar Usuário</span>
+              <span class="text-h5">{{ tituloForm }}</span>
             </v-card-title>
 
             <v-card-text>
               <v-form>
                 <v-container>
                   <v-row>
-                    <v-col cols="8" sm="6" md="4">
+                    <v-col cols="12">
+                      <h3>Informações Pessoais</h3>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
                       <v-text-field
-                        v-model="atributo.email"
+                        v-model="atributo.nome"
                         :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Email"
-                        type="email"
+                        label="Nome"
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.tipo"
-                        :items="perfis"
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.sobrenome"
                         :rules="[(v) => !!v || 'Item obrigatório!']"
-                        label="Perfil"
-                        item-text="label"
-                        item-value="id"
-                        @input="perfilSelecionado"
+                        label="Sobrenome"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.cpf"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="CPF"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.rg"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="RG"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.cnh"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="CNH"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.dataDeNascimento"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Data de Nascimento"
+                        type="date"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-select
+                        v-model="atributo.genero"
+                        :items="['Masculino', 'Feminino', 'Outro']"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Gênero"
                         required
                       ></v-select>
                     </v-col>
-                    <v-col cols="8" sm="6" md="4">
+                    <v-col cols="12" sm="6" md="4">
                       <v-select
-                        v-model="atributo.campus"
-                        :items="arraycampus"
-                        item-value="id"
-                        item-text="label"
-                        label="Campus"
+                        v-model="atributo.estadoCivil"
+                        :items="['Solteiro', 'Casado', 'Divorciado', 'Viuvo', 'UniaoEstavel']"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Estado Civil"
+                        required
                       ></v-select>
                     </v-col>
-                    <v-col cols="8" sm="6" md="4">
-                      <v-select
-                        v-model="atributo.curso"
-                        :items="arraycursos"
-                        item-value="id"
-                        item-text="label"
-                        label="Curso"
-                      ></v-select>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.estadoDeOrigem"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Estado de Origem"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.cidadeDeOrigem"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Cidade de Origem"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+
+                  <v-divider></v-divider>
+
+                  <v-row>
+                    <v-col cols="12">
+                      <h3>Endereço</h3>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.endereco.cep"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="CEP"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.endereco.logradouro"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Logradouro"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.endereco.numero"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Número"
+                        type="number"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.endereco.complemento"
+                        label="Complemento"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.endereco.bairro"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Bairro"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.endereco.estado"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Estado"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.endereco.cidade"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Cidade"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.endereco.pais"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="País"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+
+                  <v-divider></v-divider>
+
+                  <v-row>
+                    <v-col cols="12">
+                      <h3>Telefone</h3>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.telefone.codigoDeArea"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Código de Área"
+                        type="number"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field
+                        v-model="atributo.telefone.numero"
+                        :rules="[(v) => !!v || 'Item obrigatório!']"
+                        label="Número"
+                        required
+                      ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -96,31 +236,26 @@
               <v-btn small color="warning" dark @click="fechar">
                 Cancelar
               </v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar"
-                >Salvar</v-btn
-              >
+              <v-btn small color="primary" class="mr-4" @click="salvar">
+                Salvar
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} este usuario ?</v-card-title
-            >
+            <v-card-title class="text-h5">
+              Deseja {{ mudarStatus }} este usuário?
+            </v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn
-                small
-                color="warning"
-                dark
-                @click="dialogDesativar = false"
-              >
-                Não</v-btn
-              >
-              <v-btn small color="primary" dark @click="desativeItemConfirm"
-                >Sim</v-btn
-              >
+              <v-btn small color="warning" dark @click="dialogDesativar = false">
+                Não
+              </v-btn>
+              <v-btn small color="primary" dark @click="desativeItemConfirm">
+                Sim
+              </v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -131,8 +266,8 @@
       <v-icon small class="mr-2" @click="editItem(item)" color="blue">
         mdi-pencil
       </v-icon>
-      <v-icon small class="mr-2" @click="desativeItem(item)" color="red">
-        mdi-power-standby
+      <v-icon small class="mr-2" @click="deleteItem(item)" color="red">
+        mdi-delete
       </v-icon>
     </template>
   </v-data-table>
@@ -153,12 +288,6 @@
 }
 </style>
 
-<!-- 
-<style>
-
-</style>
--->
-
 <script>
 import Vue from "vue";
 import axios from "axios";
@@ -172,14 +301,26 @@ export default {
     dialog: false,
     dialogDesativar: false,
     titulos: [
-      { text: "Email", value: "email" },
-      { text: "Perfil", value: "tipo" },
-      { text: "Campus", value: "campus.label" },
-      { text: "Curso", value: "curso.label" },
-      { text: "Status", value: "ativo" },
+      { text: "ID", value: "id" },
+      { text: "Nome", value: "nome" },
+      { text: "Sobrenome", value: "sobrenome" },
+      { text: "CPF", value: "cpf" },
+      { text: "RG", value: "rg" },
+      { text: "CNH", value: "cnh" },
+      { text: "Data de Nascimento", value: "dataDeNascimento" },
+      { text: "Gênero", value: "genero" },
+      { text: "Estado Civil", value: "estadoCivil" },
+      { text: "Estado de Origem", value: "estadoDeOrigem" },
+      { text: "Cidade de Origem", value: "cidadeDeOrigem" },
+      { text: "Endereço", value: "endereco.logradouro" },
+      { text: "Telefone", value: "telefone.numero" },
       { text: "Ações", value: "acoes" },
     ],
-    perfis: [{id:"1", label:"Administrador"}, {id:"2", label:"Gestão Administrativa"}, {id:"3", label:"Coordenador de Curso"}],
+    perfis: [
+      { id: "1", label: "Administrador" },
+      { id: "2", label: "Gestão Administrativa" },
+      { id: "3", label: "Coordenador de Curso" },
+    ],
     filtros: ["Ativos", "Todos"],
     filtroSelecionado: "Ativos",
     usuarios: [],
@@ -191,19 +332,59 @@ export default {
     editIndice: -1,
     atributo: {
       id: null,
-      email: "",
-      tipo: 1,
-      campus: null,
-      curso: null,
+      nome: "",
+      sobrenome: "",
+      cpf: "",
+      rg: "",
+      cnh: "",
+      dataDeNascimento: "",
+      genero: "",
+      estadoCivil: "",
+      estadoDeOrigem: "",
+      cidadeDeOrigem: "",
+      endereco: {
+        cep: "",
+        logradouro: "",
+        numero: "",
+        complemento: "",
+        bairro: "",
+        estado: "",
+        cidade: "",
+        pais: "",
+      },
+      telefone: {
+        codigoDeArea: "",
+        numero: "",
+      },
       ativo: true,
     },
 
     atributoPadrao: {
       id: null,
-      email: "",
-      tipo: 1,
-      campus: null,
-      curso: null,
+      nome: "",
+      sobrenome: "",
+      cpf: "",
+      rg: "",
+      cnh: "",
+      dataDeNascimento: "",
+      genero: "",
+      estadoCivil: "",
+      estadoDeOrigem: "",
+      cidadeDeOrigem: "",
+      endereco: {
+        cep: "",
+        logradouro: "",
+        numero: "",
+        complemento: "",
+        bairro: "",
+        estado: "",
+        cidade: "",
+        pais: "",
+      },
+      telefone: {
+        codigoDeArea: "",
+        numero: "",
+      },
       ativo: true,
     },
   }),
@@ -232,25 +413,35 @@ export default {
     this.inicializar();
   },
 
-   methods: {
+  methods: {
     async inicializar() {
       axios
-        .get(`${baseApiUrl}api/usuario/search?filter=ativo`)
+        .get(`${baseApiUrl}Pessoa`)
         .then((res) => {
-          this.usuarios = res.data.content.map((s) => {
-            s.ativo = s.ativo ? "Ativo" : "Inativo";
-            return s;
-          });
-          console.log(this.usuarios + "Array de usuarios aqui")
+          this.usuarios = res.data.dados.map((usuario) => ({
+            ...usuario,
+            endereco: usuario.endereco || {
+              cep: "",
+              logradouro: "",
+              numero: "",
+              complemento: "",
+              bairro: "",
+              estado: "",
+              cidade: "",
+              pais: "",
+            },
+            telefone: usuario.telefone || {
+              codigoDeArea: "",
+              numero: "",
+            },
+          }));
+          console.log(this.usuarios + "Array de usuarios aqui");
         })
         .catch(console.warn("erro"));
     },
 
     filtrarPorAtivos() {
       if (this.filtroSelecionado === "Todos") {
-        // const json = localStorage.getItem(userKey);
-        // const jwt = JSON.parse(json);
-        // axios.defaults.headers.common["Authorization"] = `Bearer ${jwt.token}`;
         axios
           .get(`${baseApiUrl}api/usuario/search`)
           .then((res) => {
@@ -267,16 +458,20 @@ export default {
         this.inicializar();
       }
     },
-    //método para buscar campus existentes e preencher no array
+
     async getCampus() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/campus/search?sort=asc&orderBy=label`);
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/campus/search?sort=asc&orderBy=label`
+      );
       this.campusRaw = data;
       this.arraycampus = data.content;
       console.log(this.arraycampus + "array de campus aqui");
     },
 
     async getCursos() {
-      const { data } = await this.axios.get(`${baseApiUrl}api/curso/search?sort=asc&orderBy=label`);
+      const { data } = await this.axios.get(
+        `${baseApiUrl}api/curso/search?sort=asc&orderBy=label`
+      );
       this.cursosRaw = data;
       this.arraycursos = data.content;
       console.log(this.arraycursos + "array de cursos aqui !!");
@@ -284,14 +479,22 @@ export default {
 
     editItem(item) {
       this.editIndice = this.usuarios.indexOf(item);
-      this.atributo = Object.assign({}, item);
+      this.atributo = JSON.parse(JSON.stringify(item));
       this.dialog = true;
     },
 
-    desativeItem(item) {
-      this.editIndice = this.usuarios.indexOf(item);
-      this.atributo = Object.assign({}, item);
-      this.dialogDesativar = true;
+    deleteItem(item) {
+      if (confirm(`Tem certeza que deseja apagar o usuário ${item.nome}?`)) {
+        axios
+          .delete(`${baseApiUrl}Pessoa/${item.id}`)
+          .then((res) => {
+            this.usuarios.splice(this.editIndice, 1);
+            alert("Usuário apagado com sucesso!");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
 
     desativeItemConfirm() {
@@ -324,7 +527,7 @@ export default {
     fechar() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.atributo = JSON.parse(JSON.stringify(this.atributoPadrao));
         this.editIndice = -1;
       });
     },
@@ -332,17 +535,9 @@ export default {
     fecharDesativar() {
       this.dialogDesativar = false;
       this.$nextTick(() => {
-        this.atributo = Object.assign({}, this.atributoPadrao);
+        this.atributo = JSON.parse(JSON.stringify(this.atributoPadrao));
         this.editIndice = -1;
       });
-    },
-
-    async findCampus(id) {
-      const { data } = await this.axios.get(`${baseApiUrl}api/campus/${id}`);
-      this.campusRaw = data;
-      this.arraycampus = data.content;
-      //this.arraycampus = data.filter((d) => d.label);
-      console.log(this.arraycampus + "array de campus aqui !!");
     },
 
     reloadPage: async function () {
@@ -352,12 +547,20 @@ export default {
     salvar() {
       if (this.editIndice > -1) {
         axios
-          .put(`${baseApiUrl}api/usuario`, {
+          .put(`${baseApiUrl}Pessoa`, {
             id: this.atributo.id,
-            email: this.atributo.email,
-            tipo: Number(this.atributo.tipo),
-            campus: this.atributo.campus,
-            curso: this.atributo.curso,
+            nome: this.atributo.nome,
+            sobrenome: this.atributo.sobrenome,
+            cpf: this.atributo.cpf,
+            rg: this.atributo.rg,
+            cnh: this.atributo.cnh,
+            dataDeNascimento: this.atributo.dataDeNascimento,
+            genero: this.atributo.genero,
+            estadoCivil: this.atributo.estadoCivil,
+            estadoDeOrigem: this.atributo.estadoDeOrigem,
+            cidadeDeOrigem: this.atributo.cidadeDeOrigem,
+            endereco: this.atributo.endereco,
+            telefone: this.atributo.telefone,
             ativo: this.atributo.ativo === "Ativo",
           })
           .then((res) => {
@@ -371,11 +574,19 @@ export default {
         Object.assign(this.usuarios[this.editIndice], this.atributo);
       } else {
         axios
-          .post(`${baseApiUrl}api/usuario`, {
-            email: this.atributo.email,
-            tipo: Number(this.atributo.tipo),
-            campus: this.atributo.campus,
-            curso: this.atributo.curso,
+          .post(`${baseApiUrl}Pessoa`, {
+            nome: this.atributo.nome,
+            sobrenome: this.atributo.sobrenome,
+            cpf: this.atributo.cpf,
+            rg: this.atributo.rg,
+            cnh: this.atributo.cnh,
+            dataDeNascimento: this.atributo.dataDeNascimento,
+            genero: this.atributo.genero,
+            estadoCivil: this.atributo.estadoCivil,
+            estadoDeOrigem: this.atributo.estadoDeOrigem,
+            cidadeDeOrigem: this.atributo.cidadeDeOrigem,
+            endereco: this.atributo.endereco,
+            telefone: this.atributo.telefone,
             ativo: true,
           })
           .then((res) => {
