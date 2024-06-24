@@ -447,10 +447,12 @@ export default {
     deleteItem(item) {
       if (confirm(`Tem certeza que deseja apagar o usuário ${item.nome}?`)) {
         axios
-          .delete(`${baseApiUrl}Pessoa/${item.id}`)
-          .then((res) => {
+          .delete(`${baseApiUrl}Pessoa?id=${item.id}`)
+          .then(() => {
             this.usuarios.splice(this.editIndice, 1);
             alert("Usuário apagado com sucesso!");
+            this.inicializar();
+            this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
