@@ -70,6 +70,7 @@
                         :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="CPF"
                         required
+                        v-mask="'###.###.###-##'"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
@@ -145,6 +146,7 @@
                         :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="CEP"
                         required
+                        v-mask="'#####-###'"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
@@ -225,6 +227,7 @@
                         :rules="[(v) => !!v || 'Item obrigatório!']"
                         label="Número"
                         required
+                        v-mask="'(##) #####-####'"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -393,9 +396,6 @@ export default {
     tituloForm() {
       return this.editIndice === -1 ? "Cadastrar Usuário" : "Editar Dados";
     },
-    mudarStatus() {
-      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
-    },
   },
 
   watch: {
@@ -408,8 +408,6 @@ export default {
   },
 
   mounted() {
-    this.getCursos();
-    this.getCampus();
     this.inicializar();
   },
 
@@ -440,43 +438,6 @@ export default {
         .catch(console.warn("erro"));
     },
 
-    filtrarPorAtivos() {
-      if (this.filtroSelecionado === "Todos") {
-        axios
-          .get(`${baseApiUrl}api/usuario/search`)
-          .then((res) => {
-            this.usuarios = res.data.content.map((c) => {
-              c.ativo = c.ativo ? "Ativo" : "Inativo";
-              return c;
-            });
-            console.log(res.data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        this.inicializar();
-      }
-    },
-
-    async getCampus() {
-      const { data } = await this.axios.get(
-        `${baseApiUrl}api/campus/search?sort=asc&orderBy=label`
-      );
-      this.campusRaw = data;
-      this.arraycampus = data.content;
-      console.log(this.arraycampus + "array de campus aqui");
-    },
-
-    async getCursos() {
-      const { data } = await this.axios.get(
-        `${baseApiUrl}api/curso/search?sort=asc&orderBy=label`
-      );
-      this.cursosRaw = data;
-      this.arraycursos = data.content;
-      console.log(this.arraycursos + "array de cursos aqui !!");
-    },
-
     editItem(item) {
       this.editIndice = this.usuarios.indexOf(item);
       this.atributo = JSON.parse(JSON.stringify(item));
@@ -497,32 +458,6 @@ export default {
       }
     },
 
-    desativeItemConfirm() {
-      if (this.atributo.ativo == "Ativo") {
-        axios
-          .patch(`${baseApiUrl}api/usuario/${this.atributo.id}/${false}`)
-          .then((res) => {
-            console.log(res.data);
-            alert("Este usuario foi desabilitado com sucesso !");
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        axios
-          .patch(`${baseApiUrl}api/usuario/${this.atributo.id}/${true}`)
-          .then((res) => {
-            console.log(res.data);
-            alert("Este usuario foi habilitado com sucesso !");
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      this.fecharDesativar();
-    },
 
     fechar() {
       this.dialog = false;

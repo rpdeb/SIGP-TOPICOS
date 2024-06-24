@@ -21,7 +21,7 @@
         >
         </v-text-field>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="400px">
+        <v-dialog v-model="dialog" max-width="800px">
           <template v-slot:activator="{ on, attrs }" class="template-add">
             <v-btn
               small
@@ -39,32 +39,119 @@
             <v-card-title>
               <span class="text-h5">{{ tituloForm }}</span>
             </v-card-title>
-            <!-- inserir mensagem para a interface -->
             <v-card-text>
-              <v-form>
+              <v-form ref="form">
                 <v-container>
-                  <v-row>
-                    <v-col cols="8" sm="6" md="4">
+                  <v-row v-if="editIndice !== -1">
+                    <v-col cols="12" sm="4">
                       <v-text-field
                         v-model="atributo.id"
                         label="Id"
+                        readonly
                       ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="4">
                       <v-text-field
                         v-model="atributo.nome"
                         label="Nome"
+                        :rules="[(v) => !!v || 'Nome é obrigatório']"
+                        required
                       ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="4">
                       <v-text-field
                         v-model="atributo.sobrenome"
                         label="Sobrenome"
+                        :rules="[(v) => !!v || 'Sobrenome é obrigatório']"
+                        required
                       ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="4">
                       <v-text-field
-                        v-model="atributo.departamento"
+                        v-mask="'###.###.###-##'"
+                        v-model="atributo.cpf"
+                        label="CPF"
+                        :rules="[(v) => !!v || 'CPF é obrigatório']"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="4">
+                      <v-text-field
+                        v-model="atributo.cnh"
+                        label="CNH"
+                        :rules="[(v) => !!v || 'CNH é obrigatório']"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="4">
+                      <v-text-field
+                        v-model="atributo.dataDeNascimento"
+                        :rules="[(v) => !!v || 'Data de Nascimento é obrigatória']"
+                        label="Data de Nascimento"
+                        type="date"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="4">
+                      <v-select
+                        v-model="atributo.genero"
+                        :items="['Masculino', 'Feminino', 'Outro']"
+                        :rules="[(v) => !!v || 'Gênero é obrigatório']"
+                        label="Gênero"
+                        required
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="4">
+                      <v-select
+                        v-model="atributo.estadoCivil"
+                        :items="['Solteiro', 'Casado', 'Divorciado', 'Viuvo', 'UniaoEstavel']"
+                        :rules="[(v) => !!v || 'Estado Civil é obrigatório']"
+                        label="Estado Civil"
+                        required
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" sm="4">
+                      <v-select
+                       v-model="atributo.departamento"
+                       :items="['RH', 'Financeiro', 'Compras', 'Atendimento', 'Zeladoria']"
                         label="Departamento"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="atributo.turno"
+                        :rules="[(v) => !!v || 'Departamento é obrigatório']"
+                        required
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" sm="4">
+                      <v-select
+                       v-model="atributo.turno"
+                       :items="['Matutino', 'Vespertino', 'Noturno']"
                         label="Turno"
+                        :rules="[(v) => !!v || 'Turno é obrigatório']"
+                        required
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="4">
+                      <v-text-field
+                        v-model="atributo.emailCorporativo"
+                        label="Email Corporativo"
+                        :rules="[
+                          (v) => !!v || 'Email Corporativo é obrigatório',
+                          (v) => /.+@.+\..+/.test(v) || 'E-mail deve ser válido'
+                        ]"
+                        required
                       ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="4">
+                      <v-switch
+                        v-model="atributo.ativo"
+                        label="Ativo"
+                      ></v-switch>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -110,17 +197,15 @@
   </v-data-table>
 </template>
 
-<!-- 
-<style>
-
-</style>
--->
-
 <script>
 import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
+import { VueMaskDirective } from 'v-mask';
+
 Vue.use(VueAxios, axios);
+Vue.directive('mask', VueMaskDirective);
+
 import { baseApiUrl } from "@/global";
 
 export default {
@@ -128,7 +213,6 @@ export default {
     search: "",
     dialog: false,
     dialogDesativar: false,
-    dialogDetalhar: false,
     titulos: [
       { text: "Nome", value: "nome" },
       { text: "Sobrenome", value: "sobrenome" },
@@ -137,23 +221,33 @@ export default {
       { text: "Ações", value: "acoes" },
     ],
     funcionarios: [],
-    filtros: ["Ativos", "Todos"],
-    filtroSelecionado: "Ativos",
     editIndice: -1,
     atributo: {
       id: null,
       nome: "",
       sobrenome: "",
+      cpf: "",
+      cnh: "",
+      dataDeNascimento: "",
+      genero: "",
+      estadoCivil: "",
       departamento: "",
       turno: "",
+      emailCorporativo: "",
       ativo: true,
     },
     atributoPadrao: {
       id: null,
       nome: "",
       sobrenome: "",
+      cpf: "",
+      cnh: "",
+      dataDeNascimento: "",
+      genero: "",
+      estadoCivil: "",
       departamento: "",
       turno: "",
+      emailCorporativo: "",
       ativo: true,
     },
   }),
@@ -165,7 +259,7 @@ export default {
         : "Editar Funcionário";
     },
     mudarStatus() {
-      return this.atributo.ativo == "Ativo" ? "desativar " : "ativar ";
+      return this.atributo.ativo ? "desativar" : "ativar";
     },
   },
 
@@ -189,7 +283,6 @@ export default {
         .get(`${baseApiUrl}Funcionario`)
         .then((res) => {
           this.funcionarios = res.data.dados;
-
           console.log(this.funcionarios + "Array de funcionarios");
           console.log(res.data);
         })
@@ -211,29 +304,19 @@ export default {
     },
 
     desativeItemConfirm() {
-      if (this.atributo.ativo == true) {
-        axios
-          .patch(`${baseApiUrl}Funcionario/inativaFuncionario`)
-          .then((res) => {
-            console.log(res.data);
-            alert("Este funcionário foi desabilitado com sucesso !");
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        axios
-          .patch(`${baseApiUrl}Funcionario`)
-          .then((res) => {
-            console.log(res.data);
-            alert("Este funcionario foi habilitado com sucesso !");
-            this.reloadPage();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
+      const endpoint = this.atributo.ativo
+        ? `${baseApiUrl}Funcionario/inativaFuncionario`
+        : `${baseApiUrl}Funcionario`;
+      axios
+        .patch(endpoint, { id: this.atributo.id })
+        .then((res) => {
+          console.log(res.data);
+          alert(`Este funcionário foi ${this.atributo.ativo ? "desativado" : "ativado"} com sucesso!`);
+          this.reloadPage();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       this.fecharDesativar();
     },
 
@@ -253,49 +336,42 @@ export default {
       });
     },
 
-    reloadPage: async function () {
+    reloadPage() {
       window.location.reload();
     },
 
     salvar() {
-      if (this.editIndice > -1) {
-        axios
-          .put(`${baseApiUrl}Funcionario`, {
-            id: this.atributo.id,
-            nome: this.atributo.nome,
-            sobrenome: this.atributo.sobrenome,
-            departamento: this.atributo.departamento,
-            turno: this.atributo.turno,
-            ativo: true
-          })
+      if (this.$refs.form.validate()) {
+        const endpoint = this.editIndice > -1
+          ? `${baseApiUrl}Funcionario`
+          : `${baseApiUrl}Funcionario`;
+        const method = this.editIndice > -1 ? "put" : "post";
+        axios[method](endpoint, this.atributo)
           .then((res) => {
-            alert("Os dados foram atualizados com sucesso !");
+            alert(`Os dados foram ${this.editIndice > -1 ? "atualizados" : "adicionados"} com sucesso!`);
             console.log(res.data);
             this.reloadPage();
           })
           .catch((error) => {
             console.log(error);
           });
-        Object.assign(this.funcionarios[this.editIndice], this.atributo);
-      } else {
-        axios
-          .post(`${baseApiUrl}Funcionario`, {
-            nome: this.atributo.nome,
-            sobrenome: this.atributo.sobrenome,
-            departamento: this.atributo.departamento,
-            turno: this.atributo.turno,
-            ativo: true
-          })
-          .then((res) => {
-            this.funcionarios = res.data;
-            alert("Os dados foram adicionados com sucesso !");
-            console.log(res.data);
-            this.reloadPage();
-          });
-        this.funcionarios.push(this.atributo);
+        if (this.editIndice === -1) {
+          this.funcionarios.push(this.atributo);
+        }
+        this.fechar();
       }
-      this.fechar();
     },
   },
 };
 </script>
+
+<style>
+.data-table {
+  max-height: 100vh;
+  overflow: auto;
+}
+.template-add {
+  display: flex;
+  justify-content: flex-end;
+}
+</style>
