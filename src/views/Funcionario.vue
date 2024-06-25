@@ -32,7 +32,7 @@
               v-bind="attrs"
               v-on="on"
             >
-              <v-icon dark> mdi-plus</v-icon>
+              <v-icon dark>mdi-plus</v-icon>
             </v-btn>
           </template>
           <v-card>
@@ -42,101 +42,136 @@
             <v-card-text>
               <v-form ref="form">
                 <v-container>
-                  <v-row v-if="editIndice !== -1">
-                    <v-col cols="12" sm="4">
+                  <v-row>
+                    <v-col cols="12" sm="6">
+                      <v-select
+                        v-model="selectedPersonId"
+                        :items="usuarios"
+                        item-value="id"
+                        item-text="nomeCompleto"
+                        label="Selecione uma pessoa"
+                        required
+                        @change="onPersonSelect"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6">
                       <v-text-field
-                        v-model="atributo.id"
-                        label="Id"
+                        v-model="atributo.pessoa.nome"
+                        label="Nome"
+                        readonly
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        v-model="atributo.pessoa.sobrenome"
+                        label="Sobrenome"
                         readonly
                       ></v-text-field>
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" sm="4">
-                      <v-text-field
-                        v-model="atributo.nome"
-                        label="Nome"
-                        :rules="[(v) => !!v || 'Nome é obrigatório']"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="4">
-                      <v-text-field
-                        v-model="atributo.sobrenome"
-                        label="Sobrenome"
-                        :rules="[(v) => !!v || 'Sobrenome é obrigatório']"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="4">
+                    <v-col cols="12" sm="6">
                       <v-text-field
                         v-mask="'###.###.###-##'"
-                        v-model="atributo.cpf"
+                        v-model="atributo.pessoa.cpf"
                         label="CPF"
-                        :rules="[(v) => !!v || 'CPF é obrigatório']"
-                        required
+                        readonly
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        v-model="atributo.pessoa.rg"
+                        label="RG"
+                        readonly
                       ></v-text-field>
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" sm="4">
+                    <v-col cols="12" sm="6">
                       <v-text-field
-                        v-model="atributo.cnh"
+                        v-model="atributo.pessoa.cnh"
                         label="CNH"
-                        :rules="[(v) => !!v || 'CNH é obrigatório']"
-                        required
+                        readonly
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="4">
+                    <v-col cols="12" sm="6">
                       <v-text-field
-                        v-model="atributo.dataDeNascimento"
-                        :rules="[(v) => !!v || 'Data de Nascimento é obrigatória']"
+                        v-model="atributo.pessoa.dataDeNascimento"
                         label="Data de Nascimento"
-                        type="date"
-                        required
+                        readonly
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="4">
-                      <v-select
-                        v-model="atributo.genero"
-                        :items="['Masculino', 'Feminino', 'Outro']"
-                        :rules="[(v) => !!v || 'Gênero é obrigatório']"
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        v-model="atributo.pessoa.genero"
                         label="Gênero"
-                        required
-                      ></v-select>
+                        readonly
+                      ></v-text-field>
                     </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" sm="4">
-                      <v-select
-                        v-model="atributo.estadoCivil"
-                        :items="['Solteiro', 'Casado', 'Divorciado', 'Viuvo', 'UniaoEstavel']"
-                        :rules="[(v) => !!v || 'Estado Civil é obrigatório']"
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        v-model="atributo.pessoa.estadoCivil"
                         label="Estado Civil"
-                        required
-                      ></v-select>
+                        readonly
+                      ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="4">
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        v-model="atributo.pessoa.endereco.logradouro"
+                        label="Logradouro"
+                        readonly
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        v-model="atributo.pessoa.endereco.numero"
+                        label="Número"
+                        readonly
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        v-model="atributo.pessoa.telefone.codigoDeArea"
+                        label="Código de Area"
+                        readonly
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        v-model="atributo.pessoa.telefone.numero"
+                        label="Telefone"
+                        readonly
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6">
                       <v-select
-                       v-model="atributo.departamento"
-                       :items="['RH', 'Financeiro', 'Compras', 'Atendimento', 'Zeladoria']"
+                        v-model="atributo.departamento"
+                        :items="['RH', 'Financeiro', 'Compras', 'Atendimento', 'Zeladoria']"
                         label="Departamento"
-                        :rules="[(v) => !!v || 'Departamento é obrigatório']"
                         required
                       ></v-select>
                     </v-col>
-                    <v-col cols="12" sm="4">
+                    <v-col cols="12" sm="6">
                       <v-select
-                       v-model="atributo.turno"
-                       :items="['Matutino', 'Vespertino', 'Noturno']"
+                        v-model="atributo.turno"
+                        :items="['Matutino', 'Vespertino', 'Noturno']"
                         label="Turno"
-                        :rules="[(v) => !!v || 'Turno é obrigatório']"
                         required
                       ></v-select>
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" sm="4">
+                    <v-col cols="12" sm="6">
                       <v-text-field
                         v-model="atributo.emailCorporativo"
                         label="Email Corporativo"
@@ -147,7 +182,7 @@
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="4">
+                    <v-col cols="12" sm="6">
                       <v-switch
                         v-model="atributo.ativo"
                         label="Ativo"
@@ -160,26 +195,20 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn small color="warning" dark @click="fechar">Cancelar</v-btn>
-              <v-btn small color="primary" class="mr-4" @click="salvar"
-                >Salvar</v-btn
-              >
+              <v-btn small color="primary" class="mr-4" @click="salvar">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
         <v-dialog v-model="dialogDesativar" max-width="400px">
           <v-card>
-            <v-card-title class="text-h5"
-              >Deseja {{ mudarStatus }} este funcionário ?</v-card-title
-            >
+            <v-card-title class="text-h5">
+              Deseja {{ mudarStatus }} este funcionário?
+            </v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn small color="warning" dark @click="fecharDesativar"
-                >Não</v-btn
-              >
-              <v-btn small color="primary" dark @click="desativeItemConfirm"
-                >Sim</v-btn
-              >
+              <v-btn small color="warning" dark @click="fecharDesativar">Não</v-btn>
+              <v-btn small color="primary" dark @click="desativeItemConfirm">Sim</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -214,41 +243,74 @@ export default {
     dialog: false,
     dialogDesativar: false,
     titulos: [
-      { text: "Nome", value: "nome" },
-      { text: "Sobrenome", value: "sobrenome" },
+      { text: "Nome", value: "pessoa.nome" },
+      { text: "Sobrenome", value: "pessoa.sobrenome" },
+      { text: "CPF", value: "pessoa.cpf" },
+      { text: "RG", value: "pessoa.rg" },
+      { text: "Data de Nascimento", value: "pessoa.dataDeNascimento" },
+      { text: "Gênero", value: "pessoa.genero" },
+      { text: "Estado Civil", value: "pessoa.estadoCivil" },
+      { text: "Endereço", value: "pessoa.endereco.logradouro" },
+      { text: "Telefone", value: "pessoa.telefone.numero" },
       { text: "Departamento", value: "departamento" },
       { text: "Turno", value: "turno" },
       { text: "Ações", value: "acoes" },
     ],
     funcionarios: [],
-    editIndice: -1,
+    usuarios: [],
+    selectedPersonId: null,
     atributo: {
       id: null,
-      nome: "",
-      sobrenome: "",
-      cpf: "",
-      cnh: "",
-      dataDeNascimento: "",
-      genero: "",
-      estadoCivil: "",
+      pessoaId: null,
+      cargo: "",
       departamento: "",
       turno: "",
       emailCorporativo: "",
       ativo: true,
+      pessoa: {
+        nome: "",
+        sobrenome: "",
+        cpf: "",
+        rg: "",
+        cnh: "",
+        dataDeNascimento: "",
+        genero: "",
+        estadoCivil: "",
+        endereco: {
+          logradouro: "",
+          numero: "",
+        },
+        telefone: {
+          codigoDeArea: "",
+          numero: ""
+        },
+      },
     },
     atributoPadrao: {
       id: null,
-      nome: "",
-      sobrenome: "",
-      cpf: "",
-      cnh: "",
-      dataDeNascimento: "",
-      genero: "",
-      estadoCivil: "",
+      pessoaId: null,
+      cargo: "",
       departamento: "",
       turno: "",
       emailCorporativo: "",
       ativo: true,
+      pessoa: {
+        nome: "",
+        sobrenome: "",
+        cpf: "",
+        rg: "",
+        cnh: "",
+        dataDeNascimento: "",
+        genero: "",
+        estadoCivil: "",
+        endereco: {
+          logradouro: "",
+          numero: "",
+        },
+        telefone: {
+          numero: "",
+        },
+      },
     },
   }),
 
@@ -267,7 +329,6 @@ export default {
     dialog(val) {
       val || this.fechar();
     },
-
     dialogDesativar(val) {
       val || this.fecharDesativar();
     },
@@ -278,17 +339,23 @@ export default {
   },
 
   methods: {
-    inicializar() {
-      axios
-        .get(`${baseApiUrl}Funcionario`)
-        .then((res) => {
-          this.funcionarios = res.data.dados;
-          console.log(this.funcionarios + "Array de funcionarios");
-          console.log(res.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    async inicializar() {
+      const funcionariosData = await axios.get(`${baseApiUrl}Funcionario`);
+      const usuariosData = await axios.get(`${baseApiUrl}Pessoa`);
+      this.funcionarios = funcionariosData.data.dados;
+      this.usuarios = usuariosData.data.dados.map(user => ({
+        ...user,
+        nomeCompleto: `${user.nome} ${user.sobrenome}`
+      }));
+    },
+
+    async onPersonSelect() {
+      const selectedUser = this.usuarios.find(u => u.id === this.selectedPersonId);
+      if (selectedUser) {
+        const userDetails = await axios.get(`${baseApiUrl}Pessoa/${selectedUser.id}`);
+        this.atributo.pessoa = userDetails.data.dados;
+        this.atributo.pessoaId = selectedUser.id; // Set pessoaId for the selected person
+      }
     },
 
     editItem(item) {
